@@ -18,7 +18,7 @@ import Navbar from '../components/nav/Navbar.jsx';
     <title>{title}</title>
   </head>
   <body>
-      <Navbar currentPage={Astro.url.pathname}/>
+      <Navbar currentPage={Astro.url.pathname} client:load/>
     <slot />
   </body>
 </html>

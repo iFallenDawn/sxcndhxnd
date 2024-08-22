@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./Navbar.css";
+import styles from "./Navbar.module.css";
 import sxcndhxndlogo from "../../assets/sxcndhxndlogo.jpg";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
@@ -16,17 +16,26 @@ const Navbar = (props) => {
     ["/contact", "Contact"],
   ];
 
+  const handleOpen = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const Icon = () => {
+    if (isOpen) return <IoMdClose size={42} />;
+    else return <RxHamburgerMenu size={42} />;
+  };
+
   const links = routes.map((route) => {
     const path = route[0];
     const text = route[1];
     return (
-      <div className="header-nav-link">
+      <div className={styles.headerNavLinkContainer} key={text}>
         <a
           href={path}
           className={
             currentPage == path
-              ? "active header-nav-link-a"
-              : "header-nav-link-a"
+              ? `${styles.active} ${styles.headerNavLink}`
+              : styles.headerNavLink
           }
         >
           {text}
@@ -36,16 +45,16 @@ const Navbar = (props) => {
   });
 
   return (
-    <header className="header">
-      <div className="header-title">
+    <header className={styles.header}>
+      <div className={styles.headerTitle}>
         <a href="/">
           <img src={sxcndhxndlogo.src} alt="sxcndhxnd logo" />
         </a>
       </div>
-      <div className="header-burger">
-        {isOpen ? <IoMdClose size={42} /> : <RxHamburgerMenu size={42} />}
+      <div className={styles.headerBurger}>
+        <button className={styles.burgerButton} onClick={handleOpen}>{<Icon />}</button>
       </div>
-      <div className="header-nav">{links}</div>
+      <div className={styles.headerNav}>{links}</div>
     </header>
   );
 };

@@ -3,25 +3,26 @@
   width: 100%;
   align-items: center;
   justify-content: space-between;
+  /* background-color: black; */
 }
 
-.header-burger {
+.headerBurger {
   right: 0;
 }
 
-.header-nav {
+.headerNav {
   overflow: hidden;
   background-color: pink;
-  /* display: none; */
+  display: none;
   text-align: center;
 }
 
-.header-nav-link {
+.headerNavLinkContainer {
   display: block;
   margin: 0.5rem 1rem;
 }
 
-.header-nav-link-a {
+.headerNavLink {
   text-decoration: none;
   color: black;
   font-size: 2rem;
@@ -30,6 +31,11 @@
 .active {
   text-decoration: underline;
   color: white;
+}
+
+.burgerButton {
+  background: none;
+  border: none;
 }
 
 img {
