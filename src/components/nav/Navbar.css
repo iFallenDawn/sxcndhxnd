@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-burger {
+  right: 0;
+}
+
+.header-nav {
+  overflow: hidden;
+  background-color: pink;
+  /* display: none; */
+  text-align: center;
+}
+
+.header-nav-link {
+  display: block;
+  margin: 0.5rem 1rem;
+}
+
+.header-nav-link-a {
+  text-decoration: none;
+  color: black;
+  font-size: 2rem;
+}
+
+.active {
+  text-decoration: underline;
+  color: white;
+}
+
+img {
+  width: 100%;
+  max-height: 50px;
+}
