@@ -21,40 +21,36 @@ const Navbar = (props) => {
   };
 
   const Icon = () => {
-    if (isOpen) return <IoMdClose size={42} />;
-    else return <RxHamburgerMenu size={42} />;
+    if (isOpen) return <IoMdClose size={42} color='white' />;
+    else return <RxHamburgerMenu size={42} color='white' />;
   };
 
   const links = routes.map((route) => {
     const path = route[0];
     const text = route[1];
     return (
-      <div className={styles.headerNavLinkContainer} key={text}>
+      <li key={text}>
         <a
           href={path}
-          className={
-            currentPage == path
-              ? `${styles.active} ${styles.headerNavLink}`
-              : styles.headerNavLink
-          }
+          className={currentPage === path ? `${styles.primaryNavigationLink} ${styles.active}` : styles.primaryNavigationLink}
         >
           {text}
         </a>
-      </div>
+      </li>
     );
   });
 
   return (
-    <header className={styles.header}>
-      <div className={styles.headerTitle}>
+    <header className={`${styles.primaryHeader} ${styles.flex}`}>
+      <div className={styles.logo}>
         <a href="/">
           <img src={sxcndhxndlogo.src} alt="sxcndhxnd logo" />
         </a>
       </div>
-      <div className={styles.headerBurger}>
-        <button className={styles.burgerButton} onClick={handleOpen}>{<Icon />}</button>
-      </div>
-      <div className={styles.headerNav}>{links}</div>
+      <button onClick={handleOpen} className={styles.mobileNavToggle}>{<Icon />}</button>
+      <nav>
+        <ul id='primary-navigation' className={`${styles.flex} ${styles.primaryNavigation}`}>{links}</ul>
+      </nav>
     </header>
   );
 };
