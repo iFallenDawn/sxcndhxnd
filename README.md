@@ -1,3 +1,12 @@
+# sxcndhxnd
+A fun little project for me to re-learn my web dev foundations (HTML/CSS) and mess around in Astro. 
+
+Inspired by a talk I had with Nico at Leg Up On Life about adding a shopping cart to his website.
+
+# Technologies
+- [SVGR](https://github.com/gregberge/svgr) Cnoverts svg into react components
+
+
 # Astro Starter Kit: Basics
 
 ```sh

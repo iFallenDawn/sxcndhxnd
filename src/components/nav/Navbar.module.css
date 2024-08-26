@@ -4,7 +4,10 @@ img {
 }
 
 .logo {
+  /* background-color: black; */
+  border: 1px solid black;
   margin: 2rem;
+  z-index: 2000;
 }
 
 .primaryHeader {
@@ -20,7 +23,7 @@ img {
 
 .primaryNavigationLink {
   text-decoration: none;
-  color: white;
+  color: green;
 }
 
 .flex {
@@ -38,16 +41,31 @@ img {
 }
 
 @media (max-width: 35em) {
+
+  .primaryHeader {
+    flex-direction: column;
+    height: 100svh;
+    justify-content: unset;
+  }
+
   .primaryNavigation {
-    position: fixed;
-    inset: 0 0 0 30%;
-    background: hsl(240 100% 25%);
+    /* position: fixed; */
+    /* inset: 10% 0 0 0; */
+    /* background: hsl(240 100% 25%); */
+    background: hsl(240, 7%, 71%);
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    /* flex-grow: 1; */
   }
 
+  .primaryNavigationLink {
+    text-decoration: none;
+    color: green;
+  }
+
+  /* hamburger */
   .mobileNavToggle {
     display: block;
     position: absolute;

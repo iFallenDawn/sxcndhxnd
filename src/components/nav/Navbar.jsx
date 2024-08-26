@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./Navbar.module.css";
-import sxcndhxndlogo from "../../assets/sxcndhxndlogo.jpg";
+import Logo from './Logo'
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoMdClose } from "react-icons/io";
 
@@ -21,8 +21,8 @@ const Navbar = (props) => {
   };
 
   const Icon = () => {
-    if (isOpen) return <IoMdClose size={42} color='white' />;
-    else return <RxHamburgerMenu size={42} color='white' />;
+    if (isOpen) return <IoMdClose size={42} color='orange' />;
+    else return <RxHamburgerMenu size={42} color='orange' />;
   };
 
   const links = routes.map((route) => {
@@ -44,12 +44,13 @@ const Navbar = (props) => {
     <header className={`${styles.primaryHeader} ${styles.flex}`}>
       <div className={styles.logo}>
         <a href="/">
-          <img src={sxcndhxndlogo.src} alt="sxcndhxnd logo" />
+          <Logo />
+          {/* <img src={sxcndhxndlogo.src} alt="sxcndhxnd logo" /> */}
         </a>
       </div>
       <button onClick={handleOpen} className={styles.mobileNavToggle}>{<Icon />}</button>
       <nav>
-        <ul id='primary-navigation' className={`${styles.flex} ${styles.primaryNavigation}`}>{links}</ul>
+        <ul className={`${styles.flex} ${styles.primaryNavigation}`}>{links}</ul>
       </nav>
     </header>
   );

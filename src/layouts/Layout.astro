@@ -4,8 +4,8 @@ interface Props {
 }
 
 const { title } = Astro.props;
-import Navbar from '../components/nav/Navbar.jsx';
-import '@fontsource/roboto'
+import Navbar from "../components/nav/Navbar.jsx";
+import "@fontsource/roboto";
 ---
 
 <!doctype html>
@@ -19,7 +19,7 @@ import '@fontsource/roboto'
     <title>{title}</title>
   </head>
   <body>
-      <Navbar currentPage={Astro.url.pathname} client:load/>
+    <Navbar currentPage={Astro.url.pathname} client:load />
     <slot />
   </body>
 </html>
@@ -27,10 +27,10 @@ import '@fontsource/roboto'
   *,
   *::before,
   *::after {
-    box-sizing: border-box
+    box-sizing: border-box;
   }
   html {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
+    /* border: 5px solid black; */
   }
-
 </style>
