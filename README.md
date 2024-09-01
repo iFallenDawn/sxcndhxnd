@@ -4,7 +4,11 @@ A fun little project for me to re-learn my web dev foundations (HTML/CSS) and me
 Inspired by a talk I had with Nico at Leg Up On Life about adding a shopping cart to his [current website](https://www.sxcndhxnd.com/).
 
 # Technologies
-- [SVGR](https://github.com/gregberge/svgr) - Converts svg into react components
+- [SVGR](https://github.com/gregberge/svgr)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Astro](https://astro.build/)
+- [React](https://docs.astro.build/en/guides/integrations-guide/react/)
+- [Stripe](https://docs.stripe.com/)
 
 
 # Astro Starter Kit: Basics
