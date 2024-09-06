@@ -15,10 +15,6 @@ const Navbar = (props) => {
     ["/contact", "Contact"],
   ];
 
-  const handleOpen = () => {
-    setIsOpen(!isOpen);
-  };
-
   // change this to animating nav
   const MobileNavIcon = () => {
     if (isOpen) return <IoMdClose size={42} color='black' />;
@@ -30,7 +26,6 @@ const Navbar = (props) => {
     const text = route[1];
     return (
       <li
-        class='m-5'
         key={text}
       >
         <a
@@ -38,7 +33,7 @@ const Navbar = (props) => {
           className={currentPage === path ? `hi` : 'hi2'}
         >
           <span
-            class='text-2xl'
+            className='text-2xl'
           >
             {text}
           </span>
@@ -48,25 +43,8 @@ const Navbar = (props) => {
   });
 
   return (
-    <header class='flex flex-wrap items-center bg-red-600 justify-between p-2'>
-      <div>
-        <a href="/">
-          <Logo />
-          {/* <img src={sxcndhxndlogo.src} alt="sxcndhxnd logo" /> */}
-        </a>
-      </div>
-      <button onClick={handleOpen}>
-        {<MobileNavIcon />}
-      </button>
-      <nav class='flex basis-full items-center justify-center text-center h-svh'>
-        <ul>
-          {links}
-        </ul>
-      </nav>
-      <div>
-        {/* could put actions here like socials */}
-      </div>
-    </header>
+    <>
+    </>
   );
 };
 
