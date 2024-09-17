@@ -43,8 +43,19 @@ const Navbar = (props) => {
   });
 
   return (
-    <>
-    </>
+    <div className='flex flex-col sm:flex-row'>
+      {/* Mobile Nav */}
+      <div className='flex sm:hidden'>
+        {/* top mobile nav*/}
+        <div className='flex flex-row'>
+
+        </div>
+      </div>
+      {/* Desktop Nav */}
+      <div className='hidden sm:flex'>
+
+      </div>
+    </div>
   );
 };
 
