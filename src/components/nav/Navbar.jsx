@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Logo from './Logo'
-import { RxHamburgerMenu } from "react-icons/rx";
-import { IoMdClose } from "react-icons/io";
+import ShoppingCart from "./ShoppingCart";
+import Hamburger from "./Hamburger";
+import Close from "./Close";
 
 const Navbar = (props) => {
   const { currentPage } = props;
@@ -15,10 +16,17 @@ const Navbar = (props) => {
     ["/contact", "Contact"],
   ];
 
+  const handleOpen = () => {
+    setIsOpen(!isOpen)
+  }
+
   // change this to animating nav
   const MobileNavIcon = () => {
-    if (isOpen) return <IoMdClose size={42} color='black' />;
-    else return <RxHamburgerMenu size={42} color='black' />;
+    return (
+      <div onClick={handleOpen}>
+        {isOpen ? <Close/> : <Hamburger/>}
+      </div>
+    )
   };
 
   const links = routes.map((route) => {
@@ -43,14 +51,39 @@ const Navbar = (props) => {
   });
 
   return (
-    <div className='flex flex-col sm:flex-row'>
+    // overall nav
+    <div className='flex flex-col absolute h-svh sm:flex-row'>
       {/* Mobile Nav */}
-      <div className='flex sm:hidden'>
+      <div className='flex flex-col fixed top-0 w-full h-full sm:hidden '>
         {/* top mobile nav*/}
-        <div className='flex flex-row'>
-
+        <div className='flex flex-row w-full items-center justify-between px-4 py-1'>
+          <Logo/>
+          <div className='flex flex-row items-center justify-between'>
+            <ShoppingCart/>
+            <MobileNavIcon/>
+          </div>
+        </div>
+        {/* rest of nav */}
+        <div className='flex flex-grow flex-col'>
+          <div className='flex flex-grow flex-col justify-center'>
+            {/*middle mobile nav*/}
+            <div className='flex flex-col items-center justify-center'>
+              <ul className='flex flex-col items-center '>
+                <li>Home</li>
+                <li>About Me</li>
+                <li>Gallery</li>
+                <li>Commissions</li>
+                <li>Contact</li>
+              </ul>
+            </div>
+          </div>
+          {/*bottom mobile nav*/}
+          <div className='flex flex-row items-center justify-center'>
+            <p>Instagram</p>
+          </div>
         </div>
       </div>
+
       {/* Desktop Nav */}
       <div className='hidden sm:flex'>
 

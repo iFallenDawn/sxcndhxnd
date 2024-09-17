@@ -10,6 +10,7 @@ Inspired by a talk I had with Nico at Leg Up On Life about adding a shopping car
 - [React](https://docs.astro.build/en/guides/integrations-guide/react/)
 - [Stripe](https://docs.stripe.com/)
 - [Penpot](https://penpot.app/)
+- [Lucide](https://lucide.dev/)
 
 # UI
 [Penpot Link](https://design.penpot.app/#/workspace/9d5797a9-683b-81b1-8004-ed8465d8569f/9d5797a9-683b-81b1-8004-ed85f40efbe6?page-id=9d5797a9-683b-81b1-8004-ed85f40efbe7)

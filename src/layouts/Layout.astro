@@ -20,7 +20,9 @@ import "@fontsource/roboto";
   </head>
   <body>
     <Navbar currentPage={Astro.url.pathname} client:load />
-    <slot />
+    <div class='mt-12'>
+      <slot/>
+    </div>
   </body>
 </html>
 <style is:global>
