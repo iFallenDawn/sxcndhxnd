@@ -24,7 +24,7 @@ const Navbar = (props) => {
   const MobileNavIcon = () => {
     return (
       <div onClick={handleOpen}>
-        {isOpen ? <Close/> : <Hamburger/>}
+        {isOpen ? <Close /> : <Hamburger />}
       </div>
     )
   };
@@ -56,24 +56,20 @@ const Navbar = (props) => {
       {/* Mobile Nav */}
       <div className='flex flex-col fixed top-0 w-full h-full sm:hidden '>
         {/* top mobile nav*/}
-        <div className='flex flex-row w-full items-center justify-between px-4 py-1'>
-          <Logo/>
+        <div className='flex flex-row w-full items-center justify-between px-4 py-1 bg-amber-400'>
+          <Logo />
           <div className='flex flex-row items-center justify-between'>
-            <ShoppingCart/>
-            <MobileNavIcon/>
+            <ShoppingCart />
+            <MobileNavIcon />
           </div>
         </div>
         {/* rest of nav */}
-        <div className='flex flex-grow flex-col'>
+        <div className={!isOpen ? 'hidden' : 'flex flex-grow flex-col bg-amber-400'}>
           <div className='flex flex-grow flex-col justify-center'>
             {/*middle mobile nav*/}
             <div className='flex flex-col items-center justify-center'>
               <ul className='flex flex-col items-center '>
-                <li>Home</li>
-                <li>About Me</li>
-                <li>Gallery</li>
-                <li>Commissions</li>
-                <li>Contact</li>
+                {links}
               </ul>
             </div>
           </div>
