@@ -8,11 +8,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 # Technologies
 - [SVGR](https://github.com/gregberge/svgr)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Astro](https://astro.build/)
+- [Next.js](https://nextjs.org/) 
 - [React](https://docs.astro.build/en/guides/integrations-guide/react/)
-- [Stripe](https://docs.stripe.com/)
-- [Penpot](https://penpot.app/)
 - [Lucide](https://lucide.dev/)
+- [Firebase Firestore](https://firebase.google.com/docs/firestore)
 
 ## Getting Started
 
@@ -20,12 +19,6 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
