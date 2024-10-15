@@ -1,46 +1,44 @@
----
-import Layout from "../layouts/Layout.astro";
----
+import Image from "next/image";
 
-<Layout title="sxcndhxnd">
-  <main>
+export default function Home() {
+  return (
     <p>Scripts.com
       Bee Movie
       By Jerry Seinfeld
-      
+
       NARRATOR:
       (Black screen with text; The sound of buzzing bees can be heard)
       According to all known laws
       of aviation,
-       :
+      :
       there is no way a bee
       should be able to fly.
-       :
+      :
       Its wings are too small to get
       its fat little body off the ground.
-       :
+      :
       The bee, of course, flies anyway
-       :
+      :
       because bees don't care
       what humans think is impossible.
       BARRY BENSON:
       (Barry is picking out a shirt)
       Yellow, black. Yellow, black.
       Yellow, black. Yellow, black.
-       :
+      :
       Ooh, black and yellow!
       Let's shake it up a little.
       JANET BENSON:
       Barry! Breakfast is ready!
       BARRY:
       Coming!
-       :
+      :
       Hang on a second.
       (Barry uses his antenna like a phone)
-       :
+      :
       Hello?
       ADAM FLAYMAN:
-      
+
       (Through phone)
       - Barry?
       BARRY:
@@ -50,7 +48,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       - I can't. I'll pick you up.
       (Barry flies down the stairs)
-       :
+      :
       MARTIN BENSON:
       Looking sharp.
       JANET:
@@ -61,7 +59,7 @@ import Layout from "../layouts/Layout.astro";
       MARTIN:
       Here's the graduate.
       We're very proud of you, son.
-       :
+      :
       A perfect report card, all B's.
       JANET:
       Very proud.
@@ -72,7 +70,7 @@ import Layout from "../layouts/Layout.astro";
       - You got lint on your fuzz.
       BARRY:
       - Ow! That's me!
-      
+
       JANET:
       - Wave to us! We'll be in row 118,000.
       - Bye!
@@ -87,7 +85,7 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       - Hey, Barry.
       (Adam gets in Barry's car)
-       :
+      :
       - Is that fuzz gel?
       BARRY:
       - A little. Special day, graduation.
@@ -107,7 +105,7 @@ import Layout from "../layouts/Layout.astro";
       (Barry and Adam pass by Artie, who is jogging)
       ARTIE:
       - Hi, Barry!
-      
+
       BARRY:
       - Artie, growing a mustache? Looks good.
       ADAM:
@@ -118,10 +116,10 @@ import Layout from "../layouts/Layout.astro";
       - You going to the funeral?
       BARRY:
       - No, I'm not going to his funeral.
-       :
+      :
       Everybody knows,
       sting someone, you die.
-       :
+      :
       Don't waste it on a squirrel.
       Such a hothead.
       ADAM:
@@ -129,7 +127,7 @@ import Layout from "../layouts/Layout.astro";
       just gotten out of the way.
       (The car does a barrel roll on the loop-shaped bridge and lands on the
       highway)
-       :
+      :
       I love this incorporating
       an amusement park into our regular day.
       BARRY:
@@ -139,9 +137,9 @@ import Layout from "../layouts/Layout.astro";
       Boy, quite a bit of pomp...
       under the circumstances.
       (Barry and Adam sit down and put on their hats)
-       :
+      :
       - Well, Adam, today we are men.
-      
+
       ADAM:
       - We are!
       BARRY=
@@ -153,16 +151,16 @@ import Layout from "../layouts/Layout.astro";
       (Barry and Adam both have a happy spasm)
       ANNOUNCER:
       Students, faculty, distinguished bees,
-       :
+      :
       please welcome Dean Buzzwell.
       DEAN BUZZWELL:
       Welcome, New Hive Oity
       graduating class of...
-       :
+      :
       ...9:
-       :
+      :
       That concludes our ceremonies.
-       :
+      :
       And begins your career
       at Honex Industries!
       ADAM:
@@ -174,7 +172,7 @@ import Layout from "../layouts/Layout.astro";
       loaded into the buses)
       TOUR GUIDE:
       Heads up! Here we go.
-      
+
       ANNOUNCER:
       Keep your hands and antennas
       inside the tram at all times.
@@ -185,7 +183,7 @@ import Layout from "../layouts/Layout.astro";
       TOUR GUIDE==
       Welcome to Honex,
       a division of Honesco
-       :
+      :
       and a part of the Hexagon Group.
       Barry:
       This is it!
@@ -198,21 +196,21 @@ import Layout from "../layouts/Layout.astro";
       TOUR GUIDE:
       We know that you, as a bee,
       have worked your whole life
-       :
+      :
       to get to the point where you
       can work for your whole life.
-       :
+      :
       Honey begins when our valiant Pollen
       Jocks bring the nectar to the hive.
-       :
+      :
       Our top-secret formula
-       :
+      :
       is automatically color-corrected,
-      
+
       scent-adjusted and bubble-contoured
-       :
+      :
       into this soothing sweet syrup
-       :
+      :
       with its distinctive
       golden glow you know as...
       EVERYONE ON BUS:
@@ -231,18 +229,18 @@ import Layout from "../layouts/Layout.astro";
       - Right. You're right.
       TOUR GUIDE:
       - At Honex, we constantly strive
-       :
+      :
       to improve every aspect
       of bee existence.
-       :
+      :
       These bees are stress-testing
       a new helmet technology.
       (The bus passes by a Bee wearing a helmet who is being smashed into the
       ground with fly-swatters, newspapers and boots. He lifts a thumbs up but
       you can hear him groan)
-       :
+      :
       ADAM==
-      
+
       - What do you think he makes?
       BARRY:
       - Not enough.
@@ -255,7 +253,7 @@ import Layout from "../layouts/Layout.astro";
       - Wow, What does that do?
       TOUR GUIDE:
       - Catches that little strand of honey
-       :
+      :
       that hangs after you pour it.
       Saves us millions.
       ADAM:
@@ -266,9 +264,9 @@ import Layout from "../layouts/Layout.astro";
       small ones.
       But bees know that every small job,
       if it's done well, means a lot.
-       :
+      :
       But choose carefully
-       :
+      :
       because you'll stay in the job
       you pick for the rest of your life.
       (Everyone claps except for Barry)
@@ -276,17 +274,17 @@ import Layout from "../layouts/Layout.astro";
       The same job the rest of your life?
       I didn't know that.
       ADAM:
-      
+
       What's the difference?
       TOUR GUIDE:
       You'll be happy to know that bees,
       as a species, haven't had one day off
-       :
+      :
       in 27 million years.
       BARRY:
       (Upset)
       So you'll just work us to death?
-       :
+      :
       We'll sure try.
       (Everyone on the bus laughs except Barry. Barry and Adam are walking back
       home together)
@@ -295,7 +293,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       "What's the difference?"
       How can you say that?
-       :
+      :
       One job forever?
       That's an insane choice to have to make.
       ADAM:
@@ -307,10 +305,10 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       Why would you question anything?
       We're bees.
-       :
+      :
       We're the most perfectly
       functioning society on Earth.
-      
+
       BARRY:
       You ever think maybe things
       work a little too well here?
@@ -328,11 +326,11 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Wait a second. Check it out.
       (The Pollen jocks fly in, circle around and landing in line)
-       :
+      :
       - Hey, those are Pollen Jocks!
       ADAM:
       - Wow.
-       :
+      :
       I've never seen them this close.
       BARRY:
       They know what it's like
@@ -344,10 +342,10 @@ import Layout from "../layouts/Layout.astro";
       - Hi, Jocks!
       (The Pollen Jocks hook up their backpacks to machines that pump the nectar
       to trucks, which drive away)
-      
+
       LOU LO DUVA:
       You guys did great!
-       :
+      :
       You're monsters!
       You're sky freaks!
       I love it!
@@ -357,12 +355,12 @@ import Layout from "../layouts/Layout.astro";
       - I wonder where they were.
       BARRY:
       - I don't know.
-       :
+      :
       Their day's not planned.
-       :
+      :
       Outside the hive, flying who knows
       where, doing who knows what.
-       :
+      :
       You can't just decide to be a Pollen
       Jock. You have to be bred for that.
       ADAM==
@@ -379,7 +377,7 @@ import Layout from "../layouts/Layout.astro";
       Perhaps. Unless you're wearing it
       and the ladies see you wearing it.
       (Barry waves at 2 girls standing a little away from them)
-      
+
       ADAM==
       Those ladies?
       Aren't they our cousins too?
@@ -397,7 +395,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Yeah. Once a bear pinned me
       against a mushroom!
-       :
+      :
       He had a paw on my throat,
       and with the other, he was slapping me!
       (Slaps Adam with his hand to represent his scenario)
@@ -412,7 +410,7 @@ import Layout from "../layouts/Layout.astro";
       Obviously I was trying to alert the authorities.
       BARRY:
       I can autograph that.
-      
+
       (The pollen jocks walk up to Barry and Adam, they pretend that Barry and
       Adam really are pollen jocks.)
       POLLEN JOCK #1:
@@ -436,7 +434,7 @@ import Layout from "../layouts/Layout.astro";
       - You are not!
       POLLEN JOCK #1:
       We're going 0900 at J-Gate.
-       :
+      :
       What do you think, buzzy-boy?
       Are you bee enough?
       BARRY:
@@ -445,7 +443,7 @@ import Layout from "../layouts/Layout.astro";
       (The scene cuts to Barry looking out on the hive-city from his balcony at
       night)
       MARTIN:
-      
+
       Hey, Honex!
       BARRY:
       Dad, you surprised me.
@@ -454,31 +452,31 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       - Well, there's a lot of choices.
       - But you only get one.
-       :
+      :
       Do you ever get bored
       doing the same job every day?
       MARTIN:
       Son, let me tell you about stirring.
-       :
+      :
       You grab that stick, and you just
       move it around, and you stir it around.
-       :
+      :
       You get yourself into a rhythm.
       It's a beautiful thing.
       BARRY:
       You know, Dad,
       the more I think about it,
-       :
+      :
       maybe the honey field
       just isn't right for me.
       MARTIN:
       You were thinking of what,
       making balloon animals?
-       :
+      :
       That's a bad job
       for a guy with a stinger.
-       :
-      
+      :
+
       Janet, your son's not sure
       he wants to go into honey!
       JANET:
@@ -503,7 +501,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Maybe I'll pierce my thorax.
       Shave my antennae.
-       :
+      :
       Shack up with a grasshopper. Get
       a gold tooth and call everybody "dawg"!
       JANET:
@@ -511,7 +509,7 @@ import Layout from "../layouts/Layout.astro";
       (The scene cuts to Barry and Adam waiting in line to get a job)
       ADAM:
       - We're starting work today!
-      
+
       BARRY:
       - Today's the day.
       ADAM:
@@ -526,7 +524,7 @@ import Layout from "../layouts/Layout.astro";
       - Is it still available?
       JOB LISTER:
       - Hang on. Two left!
-       :
+      :
       One of them's yours! Congratulations!
       Step to the side.
       ADAM:
@@ -545,7 +543,7 @@ import Layout from "../layouts/Layout.astro";
       (Adam and Barry look up at the job board. There are hundreds of constantly
       changing panels that contain available or unavailable jobs. It looks very
       confusing)
-      
+
       ADAM:
       - You want to go first?
       BARRY:
@@ -561,36 +559,36 @@ import Layout from "../layouts/Layout.astro";
       - Sure, you're on.
       (Puts the Krelman finger-hat on Adam's head)
       (Suddenly the sign for Krelman closes out)
-       :
+      :
       I'm sorry, the Krelman just closed out.
       (Takes Adam's hat off)
       Wax monkey's always open.
       ADAM:
       The Krelman opened up again.
-       :
+      :
       What happened?
       JOB LISTER:
       A bee died. Makes an opening. See?
       He's dead. Another dead one.
-       :
+      :
       Deady. Deadified. Two more dead.
-       :
+      :
       Dead from the neck up.
       Dead from the neck down. That's life!
-      
+
       ADAM:
       Oh, this is so hard!
       (Barry remembers what the Pollen Jock offered him and he flies off)
       Heating, cooling,
       stunt bee, pourer, stirrer,
-       :
+      :
       humming, inspector number seven,
       lint coordinator, stripe supervisor,
-       :
+      :
       mite wrangler. Barry, what
       do you think I should... Barry?
       (Adam turns around and sees Barry flying away)
-       :
+      :
       Barry!
       POLLEN JOCK:
       All right, we've got the sunflower patch
@@ -611,16 +609,16 @@ import Layout from "../layouts/Layout.astro";
       I have to, before I go
       to work for the rest of my life.
       ADAM:
-      
+
       You're gonna die! You're crazy!
       (Barry hangs up)
       Hello?
       POLLEN JOCK #2:
       Another call coming in.
-       :
+      :
       If anyone's feeling brave,
       there's a Korean deli on 83rd
-       :
+      :
       that gets their roses today.
       BARRY:
       Hey, guys.
@@ -637,26 +635,26 @@ import Layout from "../layouts/Layout.astro";
       (To Barry) Really? Feeling lucky, are you?
       BEE WITH CLIPBOARD:
       (To Barry) Sign here, here. Just initial that.
-       :
+      :
       - Thank you.
       LOU LO DUVA:
       - OK.
-       :
+      :
       You got a rain advisory today,
-       :
-      
+      :
+
       and as you all know,
       bees cannot fly in rain.
-       :
+      :
       So be careful. As always,
       watch your brooms,
-       :
+      :
       hockey sticks, dogs,
       birds, bears and bats.
-       :
+      :
       Also, I got a couple of reports
       of root beer being poured on us.
-       :
+      :
       Murphy's in a home because of it,
       babbling like a cicada!
       BARRY:
@@ -664,20 +662,20 @@ import Layout from "../layouts/Layout.astro";
       LOU LO DUVA:
       (Still talking through megaphone)
       - And a reminder for you rookies,
-       :
+      :
       bee law number one,
       absolutely no talking to humans!
-       :
+      :
       All right, launch positions!
       POLLEN JOCKS:
       (The Pollen Jocks run into formation)
-       :
+      :
       Buzz, buzz, buzz, buzz! Buzz, buzz,
       buzz, buzz! Buzz, buzz, buzz, buzz!
       LOU LU DUVA:
       Black and yellow!
       POLLEN JOCKS:
-      
+
       Hello!
       POLLEN JOCK #1:
       (To Barry)You ready for this, hot shot?
@@ -685,52 +683,52 @@ import Layout from "../layouts/Layout.astro";
       Yeah. Yeah, bring it on.
       POLLEN JOCK's:
       Wind, check.
-       :
+      :
       - Antennae, check.
       - Nectar pack, check.
-       :
+      :
       - Wings, check.
       - Stinger, check.
       BARRY:
       Scared out of my shorts, check.
       LOU LO DUVA:
       OK, ladies,
-       :
+      :
       let's move it out!
-       :
+      :
       Pound those petunias,
       you striped stem-suckers!
-       :
+      :
       All of you, drain those flowers!
       (The pollen jocks fly out of the hive)
       BARRY:
       Wow! I'm out!
-       :
+      :
       I can't believe I'm out!
-       :
+      :
       So blue.
-      
-       :
+
+      :
       I feel so fast and free!
-       :
+      :
       Box kite!
       (Barry flies through the kite)
-       :
+      :
       Wow!
-       :
+      :
       Flowers!
       (A pollen jock puts on some high tech goggles that shows flowers similar to
       heat sink goggles.)
       POLLEN JOCK:
       This is Blue Leader.
       We have roses visual.
-       :
+      :
       Bring it around 30 degrees and hold.
-       :
+      :
       Roses!
       POLLEN JOCK #1:
       30 degrees, roger. Bringing it around.
-       :
+      :
       Stand to the side, kid.
       It's got a bit of a kick.
       (The pollen jock fires a high-tech gun at the flower, shooting tubes that
@@ -742,13 +740,13 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       - No, sir.
       POLLEN JOCK #1:
-      
+
       (Barry and the Pollen jock fly over the field, the pollen jock sprinkles
       pollen as he goes)
-       :
+      :
       I pick up some pollen here, sprinkle it
       over here. Maybe a dash over there,
-       :
+      :
       a pinch on that one.
       See that? It's a little bit of magic.
       BARRY:
@@ -763,7 +761,7 @@ import Layout from "../layouts/Layout.astro";
       could be daisies. Don't we need those?
       POLLEN JOCK #2:
       Copy that visual.
-       :
+      :
       Wait. One of these flowers
       seems to be on the move.
       POLLEN JOCK #1:
@@ -775,12 +773,12 @@ import Layout from "../layouts/Layout.astro";
       obviously just tennis balls)
       KEN:
       (In the distance) That was on the line!
-      
+
       POLLEN JOCK #1:
       This is the coolest. What is it?
       POLLEN JOCK #2:
       I don't know, but I'm loving this color.
-       :
+      :
       It smells good.
       Not like a flower, but I like it.
       POLLEN JOCK #1:
@@ -810,12 +808,12 @@ import Layout from "../layouts/Layout.astro";
       Affirmative.
       (Vanessa Bloome starts bouncing the tennis ball, not knowing Barry is stick
       to it)
-      
+
       BARRY==
       Very close.
-       :
+      :
       Gonna hurt.
-       :
+      :
       Mama's little boy.
       (Barry is being hit back and forth by two humans playing tennis. He is
       still stuck to the ball)
@@ -837,13 +835,13 @@ import Layout from "../layouts/Layout.astro";
       What is this?!
       KEN:
       Match point!
-       :
+      :
       You can start packing up, honey,
       because you're about to EAT IT!
       (A pollen jock coughs which confused Ken and he hits the ball the wrong way
       with Barry stuck to it and it goes flying into the city)
       BARRY:
-      
+
       Yowser!
       (Barry bounces around town and gets stuck in the engine of a car. He flies
       into the air conditioner and sees a bug that was frozen in there)
@@ -853,7 +851,7 @@ import Layout from "../layouts/Layout.astro";
       into the car)
       GIRL IN CAR:
       There's a bee in the car!
-       :
+      :
       - Do something!
       DAD DRIVING CAR:
       - I'm driving!
@@ -863,13 +861,13 @@ import Layout from "../layouts/Layout.astro";
       (Barry smiles and waves at the baby girl)
       GUY IN BACK OF CAR:
       - He's back here!
-       :
+      :
       He's going to sting me!
       GIRL IN CAR:
       Nobody move. If you don't move,
       he won't sting you. Freeze!
       (Barry freezes as well, hovering in the middle of the car)
-       :
+      :
       GRANDMA IN CAR==
       He blinked!
       (The grandma whips out some bee-spray and sprays everywhere in the car,
@@ -879,21 +877,21 @@ import Layout from "../layouts/Layout.astro";
       DAD DRIVING THE CAR:
       What are you doing?!
       (Barry escapes the car through the air conditioner and is flying high above
-      
+
       the ground, safe.)
       BARRY:
       Wow... the tension level
       out here is unbelievable.
       (Barry sees that storm clouds are gathering and he can see rain clouds
       moving into this direction)
-       :
+      :
       I gotta get home.
-       :
+      :
       Can't fly in rain.
-       :
+      :
       Can't fly in rain.
       (A rain drop hits Barry and one of his wings is damaged)
-       :
+      :
       Can't fly in rain.
       (A second rain drop hits Barry again and he spirals downwards)
       Mayday! Mayday! Bee going down!
@@ -905,7 +903,7 @@ import Layout from "../layouts/Layout.astro";
       KEN==
       Hey, check out my new resume.
       I made it into a fold-out brochure.
-       :
+      :
       You see?
       (Folds brochure resume out)
       Folds out.
@@ -913,14 +911,14 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Oh, no. More humans. I don't need this.
       (Barry tries to fly away but smashes into the window and falls again)
-       :
+      :
       What was that?
-      
+
       (Barry keeps trying to fly out the window but he keeps being knocked back
       because the window is closed)
       Maybe this time. This time. This time.
       This time! This time! This...
-       :
+      :
       Drapes!
       (Barry taps the glass. He doesn't understand what it is)
       That is diabolical.
@@ -932,7 +930,7 @@ import Layout from "../layouts/Layout.astro";
       KEN:
       Nah, I don't go for that...
       (Ken makes finger guns and makes "pew pew pew" sounds and then stops)
-       :
+      :
       ...kind of stuff.
       BARRY:
       No wonder we shouldn't talk to them.
@@ -944,30 +942,30 @@ import Layout from "../layouts/Layout.astro";
       (Looking at the light on the ceiling)
       There's the sun. Maybe that's a way out.
       (Starts flying towards the lightbulb)
-       :
+      :
       I don't remember the sun
       having a big 75 on it.
       (Barry hits the lightbulb and falls into the dip on the table that the
       humans are sitting at)
       KEN:
-      
+
       I predicted global warming.
-       :
+      :
       I could feel it getting hotter.
       At first I thought it was just me.
       (Andy dips a chip into the bowl and scoops up some dip with Barry on it and
       is about to put it in his mouth)
-       :
+      :
       Wait! Stop! Bee!
       (Andy drops the chip with Barry in fear and backs away. All the humans
       freak out)
-       :
+      :
       Stand back. These are winter boots.
       (Ken has winter boots on his hands and he is about to smash the bee but
       Vanessa saves him last second)
       VANESSA:
       Wait!
-       :
+      :
       Don't kill him!
       (Vanessa puts Barry in a glass to protect him)
       KEN:
@@ -985,7 +983,7 @@ import Layout from "../layouts/Layout.astro";
       (Vanessa picks up Ken's brochure and puts it under the glass so she can
       carry Barry back to the window. Barry looks at Vanessa in amazement)
       KEN:
-      
+
       My brochure!
       VANESSA:
       There you go, little guy.
@@ -1005,11 +1003,11 @@ import Layout from "../layouts/Layout.astro";
       is also a special skill.
       (Ken walks to the door)
       Right. Bye, Vanessa. Thanks.
-       :
+      :
       - Vanessa, next week? Yogurt night?
       VANESSA:
       - Sure, Ken. You know, whatever.
-       :
+      :
       (Vanessa tries to close door)
       KEN==
       - You could put carob chips on there.
@@ -1018,7 +1016,7 @@ import Layout from "../layouts/Layout.astro";
       (Closes door but Ken opens it again)
       KEN:
       - Supposed to be less calories.
-      
+
       VANESSA:
       - Bye.
       (Closes door)
@@ -1027,45 +1025,45 @@ import Layout from "../layouts/Layout.astro";
       BARRY==
       (Talking to himself)
       I gotta say something.
-       :
+      :
       She saved my life.
       I gotta say something.
-       :
+      :
       All right, here it goes.
       (Turns back)
       Nah.
-       :
+      :
       What would I say?
-       :
+      :
       I could really get in trouble.
-       :
+      :
       It's a bee law.
       You're not supposed to talk to a human.
-       :
+      :
       I can't believe I'm doing this.
-       :
+      :
       I've got to.
       (Barry disguises himself as a character on a food can as Vanessa walks by
       again)
-       :
+      :
       Oh, I can't do it. Come on!
-       :
+      :
       No. Yes. No.
-       :
+      :
       Do it. I can't.
-      
-       :
+
+      :
       How should I start it?
       (Barry strikes a pose and wiggles his eyebrows)
       "You like jazz?"
       No, that's no good.
       (Vanessa is about to walk past Barry)
       Here she comes! Speak, you fool!
-       :
+      :
       ...Hi!
       (Vanessa gasps and drops the dishes in fright and notices Barry on the
       counter)
-       :
+      :
       I'm sorry.
       VANESSA:
       - You're talking.
@@ -1079,7 +1077,7 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       No, it's OK. It's fine.
       I know I'm dreaming.
-       :
+      :
       But I don't recall going to bed.
       BARRY:
       Well, I'm sure this
@@ -1087,19 +1085,19 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       This is a bit of a surprise to me.
       I mean, you're a bee!
-      
+
       BARRY:
       I am. And I'm not supposed
       to be doing this,
       (Pointing to the living room where Ken tried to kill him last night)
       but they were all trying to kill me.
-       :
+      :
       And if it wasn't for you...
-       :
+      :
       I had to thank you.
       It's just how I was raised.
       (Vanessa stabs her hand with a fork to test whether she's dreaming or not)
-       :
+      :
       That was a little weird.
       VANESSA:
       - I'm talking with a bee.
@@ -1120,21 +1118,21 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       The talking...thing.
       BARRY:
-      
+
       Same way you did, I guess.
       "Mama, Dada, honey." You pick it up.
       VANESSA:
       - That's very funny.
       BARRY:
       - Yeah.
-       :
+      :
       Bees are funny. If we didn't laugh,
       we'd cry with what we have to deal with.
-       :
+      :
       Anyway...
       VANESSA:
       Can I...
-       :
+      :
       ...get you something?
       BARRY:
       - Like what?
@@ -1145,14 +1143,14 @@ import Layout from "../layouts/Layout.astro";
       I don't want to put you out.
       VANESSA:
       It's no trouble. It takes two minutes.
-       :
+      :
       - It's just coffee.
       BARRY:
       - I hate to impose.
       (Vanessa starts making coffee)
       VANESSA:
       - Don't be ridiculous!
-      
+
       BARRY:
       - Actually, I would love a cup.
       VANESSA:
@@ -1176,27 +1174,27 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I don't know if you know
       anything about fashion.
-       :
+      :
       Are you all right?
       VANESSA:
       (Pouring coffee on the floor and missing the cup completely)
       No.
       (Flash forward in time. Barry and Vanessa are sitting together at a table
       on top of the apartment building drinking coffee)
-      
-       :
+
+      :
       BARRY==
       He's making the tie in the cab
       as they're flying up Madison.
-       :
+      :
       He finally gets there.
-       :
+      :
       He runs up the steps into the church.
       The wedding is on.
-       :
+      :
       And he says, "Watermelon?
       I thought you said Guatemalan.
-       :
+      :
       Why would I marry a watermelon?"
       (Barry laughs but Vanessa looks confused)
       VANESSA:
@@ -1205,23 +1203,23 @@ import Layout from "../layouts/Layout.astro";
       That's the kind of stuff we do.
       VANESSA:
       Yeah, different.
-       :
+      :
       So, what are you gonna do, Barry?
       (Barry stands on top of a sugar cube floating in his coffee and paddles it
       around with a straw like it's a gondola)
       BARRY:
       About work? I don't know.
-       :
+      :
       I want to do my part for the hive,
       but I can't do it the way they want.
       VANESSA:
       I know how you feel.
-      
+
       BARRY:
       - You do?
       VANESSA:
       - Sure.
-       :
+      :
       My parents wanted me to be a lawyer or
       a doctor, but I wanted to be a florist.
       BARRY:
@@ -1231,10 +1229,10 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Our new queen was just elected
       with that same campaign slogan.
-       :
+      :
       Anyway, if you look...
       (Barry points to a tree in the middle of Central Park)
-       :
+      :
       There's my hive right there. See it?
       VANESSA:
       You're in Sheep Meadow!
@@ -1248,7 +1246,7 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       - Why not?
       BARRY:
-      
+
       - It's like putting a hat on your knee.
       VANESSA:
       - Maybe I'll try that.
@@ -1259,7 +1257,7 @@ import Layout from "../layouts/Layout.astro";
       - You all right, ma'am?
       VANESSA:
       - Oh, yeah. Fine.
-       :
+      :
       Just having two cups of coffee!
       BARRY:
       Anyway, this has been great.
@@ -1270,7 +1268,7 @@ import Layout from "../layouts/Layout.astro";
       Sorry I couldn't finish it. If I did,
       I'd be up the rest of my life.
       (Barry points towards the rum cake)
-       :
+      :
       Can I take a piece of this with me?
       VANESSA:
       Sure! Here, have a crumb.
@@ -1282,8 +1280,8 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       All right. Well, then...
       I guess I'll see you around.
-      
-       :
+
+      :
       Or not.
       VANESSA:
       OK, Barry...
@@ -1306,7 +1304,7 @@ import Layout from "../layouts/Layout.astro";
       BEE SCIENTIST #2:
       He's all set to go.
       We may as well try it.
-       :
+      :
       OK, Dave, pull the chute.
       (Dave pulls the chute and the wind slams him against the wall and he falls
       on his face.The camera pans over and we see Barry and Adam walking
@@ -1315,19 +1313,19 @@ import Layout from "../layouts/Layout.astro";
       - Sounds amazing.
       BARRY:
       - It was amazing!
-       :
+      :
       It was the scariest,
       happiest moment of my life.
-      
+
       ADAM:
       Humans! I can't believe
       you were with humans!
-       :
+      :
       Giant, scary humans!
       What were they like?
       BARRY:
       Huge and crazy. They talk crazy.
-       :
+      :
       They eat crazy giant things.
       They drive crazy.
       ADAM:
@@ -1341,7 +1339,7 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       You did it, and I'm glad. You saw
       whatever you wanted to see.
-       :
+      :
       You had your "experience." Now you
       can pick out your job and be normal.
       BARRY:
@@ -1350,10 +1348,10 @@ import Layout from "../layouts/Layout.astro";
       - Well?
       BARRY:
       Well, I met someone.
-      
+
       ADAM:
       You did? Was she Bee-ish?
-       :
+      :
       - A wasp?! Your parents will kill you!
       BARRY:
       - No, no, no, not a wasp.
@@ -1361,10 +1359,10 @@ import Layout from "../layouts/Layout.astro";
       - Spider?
       BARRY:
       - I'm not attracted to spiders.
-       :
+      :
       I know, for everyone else, it's the hottest thing,
       with the eight legs and all.
-       :
+      :
       I can't get by that face.
       ADAM:
       So who is she?
@@ -1382,13 +1380,13 @@ import Layout from "../layouts/Layout.astro";
       She's so nice. And she's a florist!
       ADAM:
       Oh, no! You're dating a human florist!
-      
+
       BARRY:
       We're not dating.
       ADAM:
       You're flying outside the hive, talking
       to humans that attack our homes
-       :
+      :
       with power washers and M-80s!
       That's one-eighth a stick of dynamite!
       BARRY:
@@ -1410,12 +1408,12 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       And that's not what they eat.
       That's what falls off what they eat!
-       :
+      :
       - You know what a Cinnabon is?
       ADAM:
       - No.
       (Adam opens a door behind him and he pulls Barry in)
-      
+
       BARRY:
       It's bread and cinnamon and frosting.
       ADAM:
@@ -1431,7 +1429,7 @@ import Layout from "../layouts/Layout.astro";
       (Adam grabs Barry by the shoulders)
       ADAM:
       - Listen to me!
-       :
+      :
       We are not them! We're us.
       There's us and there's them!
       BARRY==
@@ -1440,7 +1438,7 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       There's no yearning.
       Stop yearning. Listen to me!
-       :
+      :
       You have got to start thinking bee,
       my friend. Thinking bee!
       BARRY:
@@ -1449,7 +1447,7 @@ import Layout from "../layouts/Layout.astro";
       - Thinking bee.
       WORKER BEES AND ADAM:
       Thinking bee! Thinking bee!
-      
+
       Thinking bee! Thinking bee!
       (Flash forward in time; Barry is laying on a raft in a pool full of honey.
       He is wearing sunglasses)
@@ -1477,13 +1475,13 @@ import Layout from "../layouts/Layout.astro";
       Would it kill you
       to make a little honey?
       (Barry rolls off the raft and sinks into the honey pool)
-       :
+      :
       Barry, come out.
       Your father's talking to you.
-       :
+      :
       Martin, would you talk to him?
       MARTIN:
-      
+
       Barry, I'm talking to you!
       (Barry keeps sinking into the honey until he is suddenly in Central Park
       having a picnic with Vanessa)
@@ -1517,10 +1515,10 @@ import Layout from "../layouts/Layout.astro";
       honey pool)
       MARTIN:
       - We're still here.
-      
+
       JANET:
       - I told you not to yell at him.
-       :
+      :
       He doesn't respond to yelling!
       MARTIN:
       - Then why yell at me?
@@ -1539,7 +1537,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Bye.
       (Barry flies out the door and Martin shakes his head)
-       :
+      :
       JANET==
       I just hope she's Bee-ish.
       (Fast forward in time and Barry is sitting on Vanessa's shoulder and she is
@@ -1550,8 +1548,8 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       To be in the Tournament of Roses,
       that's every florist's dream!
-      
-       :
+
+      :
       Up on a float, surrounded
       by flowers, crowds cheering.
       BARRY:
@@ -1583,7 +1581,7 @@ import Layout from "../layouts/Layout.astro";
       You must want to sting all those jerks.
       BARRY:
       We try not to sting.
-      
+
       It's usually fatal for us.
       VANESSA:
       So you have to watch your temper
@@ -1591,10 +1589,10 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Very carefully.
       You kick a wall, take a walk,
-       :
+      :
       write an angry letter and throw it out.
       Work through it like any emotion:
-       :
+      :
       Anger, jealousy, lust.
       (Suddenly an employee(Hector) hits Barry off of Vanessa's shoulder. Hector
       thinks he's saving Vanessa)
@@ -1618,7 +1616,7 @@ import Layout from "../layouts/Layout.astro";
       Barry:
       What was that? A Pic 'N' Save circular?
       (Vanessa sets Barry back on her shoulder)
-      
+
       VANESSA:
       Yeah, it was. How did you know?
       BARRY:
@@ -1638,7 +1636,7 @@ import Layout from "../layouts/Layout.astro";
       (Barry looks at all the brands of honey, shocked)
       How did this get here?
       Cute Bee, Golden Blossom,
-       :
+      :
       Ray Liotta Private Select?
       (Barry puts his hands up and slowly turns around, a look of disgust on his
       face)
@@ -1646,12 +1644,12 @@ import Layout from "../layouts/Layout.astro";
       - Is he that actor?
       BARRY:
       - I never heard of him.
-       :
+      :
       - Why is this here?
       VANESSA:
       - For people. We eat it.
       BARRY:
-      
+
       You don't have
       enough food of your own?!
       (Hector looks back and notices that Vanessa is talking to Barry)
@@ -1663,9 +1661,9 @@ import Layout from "../layouts/Layout.astro";
       - Bees make it.
       BARRY:
       - I know who makes it!
-       :
+      :
       And it's hard to make it!
-       :
+      :
       There's heating, cooling, stirring.
       You need a whole Krelman thing!
       VANESSA:
@@ -1676,36 +1674,36 @@ import Layout from "../layouts/Layout.astro";
       It's just honey, Barry.
       BARRY:
       Just what?!
-       :
+      :
       Bees don't know about this!
       This is stealing! A lot of stealing!
-       :
+      :
       You've taken our homes, schools,
       hospitals! This is all we have!
-       :
-      
+      :
+
       And it's on sale?!
       I'm getting to the bottom of this.
-       :
+      :
       I'm getting to the bottom
       of all of this!
       (Flash forward in time; Barry paints his face with black strikes like a
       soldier and sneaks into the storage section of the store)
       (Two men, including Hector, are loading boxes into some trucks)
-       :
+      :
       SUPERMARKET EMPLOYEE==
       Hey, Hector.
-       :
+      :
       - You almost done?
       HECTOR:
       - Almost.
       (Barry takes a step to peak around the corner)
       (Whispering)
       He is here. I sense it.
-       :
+      :
       Well, I guess I'll go home now
       (Hector pretends to walk away by walking in place and speaking loudly)
-       :
+      :
       and just leave this nice honey out,
       with no one around.
       BARRY:
@@ -1716,19 +1714,19 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I can talk.
       And now you'll start talking!
-       :
+      :
       Where you getting the sweet stuff?
-      
+
       Who's your supplier?
       HECTOR:
       I don't understand.
       I thought we were friends.
-       :
+      :
       The last thing we want
       to do is upset bees!
       (Hector takes a thumbtack out of the board behind him and sword-fights
       Barry. Barry is using his stinger like a sword)
-       :
+      :
       You're too late! It's ours now!
       BARRY:
       You, sir, have crossed
@@ -1739,7 +1737,7 @@ import Layout from "../layouts/Layout.astro";
       (Barry hits the thumbtack out of Hectors hand and Hector surrenders)
       Barry:
       Where is the honey coming from?
-       :
+      :
       Tell me where!
       HECTOR:
       (Pointing to leaving truck)
@@ -1753,11 +1751,11 @@ import Layout from "../layouts/Layout.astro";
       Barry looks around and sees dead bugs splattered everywhere)
       BARRY:
       What horrible thing has happened here?
-      
-       :
+
+      :
       These faces, they never knew
       what hit them. And now
-       :
+      :
       they're on the road to nowhere!
       (Barry hears a sudden whisper)
       (Barry looks up and sees Mooseblood, a mosquito playing dead)
@@ -1788,13 +1786,13 @@ import Layout from "../layouts/Layout.astro";
       MOOSEBLOOD==
       Uh-oh!
       (The windshield wipers are slowly sliding over the dead bugs and wiping
-      
+
       them off)
       BARRY:
       - What is that?!
       MOOSEBLOOD:
       - Oh, no!
-       :
+      :
       - A wiper! Triple blade!
       BARRY:
       - Triple blade?
@@ -1804,10 +1802,10 @@ import Layout from "../layouts/Layout.astro";
       windshield)
       Why does everything have
       to be so doggone clean?!
-       :
+      :
       How much do you people need to see?!
       (Bangs on windshield)
-       :
+      :
       Open your eyes!
       Stick your head out the window!
       RADIO IN TRUCK:
@@ -1822,7 +1820,7 @@ import Layout from "../layouts/Layout.astro";
       - Moose blood guy!!
       (Barry starts screaming as he hangs onto the antenna)
       (Suddenly it is revealed that a water bug is also hanging on the antenna.
-      
+
       There is a pause and then Barry and the water bug both start screaming)
       TRUCK DRIVER:
       - You hear something?
@@ -1850,14 +1848,14 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I assume wherever this truck goes
       is where they're getting it.
-       :
+      :
       I mean, that honey's ours.
       MOOSEBLOOD:
       - Bees hang tight.
       BARRY:
-      
+
       - We're all jammed in.
-       :
+      :
       It's a close community.
       MOOSEBLOOD:
       Not us, man. We on our own.
@@ -1866,7 +1864,7 @@ import Layout from "../layouts/Layout.astro";
       - What if you get in trouble?
       MOOSEBLOOD:
       - You a mosquito, you in trouble.
-       :
+      :
       Nobody likes us. They just smack.
       See a mosquito, smack, smack!
       BARRY:
@@ -1875,20 +1873,20 @@ import Layout from "../layouts/Layout.astro";
       MOOSEBLOOD:
       Mosquito girls try to trade up,
       get with a moth, dragonfly.
-       :
+      :
       Mosquito girl don't want no mosquito.
       (An ambulance passes by and it has a blood donation sign on it)
       You got to be kidding me!
-       :
+      :
       Mooseblood's about to leave
       the building! So long, bee!
       (Mooseblood leaves and flies onto the window of the ambulance where there
       are other mosquito's hanging out)
-       :
+      :
       - Hey, guys!
       OTHER MOSQUITO:
       - Mooseblood!
-      
+
       MOOSEBLOOD:
       I knew I'd catch y'all down here.
       Did you bring your crazy straw?
@@ -1905,23 +1903,23 @@ import Layout from "../layouts/Layout.astro";
       the size of a pinhead.
       BEEKEEPER #2:
       They are pinheads!
-       :
+      :
       Pinhead.
-       :
+      :
       - Check out the new smoker.
       BEEKEEPER #1:
       - Oh, sweet. That's the one you want.
-       :
+      :
       The Thomas 3000!
       BARRY:
       Smoker?
       BEEKEEPER #1:
       Ninety puffs a minute, semi-automatic.
       Twice the nicotine, all the tar.
-       :
+      :
       A couple breaths of this
       knocks them right out.
-      
+
       BEEKEEPER #2:
       They make the honey,
       and we make the money.
@@ -1931,7 +1929,7 @@ import Layout from "../layouts/Layout.astro";
       (The Beekeeper sprays hundreds of cheap miniature apartments with the
       smoker. The bees are fainting or passing out)
       Oh, my!
-       :
+      :
       What's going on? Are you OK?
       (Barry flies into one of the apartment and helps a Bee couple get off the
       ground. They are coughing and its hard for them to stand)
@@ -1948,23 +1946,23 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       This is your queen?
       That's a man in women's clothes!
-       :
+      :
       That's a drag queen!
-       :
+      :
       What is this?
       (Barry flies out and he discovers that there are hundreds of these
       structures, each housing thousands of Bees)
       Oh, no!
-       :
+      :
       There's hundreds of them!
       (Barry takes out his camera and takes pictures of these Bee work camps. The
       beekeepers look very evil in these depictions)
-      
+
       Bee honey.
-       :
+      :
       Our honey is being brazenly stolen
       on a massive scale!
-       :
+      :
       This is worse than anything bears
       have done! I intend to do something.
       (Flash forward in time and Barry is showing these pictures to his parents)
@@ -1992,7 +1990,7 @@ import Layout from "../layouts/Layout.astro";
       And they make out!
       JANET:
       Make out? Barry!
-      
+
       BARRY:
       We do not.
       ADAM:
@@ -2011,27 +2009,27 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I want to do it for all our lives.
       Nobody works harder than bees!
-       :
+      :
       Dad, I remember you
       coming home so overworked
-       :
+      :
       your hands were still stirring.
       You couldn't stop.
       JANET:
       I remember that.
       BARRY:
       What right do they have to our honey?
-       :
+      :
       We live on two cups a year. They put it
       in lip balm for no reason whatsoever!
-      
+
       ADAM:
       Even if it's true, what can one bee do?
       BARRY:
       Sting them where it really hurts.
       MARTIN:
       In the face! The eye!
-       :
+      :
       - That would hurt.
       BARRY:
       - No.
@@ -2048,50 +2046,50 @@ import Layout from "../layouts/Layout.astro";
       No more bee beards!
       BEE NEWS NARRATOR:
       With Bob Bumble at the anchor desk.
-       :
+      :
       Weather with Storm Stinger.
-       :
+      :
       Sports with Buzz Larvi.
-       :
+      :
       And Jeanette Chung.
       BOB BUMBLE:
       - Good evening. I'm Bob Bumble.
       JEANETTE CHUNG:
-      
+
       - And I'm Jeanette Chung.
       BOB BUMBLE:
       A tri-county bee, Barry Benson,
-       :
+      :
       intends to sue the human race
       for stealing our honey,
-       :
+      :
       packaging it and profiting
       from it illegally!
       JEANETTE CHUNG:
       Tomorrow night on Bee Larry King,
-       :
+      :
       we'll have three former queens here in
       our studio, discussing their new book,
-       :
+      :
       Classy Ladies,
       out this week on Hexagon.
       (The scene changes to an interview on the news with Bee version of Larry
       King and Barry)
       BEE LARRY KING:
       Tonight we're talking to Barry Benson.
-       :
+      :
       Did you ever think, "I'm a kid
       from the hive. I can't do this"?
       BARRY:
       Bees have never been afraid
       to change the world.
-       :
+      :
       What about Bee Columbus?
       Bee Gandhi? Bejesus?
       BEE LARRY KING:
       Where I'm from, we'd never sue humans.
-      
-       :
+
+      :
       We were thinking
       of stickball or candy stores.
       BARRY:
@@ -2099,7 +2097,7 @@ import Layout from "../layouts/Layout.astro";
       BEE LARRY KING:
       The bee community
       is supporting you in this case,
-       :
+      :
       which will be the trial
       of the bee century.
       BARRY:
@@ -2124,7 +2122,7 @@ import Layout from "../layouts/Layout.astro";
       squinty eyes, very Jewish.
       (Flash forward in time. We see Vanessa enter and Ken enters behind her.
       They are arguing)
-      
+
       KEN:
       In tennis, you attack
       at the point of weakness!
@@ -2142,7 +2140,7 @@ import Layout from "../layouts/Layout.astro";
       - Is that that same bee?
       VANESSA:
       - Yes, it is!
-       :
+      :
       I'm helping him sue the human race.
       BARRY:
       - Hello.
@@ -2158,7 +2156,7 @@ import Layout from "../layouts/Layout.astro";
       (To Vanessa)
       Why does he talk again?
       VANESSA:
-      
+
       Listen, you better go
       'cause we're really busy working.
       KEN:
@@ -2179,20 +2177,20 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       - Frosting...
       - How many sugars?
-       ==BARRY==
+      ==BARRY==
       Just one. I try not
       to use the competition.
-       :
+      :
       So why are you helping me?
       VANESSA:
       Bees have good qualities.
-       :
+      :
       And it takes my mind off the shop.
-       :
+      :
       Instead of flowers, people
       are giving balloon bouquets now.
       BARRY:
-      
+
       Those are great, if you're three.
       VANESSA:
       And artificial flowers.
@@ -2200,15 +2198,15 @@ import Layout from "../layouts/Layout.astro";
       - Oh, those just get me psychotic!
       VANESSA:
       - Yeah, me too.
-       :
+      :
       BARRY:
       Bent stingers, pointless pollination.
       ADAM:
       Bees must hate those fake things!
-       :
+      :
       Nothing worse
       than a daffodil that's had work done.
-       :
+      :
       Maybe this could make up
       for it a little bit.
       VANESSA:
@@ -2220,19 +2218,19 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Am I sure? When I'm done with
       the humans, they won't be able
-       :
+      :
       to say, "Honey, I'm home,"
       without paying a royalty!
       (Flash forward in time and we are watching the human news. The camera shows
-      
+
       a crowd outside a courthouse)
       NEWS REPORTER:
       It's an incredible scene
       here in downtown Manhattan,
-       :
+      :
       where the world anxiously waits,
       because for the first time in history,
-       :
+      :
       we will hear for ourselves
       if a honeybee can actually speak.
       (We are no longer watching through a news camera)
@@ -2259,7 +2257,7 @@ import Layout from "../layouts/Layout.astro";
       (Fast forward in time and everyone is in the court)
       MONTGOMERY:
       Well, if it isn't the bee team.
-      
+
       (To Honey Industry lawyers)
       You boys work on this?
       MAN:
@@ -2267,12 +2265,12 @@ import Layout from "../layouts/Layout.astro";
       Judge Bumbleton presiding.
       JUDGE BUMBLETON:
       All right. Case number 4475,
-       :
+      :
       Superior Court of New York,
       Barry Bee Benson v. the Honey Industry
-       :
+      :
       is now in session.
-       :
+      :
       Mr. Montgomery, you're representing
       the five food companies collectively?
       MONTGOMERY:
@@ -2290,67 +2288,67 @@ import Layout from "../layouts/Layout.astro";
       your opening statement, please.
       MONTGOMERY:
       Ladies and gentlemen of the jury,
-       :
+      :
       my grandmother was a simple woman.
-       :
-      
+      :
+
       Born on a farm, she believed
       it was man's divine right
-       :
+      :
       to benefit from the bounty
       of nature God put before us.
-       :
+      :
       If we lived in the topsy-turvy world
       Mr. Benson imagines,
-       :
+      :
       just think of what would it mean.
-       :
+      :
       I would have to negotiate
       with the silkworm
-       :
+      :
       for the elastic in my britches!
-       :
+      :
       Talking bee!
       (Montgomery walks over and looks closely at Barry)
-       :
+      :
       How do we know this isn't some sort of
-       :
+      :
       holographic motion-picture-capture
       Hollywood wizardry?
-       :
+      :
       They could be using laser beams!
-       :
+      :
       Robotics! Ventriloquism!
       Cloning! For all we know,
-       :
+      :
       he could be on steroids!
       JUDGE BUMBLETON:
       Mr. Benson?
-      
+
       BARRY:
       Ladies and gentlemen,
       there's no trickery here.
-       :
+      :
       I'm just an ordinary bee.
       Honey's pretty important to me.
-       :
+      :
       It's important to all bees.
       We invented it!
-       :
+      :
       We make it. And we protect it
       with our lives.
-       :
+      :
       Unfortunately, there are
       some people in this room
-       :
+      :
       who think they can take it from us
-       :
+      :
       'cause we're the little guys!
       I'm hoping that, after this is all over,
-       :
+      :
       you'll see how, by taking our honey,
       you not only take everything we have
-       :
+      :
       but everything we are!
       JANET==
       (To Martin)
@@ -2360,7 +2358,7 @@ import Layout from "../layouts/Layout.astro";
       Call your first witness.
       BARRY:
       So, Mr. Klauss Vanderhayden
-      
+
       of Honey Farms, big company you have.
       KLAUSS VANDERHAYDEN:
       I suppose so.
@@ -2373,7 +2371,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Beekeeper. I find that
       to be a very disturbing term.
-       :
+      :
       I don't imagine you employ
       any bee-free-ers, do you?
       KLAUSS:
@@ -2385,16 +2383,16 @@ import Layout from "../layouts/Layout.astro";
       - No.
       BARRY:
       - No.
-       :
+      :
       Because you don't free bees.
       You keep bees. Not only that,
-       :
+      :
       it seems you thought a bear would be
       an appropriate image for a jar of honey.
       KLAUSS:
       They're very lovable creatures.
-      
-       :
+
+      :
       Yogi Bear, Fozzie Bear, Build-A-Bear.
       BARRY:
       You mean like this?
@@ -2402,13 +2400,13 @@ import Layout from "../layouts/Layout.astro";
       roaring and standing on its hind legs. It is thrashing its claws and people
       are screaming. It is being held back by a guard who has the bear on a
       chain)
-       :
+      :
       (Pointing to the roaring bear)
       Bears kill bees!
-       :
+      :
       How'd you like his head crashing
       through your living room?!
-       :
+      :
       Biting into your couch!
       Spitting out your throw pillows!
       JUDGE BUMBLETON:
@@ -2417,7 +2415,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       So, Mr. Sting, thank you for being here.
       Your name intrigues me.
-       :
+      :
       - Where have I heard it before?
       MR. STING:
       - I was with a band called The Police.
@@ -2427,30 +2425,30 @@ import Layout from "../layouts/Layout.astro";
       STING:
       No, I haven't.
       BARRY:
-      
+
       No, you haven't. And so here
       we have yet another example
-       :
+      :
       of bee culture casually
       stolen by a human
-       :
+      :
       for nothing more than
       a prance-about stage name.
       STING:
       Oh, please.
       BARRY:
       Have you ever been stung, Mr. Sting?
-       :
+      :
       Because I'm feeling
       a little stung, Sting.
-       :
+      :
       Or should I say... Mr. Gordon M. Sumner!
       MONTGOMERY:
       That's not his real name?! You idiots!
       BARRY:
       Mr. Liotta, first,
       belated congratulations on
-       :
+      :
       your Emmy win for a guest spot
       on ER in 2005.
       RAY LIOTTA:
@@ -2458,19 +2456,19 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I see from your resume
       that you're devilishly handsome
-       :
+      :
       with a churning inner turmoil
-      
+
       that's ready to blow.
       RAY LIOTTA:
       I enjoy what I do. Is that a crime?
       BARRY:
       Not yet it isn't. But is this
       what it's come to for you?
-       :
+      :
       Exploiting tiny, helpless bees
       so you don't
-       :
+      :
       have to rehearse
       your part and learn your lines, sir?
       RAY LIOTTA:
@@ -2493,7 +2491,7 @@ import Layout from "../layouts/Layout.astro";
       RAY LIOTTA:
       - Say it!
       MAN:
-      
+
       - Mr. Liotta, please sit down!
       (We see a montage of magazines which feature the court case)
       (Flash forward in time and Barry is back home with Vanessa)
@@ -2520,13 +2518,13 @@ import Layout from "../layouts/Layout.astro";
       - Hello!
       VANESSA:
       I didn't think you were coming.
-       :
+      :
       No, I was just late.
       I tried to call, but...
       (Ken holds up his phone and flips it open. The phone has no charge)
       ...the battery...
       VANESSA:
-      
+
       I didn't want all this to go to waste,
       so I called Barry. Luckily, he was free.
       KEN:
@@ -2540,7 +2538,7 @@ import Layout from "../layouts/Layout.astro";
       Yeah, heat it up, sure, whatever.
       BARRY:
       So I hear you're quite a tennis player.
-       :
+      :
       I'm not much for the game myself.
       The ball's a little grabby.
       KEN:
@@ -2551,7 +2549,7 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       (Calling from other room)
       Ken, Barry was looking at your resume,
-       :
+      :
       and he agreed with me that eating with
       chopsticks isn't really a special skill.
       KEN:
@@ -2560,7 +2558,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I know how hard it is to find
       the right job. We have that in common.
-      
+
       KEN:
       Do we?
       BARRY:
@@ -2597,7 +2595,7 @@ import Layout from "../layouts/Layout.astro";
       with your little mind games.
       (Ken is menacingly rolling up a magazine)
       BARRY:
-      
+
       (Backing away)
       - What's that?
       KEN:
@@ -2616,7 +2614,7 @@ import Layout from "../layouts/Layout.astro";
       (Ken follows Barry around and tries to hit him with the magazine but he
       keeps missing)
       (Ken gets a spray bottle)
-       :
+      :
       I think something stinks in here!
       BARRY:
       (Enjoying the spray)
@@ -2632,7 +2630,7 @@ import Layout from "../layouts/Layout.astro";
       picks up the shower head, revealing a Water bug hiding under it)
       WATER BUG:
       Water bug! Not taking sides!
-      
+
       (Barry gets up out of a pile of bathroom supplies and he is wearing a
       chapstick hat)
       BARRY:
@@ -2655,7 +2653,7 @@ import Layout from "../layouts/Layout.astro";
       Surf's up, dude!
       (Barry flies out of the toilet on the chapstick and sprays Ken's face with
       the toilet water)
-       :
+      :
       EW,Poo water!
       BARRY:
       That bowl is gnarly.
@@ -2668,15 +2666,15 @@ import Layout from "../layouts/Layout.astro";
       Kenneth! What are you doing?!
       KEN==
       (Leaning towards Barry)
-      
+
       You know, I don't even like honey!
       I don't eat it!
       VANESSA:
       We need to talk!
       (Vanessa pulls Ken out of the bathroom)
-       :
+      :
       He's just a little bee!
-       :
+      :
       And he happens to be
       the nicest bee I've met in a long time!
       KEN:
@@ -2687,14 +2685,14 @@ import Layout from "../layouts/Layout.astro";
       me in life. And you're one of them!
       KEN:
       Fine! Talking bees, no yogurt night...
-       :
+      :
       My nerves are fried from riding
       on this emotional roller coaster!
       VANESSA:
       Goodbye, Ken.
       (Ken huffs and walks out and slams the door. But suddenly he walks back in
       and stares at Barry)
-       :
+      :
       And for your information,
       I prefer sugar-free, artificial
       sweeteners MADE BY MAN!
@@ -2702,7 +2700,7 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       I'm sorry about all that.
       (Ken walks back in again)
-      
+
       KEN:
       I know it's got
       an aftertaste! I LIKE IT!
@@ -2710,10 +2708,10 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       I always felt there was some kind
       of barrier between Ken and me.
-       :
+      :
       I couldn't overcome it.
       Oh, well.
-       :
+      :
       Are you OK for the trial?
       BARRY:
       I believe Mr. Montgomery
@@ -2735,23 +2733,23 @@ import Layout from "../layouts/Layout.astro";
       MONTGOMERY:
       Don't worry. The only thing I have
       to do to turn this jury around
-       :
+      :
       is to remind them
       of what they don't like about bees.
       (To lawyer)
-      
+
       - You got the tweezers?
       LAWYER:
       - Are you allergic?
       MONTGOMERY:
       Only to losing, son. Only to losing.
-       :
+      :
       Mr. Benson Bee, I'll ask you
       what I think we'd all like to know.
-       :
+      :
       What exactly is your relationship
       (Points to Vanessa)
-       :
+      :
       to that woman?
       BARRY:
       We're friends.
@@ -2763,16 +2761,16 @@ import Layout from "../layouts/Layout.astro";
       How good? Do you live together?
       ADAM:
       Wait a minute...
-       :
+      :
       MONTGOMERY:
       Are you her little...
-       :
+      :
       ...bedbug?
       (Adam's stinger starts vibrating. He is agitated)
       I've seen a bee documentary or two.
       From what I understand,
-      
-       :
+
+      :
       doesn't your queen give birth
       to all the bee children?
       BARRY:
@@ -2804,10 +2802,10 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Adam, don't! It's what he wants!
       (Adam stings Montgomery in the butt and he starts thrashing around)
-      
+
       MONTGOMERY:
       Oh, I'm hit!!
-       :
+      :
       Oh, lordy, I am hit!
       JUDGE BUMBLETON:
       (Banging gavel)
@@ -2816,13 +2814,13 @@ import Layout from "../layouts/Layout.astro";
       (Overreacting)
       The venom! The venom
       is coursing through my veins!
-       :
+      :
       I have been felled
       by a winged beast of destruction!
-       :
+      :
       You see? You can't treat them
       like equals! They're striped savages!
-       :
+      :
       Stinging's the only thing
       they know! It's their way!
       BARRY:
@@ -2833,20 +2831,20 @@ import Layout from "../layouts/Layout.astro";
       (Overreacting and throwing his body around the room)
       What angel of mercy
       will come forward to suck the poison
-       :
+      :
       from my heaving buttocks?
       JUDGE BUMLBETON:
       I will have order in this court. Order!
-      
-       :
+
+      :
       Order, please!
       (Flash forward in time and we see a human news reporter)
       NEWS REPORTER:
       The case of the honeybees
       versus the human race
-       :
+      :
       took a pointed turn against the bees
-       :
+      :
       yesterday when one of their legal
       team stung Layton T. Montgomery.
       (Adam is laying in a hospital bed and Barry flies in to see him)
@@ -2858,9 +2856,9 @@ import Layout from "../layouts/Layout.astro";
       - Is there much pain?
       ADAM:
       - Yeah.
-       :
+      :
       I...
-       :
+      :
       I blew the whole case, didn't I?
       BARRY:
       It doesn't matter. What matters is
@@ -2870,8 +2868,8 @@ import Layout from "../layouts/Layout.astro";
       (A small plastic sword is replaced as Adam's stinger)
       They got it from the cafeteria
       downstairs, in a tuna sandwich.
-      
-       :
+
+      :
       Look, there's
       a little celery still on it.
       (Flicks off the celery and sighs)
@@ -2879,7 +2877,7 @@ import Layout from "../layouts/Layout.astro";
       What was it like to sting someone?
       ADAM:
       I can't explain it. It was all...
-       :
+      :
       All adrenaline and then...
       and then ecstasy!
       BARRY:
@@ -2889,7 +2887,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Of course. I'm sorry.
       I flew us right into this.
-       :
+      :
       What were we thinking? Look at us. We're
       just a couple of bugs in this world.
       ADAM:
@@ -2903,7 +2901,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Adam, they check in,
       but they don't check out!
-      
+
       ADAM:
       Oh, my.
       (Coughs)
@@ -2914,20 +2912,20 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       - The smoke.
       (We can see that two humans are smoking cigarettes outside)
-       :
+      :
       Bees don't smoke.
       BARRY:
       Right. Bees don't smoke.
-       :
+      :
       Bees don't smoke!
       But some bees are smoking.
-       :
+      :
       That's it! That's our case!
       ADAM:
       It is? It's not over?
       BARRY:
       Get dressed. I've gotta go somewhere.
-       :
+      :
       Get back to the court and stall.
       Stall any way you can.
       (Flash forward in time and Adam is making a paper boat in the courtroom)
@@ -2936,7 +2934,7 @@ import Layout from "../layouts/Layout.astro";
       (We see that the jury have each made their own paper boats after being
       taught how by Adam. They all look confused)
       JUDGE BUMBLETON:
-      
+
       Mr. Flayman.
       ADAM:
       Yes? Yes, Your Honor!
@@ -2945,35 +2943,35 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       (Continues stalling)
       Well, Your Honor, it's interesting.
-       :
+      :
       Bees are trained to fly haphazardly,
-       :
+      :
       and as a result,
       we don't make very good time.
-       :
+      :
       I actually heard a funny story about...
       MONTGOMERY:
       Your Honor,
       haven't these ridiculous bugs
-       :
+      :
       taken up enough
       of this court's valuable time?
-       :
+      :
       How much longer will we allow
       these absurd shenanigans to go on?
-       :
+      :
       They have presented no compelling
       evidence to support their charges
-       :
+      :
       against my clients,
       who run legitimate businesses.
-       :
+      :
       I move for a complete dismissal
-      
+
       of this entire case!
       JUDGE BUMBLETON:
       Mr. Flayman, I'm afraid I'm going
-       :
+      :
       to have to consider
       Mr. Montgomery's motion.
       ADAM:
@@ -2981,13 +2979,13 @@ import Layout from "../layouts/Layout.astro";
       MONTGOMERY:
       Where is your proof?
       Where is the evidence?
-       :
+      :
       Show me the smoking gun!
       BARRY:
       (Barry flies in through the door)
       Hold it, Your Honor!
       You want a smoking gun?
-       :
+      :
       Here is your smoking gun.
       (Vanessa walks in holding a bee smoker. She sets it down on the Judge's
       podium)
@@ -2999,26 +2997,26 @@ import Layout from "../layouts/Layout.astro";
       (Picks up smoker)
       What, this?
       This harmless little contraption?
-       :
+      :
       This couldn't hurt a fly,
       let alone a bee.
       (Montgomery accidentally fires it at the bees in the crowd and they faint
-      
+
       and cough)
       (Dozens of reporters start taking pictures of the suffering bees)
       BARRY:
       Look at what has happened
-       :
+      :
       to bees who have never been asked,
       "Smoking or non?"
-       :
+      :
       Is this what nature intended for us?
-       :
+      :
       To be forcibly addicted
       to smoke machines
-       :
+      :
       and man-made wooden slat work camps?
-       :
+      :
       Living out our lives as honey slaves
       to the white man?
       (Barry points to the honey industry owners. One of them is an African
@@ -3037,27 +3035,27 @@ import Layout from "../layouts/Layout.astro";
       Free the bees! Free the bees!
       JUDGE BUMBLETON:
       The court finds in favor of the bees!
-      
+
       BARRY:
       Vanessa, we won!
       VANESSA:
       I knew you could do it! High-five!
       (Vanessa hits Barry hard because her hand is too big)
-       :
+      :
       Sorry.
       BARRY:
       (Overjoyed)
       I'm OK! You know what this means?
-       :
+      :
       All the honey
       will finally belong to the bees.
-       :
+      :
       Now we won't have
       to work so hard all the time.
       MONTGOMERY:
       This is an unholy perversion
       of the balance of nature, Benson.
-       :
+      :
       You'll regret this.
       (Montgomery leaves and Barry goes outside the courtroom. Several reporters
       start asking Barry questions)
@@ -3070,7 +3068,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       My sweater is Ralph Lauren,
       and I have no pants.
-      
+
       (Barry flies outside with the paparazzi and Adam and Vanessa stay back)
       ADAM:
       (To Vanessa)
@@ -3091,7 +3089,7 @@ import Layout from "../layouts/Layout.astro";
       work camps and freeing the bees in the crappy apartments)
       Then we want back the honey
       that was ours to begin with,
-       :
+      :
       every last drop.
       (Men in suits are pushing all the honey of the aisle and into carts)
       We demand an end to the glorification
@@ -3100,16 +3098,16 @@ import Layout from "../layouts/Layout.astro";
       bees)
       than a filthy, smelly,
       bad-breath stink machine.
-       :
+      :
       We're all aware
       of what they do in the woods.
       (We see Winnie the Pooh sharing his honey with Piglet in the cross-hairs of
       a high-tech sniper rifle)
       BARRY:
       (Looking through binoculars)
-      
+
       Wait for my signal.
-       :
+      :
       Take him out.
       (Winnie gets hit by a tranquilizer dart and dramatically falls off the log
       he was standing on, his tongue hanging out. Piglet looks at Pooh in fear
@@ -3128,7 +3126,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       ...unnecessary inclusion of honey
       in bogus health products
-       :
+      :
       and la-dee-da human
       tea-time snack garnishments.
       (An old lady is mixing honey into her tea but suddenly men in suits smash
@@ -3138,21 +3136,21 @@ import Layout from "../layouts/Layout.astro";
       (A honey truck pulls up to Barry's hive)
       WORKER:
       Bring it in, boys!
-       :
+      :
       Hold it right there! Good.
-       :
+      :
       Tap it.
-      
+
       (Tons of honey is being pumped into the hive's storage)
       BEE WORKER 1#:
       (Honey overflows from the cup)
       Mr. Buzzwell, we just passed three cups,
       and there's gallons more coming!
-       :
+      :
       - I think we need to shut down!
       =BEE WORKER #2=
       - Shut down? We've never shut down.
-       :
+      :
       Shut down honey production!
       DEAN BUZZWELL:
       Stop making honey!
@@ -3173,13 +3171,13 @@ import Layout from "../layouts/Layout.astro";
       LOU LU DUVA:
       (Through "phone")
       We're shutting honey production!
-       :
+      :
       Mission abort.
       POLLEN JOCK #1:
       Aborting pollination and nectar detail.
       Returning to base.
       (The Pollen Jocks fly back to the hive)
-      
+
       (We get a time lapse of Central Park slowly wilting away as the bees all
       relax)
       BARRY:
@@ -3190,14 +3188,14 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       What's going on? Where is everybody?
       (The entire street is deserted)
-       :
+      :
       - Are they out celebrating?
       ADAM:
       - They're home.
-       :
+      :
       They don't know what to do.
       Laying out, sleeping in.
-       :
+      :
       I heard your Uncle Carl was on his way
       to San Antonio with a cricket.
       BARRY:
@@ -3205,24 +3203,24 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       Sometimes I think, so what if humans
       liked our honey? Who wouldn't?
-       :
+      :
       It's the greatest thing in the world!
       I was excited to be part of making it.
-       :
+      :
       This was my new desk. This was my
       new job. I wanted to do it really well.
-       :
-      
+      :
+
       And now...
-       :
+      :
       Now I can't.
       (Flash forward in time and Barry is talking to Vanessa)
       BARRY:
       I don't understand
       why they're not happy.
-       :
+      :
       I thought their lives would be better!
-       :
+      :
       They're doing nothing. It's amazing.
       Honey really changes people.
       VANESSA:
@@ -3245,8 +3243,8 @@ import Layout from "../layouts/Layout.astro";
       grey, brown, and dead-like. It is very depressing to look at)
       BARRY:
       Oh, no. Oh, my.
-       :
-      
+      :
+
       They're all wilting.
       VANESSA:
       Doesn't look very good, does it?
@@ -3261,7 +3259,7 @@ import Layout from "../layouts/Layout.astro";
       Bees?
       BARRY:
       Specifically, me.
-       :
+      :
       I didn't think bees not needing to make
       honey would affect all these things.
       VANESSA:
@@ -3272,14 +3270,14 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       Take away produce, that affects
       the entire animal kingdom.
-       :
+      :
       And then, of course...
       BARRY:
       The human species?
-       :
+      :
       So if there's no more pollination,
-      
-       :
+
+      :
       it could all just go south here,
       couldn't it?
       VANESSA:
@@ -3301,20 +3299,20 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       (To himself)
       I had to open my mouth and talk.
-       :
+      :
       Vanessa?
-       :
+      :
       Vanessa? Why are you leaving?
       Where are you going?
       (Vanessa is getting into a taxi)
       VANESSA:
       To the final Tournament of Roses parade
       in Pasadena.
-       :
-      
+      :
+
       They've moved it to this weekend
       because all the flowers are dying.
-       :
+      :
       It's the last chance
       I'll ever have to see it.
       BARRY:
@@ -3326,16 +3324,16 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Tournament of Roses.
       Roses can't do sports.
-       :
+      :
       Wait a minute. Roses. Roses?
-       :
+      :
       Roses!
-       :
+      :
       Vanessa!
       (Barry flies after the Taxi)
       VANESSA:
       Roses?!
-       :
+      :
       Barry?
       (Barry is flying outside the window of the taxi)
       BARRY:
@@ -3344,7 +3342,7 @@ import Layout from "../layouts/Layout.astro";
       - Yes, they are.
       BARRY:
       Flowers, bees, pollen!
-      
+
       VANESSA:
       I know.
       That's why this is the last parade.
@@ -3354,7 +3352,7 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       Could you slow down?
       (The taxi driver screeches to a stop and Barry keeps flying forward)
-       :
+      :
       Barry!
       (Barry flies back to the window)
       BARRY:
@@ -3365,29 +3363,29 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       I've ruined the planet.
       I wanted to help you
-       :
+      :
       with the flower shop.
       I've made it worse.
       VANESSA:
       Actually, it's completely closed down.
       BARRY:
       I thought maybe you were remodeling.
-       :
+      :
       But I have another idea, and it's
       greater than my previous ideas combined.
       VANESSA:
       I don't want to hear it!
-      
+
       BARRY:
       All right, they have the roses,
       the roses have the pollen.
-       :
+      :
       I know every bee, plant
       and flower bud in this park.
-       :
+      :
       All we gotta do is get what they've got
       back here with what we've got.
-       :
+      :
       - Bees.
       VANESSA:
       - Park.
@@ -3399,23 +3397,23 @@ import Layout from "../layouts/Layout.astro";
       - Re-pollination!
       VANESSA:
       - Across the nation!
-       :
+      :
       Tournament of Roses,
       Pasadena, California.
-       :
+      :
       They've got nothing
       but flowers, floats and cotton candy.
-       :
+      :
       Security will be tight.
       BARRY:
       I have an idea.
-      
+
       (Flash forward in time. Vanessa is about to board a plane which has all the
       Roses on board.
       VANESSA:
       Vanessa Bloome, FTD.
       (Holds out badge)
-       :
+      :
       Official floral business. It's real.
       SECURITY GUARD:
       Sorry, ma'am. Nice brooch.
@@ -3428,12 +3426,12 @@ import Layout from "../layouts/Layout.astro";
       we just pick the right float.
       VANESSA:
       How about The Princess and the Pea?
-       :
+      :
       I could be the princess,
       and you could be the pea!
       BARRY:
       Yes, I got it.
-       :
+      :
       - Where should I sit?
       GUARD:
       - What are you?
@@ -3442,7 +3440,7 @@ import Layout from "../layouts/Layout.astro";
       GUARD:
       - The pea?
       VANESSA:
-      
+
       It goes under the mattresses.
       GUARD:
       - Not in this fairy tale, sweetheart.
@@ -3450,7 +3448,7 @@ import Layout from "../layouts/Layout.astro";
       VANESSA:
       You do that!
       This whole parade is a fiasco!
-       :
+      :
       Let's see what this baby'll do.
       (Vanessa drives the float through traffic)
       GUARD:
@@ -3458,15 +3456,15 @@ import Layout from "../layouts/Layout.astro";
       BARRY==
       Then all we do
       is blend in with traffic...
-       :
+      :
       ...without arousing suspicion.
-       :
+      :
       Once at the airport,
       there's no stopping us.
       (Flash forward in time and Barry and Vanessa are about to get on a plane)
       SECURITY GUARD:
       Stop! Security.
-       :
+      :
       - You and your insect pack your float?
       VANESSA:
       - Yes.
@@ -3475,7 +3473,7 @@ import Layout from "../layouts/Layout.astro";
       in your possession the entire time?
       VANESSA:
       - Yes.
-      
+
       SECURITY GUARD:
       Would you remove your shoes?
       (To Barry)
@@ -3500,17 +3498,17 @@ import Layout from "../layouts/Layout.astro";
       (On intercom)
       Attention, passengers,
       this is Captain Scott.
-       :
+      :
       We have a bit of bad weather
       in New York.
-       :
+      :
       It looks like we'll experience
       a couple hours delay.
       VANESSA:
       Barry, these are cut flowers
       with no water. They'll never make it.
       BARRY:
-      
+
       I gotta get up there
       and talk to them.
       VANESSA==
@@ -3545,7 +3543,7 @@ import Layout from "../layouts/Layout.astro";
       Uh-oh.
       BARRY:
       - Wait a minute! I'm an attorney!
-      
+
       HAL:
       (Hal doesn't know Barry is on his head)
       - Who's an attorney?
@@ -3562,7 +3560,7 @@ import Layout from "../layouts/Layout.astro";
       (On intercom, with a Southern accent)
       Good afternoon, passengers.
       This is your captain.
-       :
+      :
       Would a Miss Vanessa Bloome in 24B
       please report to the cockpit?
       (Vanessa looks confused)
@@ -3575,15 +3573,15 @@ import Layout from "../layouts/Layout.astro";
       I tried to talk to them, but
       then there was a DustBuster,
       a toupee, a life raft exploded.
-       :
+      :
       Now one's bald, one's in a boat,
       and they're both unconscious!
       VANESSA:
       ...Is that another bee joke?
       BARRY:
-      
+
       - No!
-       :
+      :
       No one's flying the plane!
       BUD DITCHWATER:
       (Through radio on plane)
@@ -3611,9 +3609,9 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Vanessa, this is nothing more
       than a big metal bee.
-       :
+      :
       It's got giant wings, huge engines.
-      
+
       VANESSA:
       I can't fly a plane.
       BARRY:
@@ -3632,10 +3630,10 @@ import Layout from "../layouts/Layout.astro";
       BOB BUMBLE:
       This is Bob Bumble. We have some
       late-breaking news from JFK Airport,
-       :
+      :
       where a suspenseful scene
       is developing.
-       :
+      :
       Barry Benson,
       fresh from his legal victory...
       ADAM:
@@ -3643,17 +3641,17 @@ import Layout from "../layouts/Layout.astro";
       BOB BUMBLE:
       ...is attempting to land a plane,
       loaded with people, flowers
-       :
+      :
       and an incapacitated flight crew.
       JANET, MARTIN, UNCLE CAR AND ADAM:
       Flowers?!
       (The scene switches to the human news)
-      
+
       REPORTER:
       (Talking with Bob Bumble)
       We have a storm in the area
       and two individuals at the controls
-       :
+      :
       with absolutely no flight experience.
       BOB BUMBLE:
       Just a minute.
@@ -3661,26 +3659,26 @@ import Layout from "../layouts/Layout.astro";
       BUD:
       I'm quite familiar with Mr. Benson
       and his no-account compadres.
-       :
+      :
       They've done enough damage.
       REPORTER:
       But isn't he your only hope?
       BUD:
       Technically, a bee
       shouldn't be able to fly at all.
-       :
+      :
       Their wings are too small...
       BARRY:
       (Through radio)
       Haven't we heard this a million times?
-       :
+      :
       "The surface area of the wings
       and body mass make no sense."...
       BOB BUMBLE:
       - Get this on the air!
       BEE:
       - Got it.
-      
+
       BEE NEWS CREW:
       - Stand by.
       BEE NEWS CREW:
@@ -3688,32 +3686,32 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       (Through radio on TV)
       ...The way we work may be a mystery to you.
-       :
+      :
       Making honey takes a lot of bees
       doing a lot of small jobs.
-       :
+      :
       But let me tell you about a small job.
-       :
+      :
       If you do it well,
       it makes a big difference.
-       :
+      :
       More than we realized.
       To us, to everyone.
-       :
+      :
       That's why I want to get bees
       back to working together.
-       :
+      :
       That's the bee way!
       We're not made of Jell-O.
-       :
+      :
       We get behind a fellow.
-       :
+      :
       - Black and yellow!
       BEES:
       - Hello!
       (The scene switches and Barry is teaching Vanessa how to fly)
       BARRY:
-      
+
       Left, right, down, hover.
       VANESSA:
       - Hover?
@@ -3739,7 +3737,7 @@ import Layout from "../layouts/Layout.astro";
       Lou Lu DUva:
       All of you, let's get
       behind this fellow! Move it out!
-       :
+      :
       Move out!
       (The scene switches back to Vanessa and Barry in the plane)
       BARRY:
@@ -3747,7 +3745,7 @@ import Layout from "../layouts/Layout.astro";
       you copy me with the wings of the plane!
       (Barry sticks out his arms like an airplane and flys in front of Vanessa's
       face)
-      
+
       VANESSA:
       Don't have to yell.
       BARRY:
@@ -3769,7 +3767,7 @@ import Layout from "../layouts/Layout.astro";
       You snap out of it.
       BARRY:
       (Slaps Vanessa)
-       :
+      :
       You snap out of it.
       VANESSA:
       - You snap out of it!
@@ -3780,7 +3778,7 @@ import Layout from "../layouts/Layout.astro";
       - You snap out of it!
       BARRY:
       - You snap out of it!
-      
+
       VANESSA:
       - You snap out of it!
       BARRY:
@@ -3804,7 +3802,7 @@ import Layout from "../layouts/Layout.astro";
       (All of the Pollen Jocks are carrying the plane)
       BARRY:
       The Pollen Jocks!
-       :
+      :
       They do get behind a fellow.
       LOU LU DUVA:
       - Black and yellow.
@@ -3812,13 +3810,13 @@ import Layout from "../layouts/Layout.astro";
       - Hello.
       LOU LU DUVA:
       All right, let's drop this tin can
-      
+
       on the blacktop.
       BARRY:
       Where? I can't see anything. Can you?
       VANESSA:
       No, nothing. It's all cloudy.
-       :
+      :
       Come on. You got to think bee, Barry.
       BARRY:
       - Thinking bee.
@@ -3834,9 +3832,9 @@ import Layout from "../layouts/Layout.astro";
       - What?
       BARRY:
       - I don't know. It's strong, pulling me.
-       :
+      :
       Like a 27-million-year-old instinct.
-       :
+      :
       Bring the nose down.
       BEES:
       Thinking bee!
@@ -3845,7 +3843,7 @@ import Layout from "../layouts/Layout.astro";
       - What in the world is on the tarmac?
       BUD:
       - Get some lights on that!
-      
+
       (It is revealed that all the bees are organized into a giant pulsating
       flower formation)
       BEES:
@@ -3862,11 +3860,11 @@ import Layout from "../layouts/Layout.astro";
       Affirmative!
       BARRY:
       Good. Good. Easy, now. That's it.
-       :
+      :
       Land on that flower!
-       :
+      :
       Ready? Full reverse!
-       :
+      :
       Spin it around!
       (The plane's nose is pointed at a flower painted on a nearby plane)
       - Not that flower! The other one!
@@ -3878,15 +3876,15 @@ import Layout from "../layouts/Layout.astro";
       and tries to take a picture of the plane)
       VANESSA:
       - I'm aiming at the flower!
-      
+
       BARRY:
       That's a fat guy in a flowered shirt.
       I mean the giant pulsating flower
       made of millions of bees!
       (The plane hovers over the bee-flower)
-       :
+      :
       Pull forward. Nose down. Tail up.
-       :
+      :
       Rotate around it.
       VANESSA:
       - This is insane, Barry!
@@ -3899,19 +3897,19 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       Get your nose in there. Don't be afraid.
       Smell it. Full reverse!
-       :
+      :
       Just drop it. Be a part of it.
-       :
+      :
       Aim for the center!
-       :
+      :
       Now drop it in! Drop it in, woman!
-       :
+      :
       Come on, already.
       (The bees scatter and the plane safely lands)
       VANESSA:
       Barry, we did it!
       You taught me how to fly!
-      
+
       BARRY:
       - Yes!
       (Vanessa is about to high-five Barry)
@@ -3928,24 +3926,24 @@ import Layout from "../layouts/Layout.astro";
       - Thank you.
       BARRY:
       - But we're not done yet.
-       :
+      :
       Listen, everyone!
-       :
+      :
       This runway is covered
       with the last pollen
-       :
+      :
       from the last flowers
       available anywhere on Earth.
-       :
+      :
       That means this is our last chance.
-       :
+      :
       We're the only ones who make honey,
       pollinate flowers and dress like this.
-       :
+      :
       If we're gonna survive as a species,
       this is our moment! What do you say?
-      
-       :
+
+      :
       Are we going to be bees, or just
       Museum of Natural History keychains?
       BEES:
@@ -3956,11 +3954,11 @@ import Layout from "../layouts/Layout.astro";
       Then follow me! Except Keychain.
       POLLEN JOCK #1:
       Hold on, Barry. Here.
-       :
+      :
       You've earned this.
       BARRY:
       Yeah!
-       :
+      :
       I'm a Pollen Jock! And it's a perfect
       fit. All I gotta do are the sleeves.
       (The Pollen Jocks throw Barry a nectar-collecting gun. Barry catches it)
@@ -3969,7 +3967,7 @@ import Layout from "../layouts/Layout.astro";
       That's our Barry.
       (Barry and the Pollen Jocks get pollen from the flowers on the plane)
       (Flash forward in time and the Pollen Jocks are flying over NYC)
-       :
+      :
       (Barry pollinates the flowers in Vanessa's shop and then heads to Central
       Park)
       BOY IN PARK:
@@ -3977,9 +3975,9 @@ import Layout from "../layouts/Layout.astro";
       ADAM:
       (Putting on his Krelman hat)
       If anybody needs
-      
+
       to make a call, now's the time.
-       :
+      :
       I got a feeling we'll be
       working late tonight!
       (The bee honey factories are back up and running)
@@ -3988,7 +3986,7 @@ import Layout from "../layouts/Layout.astro";
       (To customer)
       Here's your change. Have a great
       afternoon! Can I help who's next?
-       :
+      :
       Would you like some honey with that?
       It is bee-approved. Don't forget these.
       (There is a room in the shop where Barry does legal work for other animals.
@@ -3996,7 +3994,7 @@ import Layout from "../layouts/Layout.astro";
       COW:
       Milk, cream, cheese, it's all me.
       And I don't see a nickel!
-       :
+      :
       Sometimes I just feel
       like a piece of meat!
       BARRY:
@@ -4011,13 +4009,13 @@ import Layout from "../layouts/Layout.astro";
       Sorry I'm late.
       COW:
       He's a lawyer too?
-      
+
       MOOSEBLOOD:
       Ma'am, I was already a blood-sucking parasite.
       All I needed was a briefcase.
       VANESSA:
       Have a great afternoon!
-       :
+      :
       Barry, I just got this huge tulip order,
       and I can't get them anywhere.
       BARRY:
@@ -4044,7 +4042,7 @@ import Layout from "../layouts/Layout.astro";
       BARRY:
       - Beautiful day to fly.
       POLLEN JOCK:
-      
+
       - Sure is.
       BARRY:
       Between you and me,
@@ -4055,14 +4053,14 @@ import Layout from "../layouts/Layout.astro";
       talking over the credits--]
       You have got
       to start thinking bee, my friend!
-       :
+      :
       - Thinking bee!
       - Me?
       BARRY:
       (Talking over singer)
       Hold it. Let's just stop
       for a second. Hold it.
-       :
+      :
       I'm sorry. I'm sorry, everyone.
       Can we stop here?
       SINGER:
@@ -4074,10 +4072,6 @@ import Layout from "../layouts/Layout.astro";
       Wrap it up, guys.
       BARRY:
       I had virtually no rehearsal for that.
-      </p>
-  </main>
-</Layout>
-
-<!-- <style>
-
-</style> -->
+    </p>
+  );
+}

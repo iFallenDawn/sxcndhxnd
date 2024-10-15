@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 const CommissionsForm = (props) => {
 
   return (
@@ -71,7 +69,7 @@ const CommissionsForm = (props) => {
           What type of fabrics do you want?
           <input type="text" name="fabrics" />
         </label>
-        <label class="flex">
+        <label className="flex">
           Please provide some loose detail on shape patterns you prefer
           <textarea name='shapePatterns' placeholder="Type your message" class="border-solid border-2 border-sky-500" />
         </label>
