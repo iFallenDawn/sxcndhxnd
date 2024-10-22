@@ -1,16 +1,13 @@
 'use client'
 import { useState } from 'react'
 const CommissionsForm = (props) => {
-  const [firstName, setFirstName] = useState('')
-
-  const handleChange = (e) => setFirstName(e.target.value)
   return (
     <form className='flex flex-col'>
       <label>
         First Name:
-        <input type="text" name="firstName" className='border-solid border-2 border-sky-500' onChange={handleChange} />
+        <input type="text" name="firstName" />
       </label>
-      {/* <label>
+      <label>
         Last Name:
         <input type="text" name="lastName" />
       </label>
@@ -115,7 +112,7 @@ const CommissionsForm = (props) => {
       <label className="flex">
         Anything else I should know?
         <textarea name='extra ' placeholder="Type your message" className="border-solid border-2 border-sky-500" />
-      </label> */}
+      </label>
       <button>Submit</button>
     </form>
   )
