@@ -1,4 +1,4 @@
-import CommissionsForm from "@/components/commissions/CommissionsForm"
+import CommissionsForm from "./CommissionsForm"
 
 const Commissions = () => {
   return (
