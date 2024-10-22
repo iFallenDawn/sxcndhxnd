@@ -1,23 +1,42 @@
 'use client'
 import { useState } from 'react'
 const CommissionsForm = (props) => {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [colors, setColors] = useState('')
+  const [fabrics, setFabrics] = useState('')
+  const [pockets, setPockets] = useState('')
+
+  const [commissionType, setCommissionType] = useState('')
+  const [symmetryType, setSymmetryType] = useState('')
+
+  const handleFirstName = (e) => setFirstName(e.target.value)
+  const handleLastName = (e) => setLastName(e.target.value)
+  const handleEmail = (e) => setLastName(e.target.value)
+  const handleCommissionType = (e) => setCommissionType(e.target.value)
+  const handleSymmetryType = (e) => setSymmetryType(e.target.value)
+  const handleColors = (e) => setColors(e.target.value)
+  const handleFabrics = (e) => setFabrics(e.target.value)
+  const handlePockets = (e) => setPockets(e.target.value)
+
   return (
     <form className='flex flex-col'>
       <label>
         First Name:
-        <input type="text" name="firstName" />
+        <input type="text" name="firstName" onChange={handleFirstName} />
       </label>
       <label>
         Last Name:
-        <input type="text" name="lastName" />
+        <input type="text" name="lastName" onChange={handleLastName} />
       </label>
       <label>
         Email:
-        <input type="text" name="email" />
+        <input type="text" name="email" onChange={handleEmail} />
       </label>
       <label>
         What type of commission do you want?
-        <select className="border-solid border-2 border-sky-500" name='commissionType'>
+        <select className="border-solid border-2 border-sky-500" name='commissionType' onChange={handleCommissionType}>
           <option value="">Select one...</option>
           <option value="pants">Pants - $200</option>
           <option value="outerwear">Outerwear - $150</option>
@@ -33,6 +52,11 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         Do you like symmetry, asymmetry, or a mix?
+        <select name='symmetryType' onChange={handleSymmetryType}>
+          <option value='symmetry'>Symmetry</option>
+          <option value='asymmetry'>Asymmetry</option>
+          <option value='mix'>A mix of both/option</option>
+        </select>
         <label>
           Symmetry
           <input type="radio" name='symmetry' value="Symmetry" />
@@ -62,11 +86,11 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         What colors do you want?
-        <input type="text" name="colors" />
+        <input type="text" name="colors" onChange={handleColors} />
       </label>
       <label>
         What type of fabrics do you want?
-        <input type="text" name="fabrics" />
+        <input type="text" name="fabrics" onChange={handleFabrics} />
       </label>
       <label className="flex">
         Please provide some loose detail on shape patterns you prefer
@@ -96,7 +120,7 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         Do you want me to add pockets anywhere?
-        <input type="text" name="pockets" />
+        <input type="text" name="pockets" onChange={handlePockets} />
       </label>
       <label>
         Do you want me to send you weekly check-ins?
