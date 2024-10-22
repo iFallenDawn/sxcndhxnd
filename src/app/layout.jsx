@@ -15,7 +15,7 @@ const RootLayout = ({ children }) => {
   return (
     <html lang="en">
       <head>
-        <meta charset="UTF-8" />
+        <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="apple-touch-icon" type="image/svg+xml" href="/favicon.svg" />
