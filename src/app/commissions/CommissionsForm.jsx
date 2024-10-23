@@ -68,36 +68,22 @@ const CommissionsForm = (props) => {
       <label>
         Do you like symmetry, asymmetry, or a mix?
         <select name='symmetryType' onChange={handleSymmetryType}>
+          <option value="">Select one...</option>
           <option value='symmetry'>Symmetry</option>
           <option value='asymmetry'>Asymmetry</option>
-          <option value='mix'>A mix of both/option</option>
+          <option value='mix'>A mix of both</option>
         </select>
-        <label>
-          Symmetry
-          <input type="radio" name='symmetry' value="Symmetry" />
-        </label>
-        <label>
-          Asymmetry
-          <input type="radio" name='symmetry' value="Asymmetry" />
-        </label>
-        <label>
-          A mix of both
-          <input type="radio" name='symmetry' value="A mix of both" />
-        </label>
       </label>
       <label>
         Are you providing the base article of clothing, or do you want me to source it?
       </label>
       <label>
         You receive a 10% discount for providing the base clothes.
-        <label>
-          Yes, I'm providing the base
-          <input type="radio" name='baseMaterial' value="Yes, I'm providing the base" onChange={handleBaseMaterial} />
-        </label>
-        <label>
-          No, I want you to source all the materials.
-          <input type="radio" name='baseMaterial' value="No, I want you to source all the materials." onChange={handleBaseMaterial} />
-        </label>
+        <select name='baseMaterial' onChange={handleBaseMaterial}>
+          <option value="">Select one...</option>
+          <option value='Yes'>Yes, I'm providing the base.</option>
+          <option value='No'>No, I want you to source all of the materials.</option>
+        </select>
       </label>
       <label>
         What colors do you want?
@@ -109,44 +95,35 @@ const CommissionsForm = (props) => {
       </label>
       <label className="flex">
         Please provide some loose detail on shape patterns you prefer
-        <textarea name='shapePatterns' placeholder="Type your message" className="border-solid border-2 border-sky-500" onchange={handleShapePatterns} />
+        <textarea name='shapePatterns' placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handleShapePatterns} />
       </label>
       <label>
         Would you like to add some distress (wear and tear)?
-        <label>
-          Yes
-          <input type="radio" name='distress' value="Yes" onChange={handleDistress}/>
-        </label>
-        <label>
-          No
-          <input type="radio" name='distress' value="No" onChange={handleDistress} />
-        </label>
+        <select name="distress" onChange={handleDistress}>
+          <option value="">Select one...</option>
+          <option value='Yes'>Yes</option>
+          <option value='No'>No</option>
+        </select>
       </label>
       <label>
         If it's an old piece, do you need it retailored?
-        <label>
-          Yes
-          <input type="radio" name='retailor' value="Yes" onChange={handleRetailor}/>
-        </label>
-        <label>
-          No
-          <input type="radio" name='retailor' value="No" onChange={handleRetailor} />
-        </label>
+        <select name="retailor" onChange={handleRetailor}>
+          <option value="">Select one...</option>
+          <option value='Yes'>Yes</option>
+          <option value='No'>No</option>
+        </select>
       </label>
       <label>
-        Do you want me to add pockets anywhere?
+        If you would like pockets, where would you want me to add them?
         <input type="text" name="pockets" onChange={handlePockets} />
       </label>
       <label>
         Do you want me to send you weekly check-ins?
-        <label>
-          Yes
-          <input type="radio" name='weeklyChecks' value="Yes" onChange={handleWeeklyChecks}/>
-        </label>
-        <label>
-          No
-          <input type="radio" name='weeklyChecks' value="No" onChange={handleWeeklyChecks}/>
-        </label>
+        <select name="weeklyChecks" onChange={handleWeeklyChecks}>
+          <option value="">Select one...</option>
+          <option value='Yes'>Yes</option>
+          <option value='No'>No</option>
+        </select>
       </label>
       <label className="flex">
         Anything else I should know?
