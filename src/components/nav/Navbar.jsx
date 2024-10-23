@@ -64,10 +64,13 @@ const Navbar = (props) => {
 
   const routes = [
     ["/", "Home"],
-    ["/gallery", "Gallery"],
-    ["/commissions", "Commissions"],
     ["/about", "About Me"],
+    ["/commissions", "Commissions"],
     ["/contact", "Contact"],
+    ["/faq", "FAQ"]
+    ["/gallery", "Gallery"],
+    ["/projects", "Projects"],
+    ["/store", "Store"],
   ];
 
   const handleOpen = () => {
