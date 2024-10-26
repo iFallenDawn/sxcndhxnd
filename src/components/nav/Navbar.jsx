@@ -67,7 +67,7 @@ const Navbar = (props) => {
     ["/about", "About Me"],
     ["/commissions", "Commissions"],
     ["/contact", "Contact"],
-    ["/faq", "FAQ"]
+    ["/faq", "FAQ"],
     ["/gallery", "Gallery"],
     ["/projects", "Projects"],
     ["/store", "Store"],

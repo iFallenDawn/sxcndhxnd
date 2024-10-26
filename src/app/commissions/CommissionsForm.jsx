@@ -63,7 +63,7 @@ const CommissionsForm = (props) => {
       </label>
       <label className="flex">
         Describe the vision you have for the piece in as much detail as possible.
-        <textarea name="pieceVision" placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handlePieceVision}/>
+        <textarea name="pieceVision" placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handlePieceVision} />
       </label>
       <label>
         Do you like symmetry, asymmetry, or a mix?
@@ -114,7 +114,7 @@ const CommissionsForm = (props) => {
         </select>
       </label>
       <label>
-        If you would like pockets, where would you want me to add them?
+        If you would like pockets, where would you want me to add them? Please specify if you don't want pockets
         <input type="text" name="pockets" onChange={handlePockets} />
       </label>
       <label>
@@ -127,7 +127,7 @@ const CommissionsForm = (props) => {
       </label>
       <label className="flex">
         Anything else I should know?
-        <textarea name='extra ' placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handleExtra}/>
+        <textarea name='extra ' placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handleExtra} />
       </label>
       <button>Submit</button>
     </form>
