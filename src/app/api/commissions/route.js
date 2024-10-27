@@ -1,35 +1,34 @@
 import { NextResponse } from 'next/server'
-import validation from '@/utils/validation'
-import db from '@/utils/firestore'
-import { collection } from 'firebase/firestore'
+// import validation from '@/utils/validation'
+// import db from '@/utils/firestore'
+// import { collection } from 'firebase/firestore'
 
-export async function POST(request) {
-
+export async function POST(req) {
+  console.log('we made it')
+  let reqBody = await req.json()
+  console.log(reqBody)
+  return NextResponse.json(reqBody, {status: 200});
 }
 
-const validation = require('../utils/validation');
-// firestore db
-const dbCollections = require('../config/firebase')
-const db = dbCollections.db
 
-async function createUser(firstName, lastName, username, password, email, socialMediaHandles) {
-  // validation here
+// async function createUser(firstName, lastName, username, password, email, socialMediaHandles) {
+//   // validation here
 
-  // check if they exist
-  const users = db.collection('users')
-  let newUser = {
-    firstName: firstName,
-    lastName: lastName,
-    username: username,
-    password: password,
-    email: email,
-    socialMediaHandles: socialMediaHandles
-  }
-  const insertInfo = await users.add(newUser)
-  if (!insertInfo) throw 'Error: Could not add user';
-  return {userInserted: true};
-}
+//   // check if they exist
+//   const users = db.collection('users')
+//   let newUser = {
+//     firstName: firstName,
+//     lastName: lastName,
+//     username: username,
+//     password: password,
+//     email: email,
+//     socialMediaHandles: socialMediaHandles
+//   }
+//   const insertInfo = await users.add(newUser)
+//   if (!insertInfo) throw 'Error: Could not add user';
+//   return {userInserted: true};
+// }
 
-module.exports = {
-  createUser
-}
+// module.exports = {
+//   createUser
+// }

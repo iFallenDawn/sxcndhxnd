@@ -1,34 +1,16 @@
 'use client'
 import { useState } from 'react'
 import { useFormState } from 'react-dom'
+import { createCommission } from '@/app/actions'
+const initialState = {
+  message: null
+}
 
 const CommissionsForm = (props) => {
-  const [state, formAction] = useFormState
-  const [loading, setLoading] = useState(false)
-  const [submitSuccessful, setSubmitSuccessful] = useState('')
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    try {
-      setLoading(true)
-
-      setSubmitSuccessful(true)
-    } catch (e) {
-      console.log(e)
-      if (e.response)
-        setError(e.response.date.error)
-      else
-        setError(e)
-      setSubmitSuccessful(false)
-      setLoading(false)
-    }
-
-  }
-
+  const [state, formAction] = useFormState(createCommission, initialState)
 
   return (
-    <form className='flex flex-col'>
+    <form action={formAction} className='flex flex-col'>
       <label>
         First Name:
         <input type="text" name="firstName" />
@@ -119,9 +101,9 @@ const CommissionsForm = (props) => {
       </label>
       <label className="flex">
         Anything else I should know?
-        <textarea name='extra ' placeholder="Type your message" className="border-solid border-2 border-sky-500" />
+        <textarea name='extra' placeholder="Type your message" className="border-solid border-2 border-sky-500" />
       </label>
-      <button onSubmit={handleSubmit}>Submit</button>
+      <button>Submit</button>
     </form>
   )
 }
