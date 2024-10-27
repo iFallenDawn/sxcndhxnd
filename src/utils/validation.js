@@ -1,0 +1,52 @@
+
+const exportedMethods = {
+  checkId(id) {
+    if (!id) throw 'Error: You must provide an id to search for';
+    if (typeof id !== 'string') throw 'Error: id must be a string';
+    id = id.trim();
+    if (id.length === 0) throw 'Error: id cannot be an empty string or spaces';
+    return id;
+  },
+  checkString(strVal, varName) {
+    if (!strVal) throw `Error: You must supply a ${varName}!`;
+    if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
+    strVal = strVal.trim();
+    if (strVal.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    if (!isNaN(strVal))
+      throw `Error: ${strVal} is not a valid value for ${varName} as it only contains digits`;
+    return strVal;
+  },
+  checkStringArray(arr, varName) {
+    //We will allow an empty array for this,
+    //if it's not empty, we will make sure all tags are strings
+    if (!arr || !Array.isArray(arr))
+      throw `You must provide an array of ${varName}`;
+    for (let i in arr) {
+      if (typeof arr[i] !== 'string' || arr[i].trim().length === 0) {
+        throw `One or more elements in ${varName} array is not a string or is an empty string`;
+      }
+      arr[i] = arr[i].trim();
+    }
+    return arr;
+  },
+  checkUsername(username) {
+    this.checkString(username, 'Username')
+    if (!/^[a-zA-Z0-9]+$/g.test(username)) throw `Error: Username contains illegal characters.`;
+    if (username.length < 8) throw `Error: Username must be at least 8 characters long.`;
+    return username.toLowerCase()
+  },
+  checkPassword(password) {
+    this.checkString(password, 'Password')
+    if (/\s/g.test(password)) throw `Error: Password contains illegal characters.`;
+    if (password.length < 8) throw `Error: Password must be at least 8 characters long.`;
+    return password
+  },
+  checkBoolean(bool) {
+    if (bool === undefined) throw `Error: You must provide a valid bool`
+    if (typeof bool !== 'boolean') throw `Error: You must provide a valid bool`
+    return bool
+  }
+}
+
+export default exportedMethods

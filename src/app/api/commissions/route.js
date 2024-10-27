@@ -1,3 +1,12 @@
+import { NextResponse } from 'next/server'
+import validation from '@/utils/validation'
+import db from '@/utils/firestore'
+import { collection } from 'firebase/firestore'
+
+export async function POST(request) {
+
+}
+
 const validation = require('../utils/validation');
 // firestore db
 const dbCollections = require('../config/firebase')

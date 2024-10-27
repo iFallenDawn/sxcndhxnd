@@ -1,57 +1,49 @@
 'use client'
 import { useState } from 'react'
+import { useFormState } from 'react-dom'
+
 const CommissionsForm = (props) => {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [commissionType, setCommissionType] = useState('')
-  const [pieceVision, setPieceVision] = useState('')
-  const [symmetryType, setSymmetryType] = useState('')
-  const [baseMaterial, setBaseMaterial] = useState('')
-  const [colors, setColors] = useState('')
-  const [fabrics, setFabrics] = useState('')
-  const [shapePatterns, setShapePatterns] = useState('')
-  const [distress, setDistress] = useState('')
-  const [retailor, setRetailor] = useState('')
-  const [pockets, setPockets] = useState('')
-  const [weeklyChecks, setWeeklyChecks] = useState('')
-  const [extra, setExtra] = useState('')
+  const [state, formAction] = useFormState
+  const [loading, setLoading] = useState(false)
+  const [submitSuccessful, setSubmitSuccessful] = useState('')
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
 
-  const handleFirstName = (e) => setFirstName(e.target.value)
-  const handleLastName = (e) => setLastName(e.target.value)
-  const handleEmail = (e) => setLastName(e.target.value)
-  const handleCommissionType = (e) => setCommissionType(e.target.value)
-  const handlePieceVision = (e) => setPieceVision(e.pieceVision)
-  const handleSymmetryType = (e) => setSymmetryType(e.target.value)
-  const handleBaseMaterial = (e) => setBaseMaterial(e.baseMaterial.value)
-  const handleColors = (e) => setColors(e.target.value)
-  const handleFabrics = (e) => setFabrics(e.target.value)
-  const handleShapePatterns = (e) => setShapePatterns(e.target.value)
-  const handleDistress = (e) => setDistress(e.target.value)
-  const handleRetailor = (e) => setRetailor(e.target.value)
-  const handlePockets = (e) => setPockets(e.target.value)
-  const handleWeeklyChecks = (e) => setWeeklyChecks(e.target.value)
-  const handleExtra = (e) => setExtra(e.target.value)
+    try {
+      setLoading(true)
+
+      setSubmitSuccessful(true)
+    } catch (e) {
+      console.log(e)
+      if (e.response)
+        setError(e.response.date.error)
+      else
+        setError(e)
+      setSubmitSuccessful(false)
+      setLoading(false)
+    }
+
+  }
 
 
   return (
     <form className='flex flex-col'>
       <label>
         First Name:
-        <input type="text" name="firstName" onChange={handleFirstName} />
+        <input type="text" name="firstName" />
       </label>
       <label>
         Last Name:
-        <input type="text" name="lastName" onChange={handleLastName} />
+        <input type="text" name="lastName" />
       </label>
       <label>
         Email:
-        <input type="text" name="email" onChange={handleEmail} />
+        <input type="text" name="email" />
       </label>
       <label>
         What type of commission do you want?
-        <select className="border-solid border-2 border-sky-500" name='commissionType' onChange={handleCommissionType}>
+        <select className="border-solid border-2 border-sky-500" name='commissionType' >
           <option value="">Select one...</option>
           <option value="pants">Pants - $200</option>
           <option value="outerwear">Outerwear - $150</option>
@@ -63,11 +55,11 @@ const CommissionsForm = (props) => {
       </label>
       <label className="flex">
         Describe the vision you have for the piece in as much detail as possible.
-        <textarea name="pieceVision" placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handlePieceVision} />
+        <textarea name="pieceVision" placeholder="Type your message" className="border-solid border-2 border-sky-500" />
       </label>
       <label>
         Do you like symmetry, asymmetry, or a mix?
-        <select name='symmetryType' onChange={handleSymmetryType}>
+        <select name='symmetryType' >
           <option value="">Select one...</option>
           <option value='symmetry'>Symmetry</option>
           <option value='asymmetry'>Asymmetry</option>
@@ -79,7 +71,7 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         You receive a 10% discount for providing the base clothes.
-        <select name='baseMaterial' onChange={handleBaseMaterial}>
+        <select name='baseMaterial'>
           <option value="">Select one...</option>
           <option value='Yes'>Yes, I'm providing the base.</option>
           <option value='No'>No, I want you to source all of the materials.</option>
@@ -87,19 +79,19 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         What colors do you want?
-        <input type="text" name="colors" onChange={handleColors} />
+        <input type="text" name="colors" />
       </label>
       <label>
         What type of fabrics do you want?
-        <input type="text" name="fabrics" onChange={handleFabrics} />
+        <input type="text" name="fabrics" />
       </label>
       <label className="flex">
         Please provide some loose detail on shape patterns you prefer
-        <textarea name='shapePatterns' placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handleShapePatterns} />
+        <textarea name='shapePatterns' placeholder="Type your message" className="border-solid border-2 border-sky-500" />
       </label>
       <label>
         Would you like to add some distress (wear and tear)?
-        <select name="distress" onChange={handleDistress}>
+        <select name="distress">
           <option value="">Select one...</option>
           <option value='Yes'>Yes</option>
           <option value='No'>No</option>
@@ -107,7 +99,7 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         If it's an old piece, do you need it retailored?
-        <select name="retailor" onChange={handleRetailor}>
+        <select name="retailor" >
           <option value="">Select one...</option>
           <option value='Yes'>Yes</option>
           <option value='No'>No</option>
@@ -115,11 +107,11 @@ const CommissionsForm = (props) => {
       </label>
       <label>
         If you would like pockets, where would you want me to add them? Please specify if you don't want pockets
-        <input type="text" name="pockets" onChange={handlePockets} />
+        <input type="text" name="pockets" />
       </label>
       <label>
         Do you want me to send you weekly check-ins?
-        <select name="weeklyChecks" onChange={handleWeeklyChecks}>
+        <select name="weeklyChecks" >
           <option value="">Select one...</option>
           <option value='Yes'>Yes</option>
           <option value='No'>No</option>
@@ -127,9 +119,9 @@ const CommissionsForm = (props) => {
       </label>
       <label className="flex">
         Anything else I should know?
-        <textarea name='extra ' placeholder="Type your message" className="border-solid border-2 border-sky-500" onChange={handleExtra} />
+        <textarea name='extra ' placeholder="Type your message" className="border-solid border-2 border-sky-500" />
       </label>
-      <button>Submit</button>
+      <button onSubmit={handleSubmit}>Submit</button>
     </form>
   )
 }

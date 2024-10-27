@@ -20,9 +20,11 @@ const RootLayout = ({ children }) => {
         <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="apple-touch-icon" type="image/svg+xml" href="/favicon.svg" />
       </head>
-      <body className={`${arnoProRegular.className} mt-12`}>
+      <body className={`${arnoProRegular.className}`}>
         <Navbar />
-        {children}
+        <div className='mt-12'>
+          {children}
+        </div>
       </body>
     </html>
   )

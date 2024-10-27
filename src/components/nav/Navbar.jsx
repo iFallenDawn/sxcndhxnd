@@ -92,6 +92,7 @@ const Navbar = (props) => {
     return (
       <li
         key={text}
+        className=' sm:px-2.5'
       >
         <a
           href={path}
@@ -138,8 +139,18 @@ const Navbar = (props) => {
       </div>
 
       {/* Desktop Nav */}
-      <div className='hidden sm:flex'>
-
+      <div className='hidden sm:flex sm:bg-amber-400 sm:fixed sm:top-0 sm:h-12 sm:w-full'>
+        <div className='flex flex-row items-center justify-between w-full'>
+          <div className='mx-6'>
+            <Logo />
+          </div>
+          <div className='flex flex-row items-center'>
+            <ul className='flex flex-row items-center justify-between'>
+              {links}
+              <ShoppingCart />
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
