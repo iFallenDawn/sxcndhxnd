@@ -14,41 +14,20 @@ export async function POST(req) {
     }
     // check all the variables
     try {
-      reqBody.firstName = validation.checkString(
-        reqBody.firstName,
-        "First Name"
-      );
+      reqBody.firstName = validation.checkString(reqBody.firstName, "First Name");
       reqBody.lastName = validation.checkString(reqBody.lastName, "Last Name");
       reqBody.email = validation.checkString(reqBody.email, "Email");
-      reqBody.commissionType = validation.checkString(
-        reqBody.commissionType,
-        "Commission Type"
-      );
-      reqBody.pieceVision = validation.checkString(
-        reqBody.pieceVision,
-        "Piece Vision"
-      );
-      reqBody.symmetryType = validation.checkString(
-        reqBody.symmetryType,
-        "Symmetry Type"
-      );
-      reqBody.baseMaterial = validation.checkString(
-        reqBody.baseMaterial,
-        "Base Material"
-      );
+      reqBody.commissionType = validation.checkString(reqBody.commissionType, "Commission Type");
+      reqBody.pieceVision = validation.checkString(reqBody.pieceVision, "Piece Vision");
+      reqBody.symmetryType = validation.checkString( reqBody.symmetryType, "Symmetry Type");
+      reqBody.baseMaterial = validation.checkString( reqBody.baseMaterial, "Base Material");
       reqBody.colors = validation.checkString(reqBody.colors, "Colors");
       reqBody.fabrics = validation.checkString(reqBody.fabrics, "Fabrics");
-      reqBody.shapePatterns = validation.checkString(
-        reqBody.shapePatterns,
-        "Shape Patterns"
-      );
+      reqBody.shapePatterns = validation.checkString( reqBody.shapePatterns, "Shape Patterns");
       reqBody.distress = validation.checkString(reqBody.distress, "Distress");
       reqBody.retailor = validation.checkString(reqBody.retailor, "Retailor");
       reqBody.pockets = validation.checkString(reqBody.pockets, "Pockets");
-      reqBody.weeklyChecks = validation.checkString(
-        reqBody.weeklyChecks,
-        "Weekly Checks"
-      );
+      reqBody.weeklyChecks = validation.checkString( reqBody.weeklyChecks, "Weekly Checks");
       reqBody.extra = validation.checkString(reqBody.extra, "Extra");
     } catch (e) {
       return NextResponse.json({ error: e }, { status: 400 });

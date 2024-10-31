@@ -1,3 +1,3 @@
-import commissionDataFunctions from "./commissions";
+import commissionDataFunctions from "./commissions"
 
-export const commissionData = commissionDataFunctions;
+export const commissionData = commissionDataFunctions

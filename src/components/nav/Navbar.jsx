@@ -1,9 +1,9 @@
 'use client'
-import { useState } from "react";
+import { useState } from "react"
 import Logo from '../Logo'
-// import ShoppingCart from "./ShoppingCart";
-// import Hamburger from "./Hamburger";
-// import Close from "./Close";
+// import ShoppingCart from "./ShoppingCart"
+// import Hamburger from "./Hamburger"
+// import Close from "./Close"
 
 const Close = (props) => (
   <svg
@@ -59,8 +59,8 @@ const Hamburger = (props) => (
 )
 
 const Navbar = (props) => {
-  const { currentPage } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  const { currentPage } = props
+  const [isOpen, setIsOpen] = useState(false)
 
   const routes = [
     ["/", "Home"],
@@ -71,7 +71,7 @@ const Navbar = (props) => {
     ["/gallery", "Gallery"],
     ["/projects", "Projects"],
     ["/store", "Store"],
-  ];
+  ]
 
   const handleOpen = () => {
     setIsOpen(!isOpen)
@@ -84,11 +84,11 @@ const Navbar = (props) => {
         {isOpen ? <Close /> : <Hamburger />}
       </div>
     )
-  };
+  }
 
   const links = routes.map((route) => {
-    const path = route[0];
-    const text = route[1];
+    const path = route[0]
+    const text = route[1]
     return (
       <li
         key={text}
@@ -105,8 +105,8 @@ const Navbar = (props) => {
           </span>
         </a>
       </li>
-    );
-  });
+    )
+  })
 
   return (
     // overall nav
@@ -153,7 +153,7 @@ const Navbar = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
