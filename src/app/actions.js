@@ -1,4 +1,4 @@
-import validation from '@/utils/validation'
+import validation from '../utils/validation'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -24,11 +24,11 @@ export async function createCommission(prevState, formData) {
   extra = formData.get('extra')
 
   // check that the user input values are valid
-  // try {
-  //   firstName = validation.checkString(firstName, 'First Name')
-  // } catch (e) {
-  //   errors.push(e)
-  // }
+  try {
+    firstName = validation.checkString(firstName, 'First Name')
+  } catch (e) {
+    errors.push(e)
+  }
     
   // try {
   //   lastName = validation.checkString(lastName, 'Last Name')
@@ -115,7 +115,21 @@ export async function createCommission(prevState, formData) {
   // }
 
   let newCommission = {
-    firstName: firstName
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    commissionType: commissionType,
+    pieceVision: pieceVision,
+    symmetryType: symmetryType,
+    baseMaterial: baseMaterial,
+    colors: colors,
+    fabrics: fabrics,
+    shapePatterns: shapePatterns,
+    distress: distress,
+    retailor: retailor,
+    pockets: pockets,
+    weeklyChecks: weeklyChecks,
+    extra: extra
   }
 
   if (errors.length > 0) {
@@ -124,7 +138,6 @@ export async function createCommission(prevState, formData) {
   else {
     try {
       // create the new commission
-      console.log('MAKIGN')
       await fetch('/api/commissions', {
         method: 'POST',
         body: JSON.stringify(newCommission)
