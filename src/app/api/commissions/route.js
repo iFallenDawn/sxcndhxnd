@@ -1,36 +1,57 @@
-import { commissionData } from '@/data/index'
-import { NextResponse } from 'next/server'
-import validation from '@/data/validation'
+import { commissionData } from "@/data/index";
+import { NextResponse } from "next/server";
+import validation from "@/data/validation";
 
 export async function POST(req) {
-  let reqBody = null
+  let reqBody = null;
   try {
-    reqBody = await req.json()
+    reqBody = await req.json();
     if (!reqBody || Object.keys(reqBody).length === 0) {
       return NextResponse.json(
-        {error: 'There are no fields in the request body'},
-        {status: 400}
+        { error: "There are no fields in the request body" },
+        { status: 400 }
       );
     }
     // check all the variables
     try {
-      reqBody.firstName = validation.checkString(reqBody.firstName, 'First Name')
-      reqBody.lastName = validation.checkString(reqBody.lastName, 'Last Name')
-      reqBody.email = validation.checkString(reqBody.email, 'Email')
-      reqBody.commissionType = validation.checkString(reqBody.commissionType, 'Commission Type')
-      reqBody.pieceVision = validation.checkString(reqBody.pieceVision, 'Piece Vision')
-      reqBody.symmetryType = validation.checkString(reqBody.symmetryType, 'Symmetry Type')
-      reqBody.baseMaterial = validation.checkString(reqBody.baseMaterial, 'Base Material')
-      reqBody.colors = validation.checkString(reqBody.colors, 'Colors')
-      reqBody.fabrics = validation.checkString(reqBody.fabrics, 'Fabrics')
-      reqBody.shapePatterns = validation.checkString(reqBody.shapePatterns, 'Shape Patterns')
-      reqBody.distress = validation.checkString(reqBody.distress, 'Distress')
-      reqBody.retailor = validation.checkString(reqBody.retailor, 'Retailor')
-      reqBody.pockets = validation.checkString(reqBody.pockets, 'Pockets')
-      reqBody.weeklyChecks = validation.checkString(reqBody.weeklyChecks, 'Weekly Checks')
-      reqBody.extra = validation.checkString(reqBody.extra, 'Extra')
+      reqBody.firstName = validation.checkString(
+        reqBody.firstName,
+        "First Name"
+      );
+      reqBody.lastName = validation.checkString(reqBody.lastName, "Last Name");
+      reqBody.email = validation.checkString(reqBody.email, "Email");
+      reqBody.commissionType = validation.checkString(
+        reqBody.commissionType,
+        "Commission Type"
+      );
+      reqBody.pieceVision = validation.checkString(
+        reqBody.pieceVision,
+        "Piece Vision"
+      );
+      reqBody.symmetryType = validation.checkString(
+        reqBody.symmetryType,
+        "Symmetry Type"
+      );
+      reqBody.baseMaterial = validation.checkString(
+        reqBody.baseMaterial,
+        "Base Material"
+      );
+      reqBody.colors = validation.checkString(reqBody.colors, "Colors");
+      reqBody.fabrics = validation.checkString(reqBody.fabrics, "Fabrics");
+      reqBody.shapePatterns = validation.checkString(
+        reqBody.shapePatterns,
+        "Shape Patterns"
+      );
+      reqBody.distress = validation.checkString(reqBody.distress, "Distress");
+      reqBody.retailor = validation.checkString(reqBody.retailor, "Retailor");
+      reqBody.pockets = validation.checkString(reqBody.pockets, "Pockets");
+      reqBody.weeklyChecks = validation.checkString(
+        reqBody.weeklyChecks,
+        "Weekly Checks"
+      );
+      reqBody.extra = validation.checkString(reqBody.extra, "Extra");
     } catch (e) {
-      return NextResponse.json({error: e}, {status: 400});
+      return NextResponse.json({ error: e }, { status: 400 });
     }
 
     try {
@@ -50,21 +71,19 @@ export async function POST(req) {
         reqBody.pockets,
         reqBody.weeklyChecks,
         reqBody.extra
-      )
-      return NextResponse.json(newCommission, {status: 200});
+      );
+      return NextResponse.json(newCommission, { status: 200 });
     } catch (e) {
-      console.log(e)
-      return NextResponse.json({error: e}, {status: 500})
+      console.log(e);
+      return NextResponse.json({ error: e }, { status: 500 });
     }
-
   } catch (e) {
     return NextResponse.json(
-      {error: 'There is no request body'},
-      {status: 400}
-    ) 
+      { error: "There is no request body" },
+      { status: 400 }
+    );
   }
 }
-
 
 // async function createUser(firstName, lastName, username, password, email, socialMediaHandles) {
 //   // validation here
