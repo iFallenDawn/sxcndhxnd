@@ -15,7 +15,6 @@ let exportedMethods = {
     const querySnapshot = await getDocs(collection(db, 'commissions'))
     if (!querySnapshot) throw `Error: Could not get all commissions`
     const commissionList = querySnapshot.docs.map((doc) => doc.data())
-    console.log(commissionList)
     return commissionList
   },
   // adding and setting data https://firebase.google.com/docs/firestore/manage-data/add-data
