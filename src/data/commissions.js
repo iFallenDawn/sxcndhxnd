@@ -58,11 +58,14 @@ let exportedMethods = {
     if (!docRef) throw `Error: Failed to add user`
     return await this.getCommissionById(docRef.id)
   },
-  // nixon fill these out
-  async updateCommissionPatch(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+  // nixon fill these out, if need help on put vs patch google or reference advanced-api-blog-nextjs/src/data/posts.js
+  // PUT - update a resource, REPLACE the entire resource with new data.
+  // PATCH - update a resource, update some fields in the resource IN PLACE.
+
+  async updateCommissionPut(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
 
   },
-  async updateCommissionPost(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+  async updateCommissionPatch(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
 
   },
   async deleteCommission(id) {

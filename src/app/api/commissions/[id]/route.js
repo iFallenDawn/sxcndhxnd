@@ -17,7 +17,7 @@ export async function GET(req, { params }) {
   }
 }
 
-// nixon fill this out
+// nixon fill these out, if need help on put vs patch google or reference advanced-api-blog-nextjs/src/app/api/posts/[id]/route.js
 export async function PUT(req, { params }) {
 
 }
