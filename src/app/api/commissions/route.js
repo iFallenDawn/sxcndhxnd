@@ -1,7 +1,6 @@
+import { commissionData } from '@/data/index'
 import { NextResponse } from 'next/server'
-import validation from '@/utils/validation'
-import db from '@/config/firestore'
-import { collection, addDoc, getDoc } from 'firebase/firestore'
+import validation from '@/data/validation'
 
 export async function POST(req) {
   let reqBody = null
@@ -16,22 +15,45 @@ export async function POST(req) {
     // check all the variables
     try {
       reqBody.firstName = validation.checkString(reqBody.firstName, 'First Name')
+      reqBody.lastName = validation.checkString(reqBody.lastName, 'Last Name')
+      reqBody.email = validation.checkString(reqBody.email, 'Email')
+      reqBody.commissionType = validation.checkString(reqBody.commissionType, 'Commission Type')
+      reqBody.pieceVision = validation.checkString(reqBody.pieceVision, 'Piece Vision')
+      reqBody.symmetryType = validation.checkString(reqBody.symmetryType, 'Symmetry Type')
+      reqBody.baseMaterial = validation.checkString(reqBody.baseMaterial, 'Base Material')
+      reqBody.colors = validation.checkString(reqBody.colors, 'Colors')
+      reqBody.fabrics = validation.checkString(reqBody.fabrics, 'Fabrics')
+      reqBody.shapePatterns = validation.checkString(reqBody.shapePatterns, 'Shape Patterns')
+      reqBody.distress = validation.checkString(reqBody.distress, 'Distress')
+      reqBody.retailor = validation.checkString(reqBody.retailor, 'Retailor')
+      reqBody.pockets = validation.checkString(reqBody.pockets, 'Pockets')
+      reqBody.weeklyChecks = validation.checkString(reqBody.weeklyChecks, 'Weekly Checks')
+      reqBody.extra = validation.checkString(reqBody.extra, 'Extra')
     } catch (e) {
       return NextResponse.json({error: e}, {status: 400});
     }
 
     try {
-      const newCommission = {
-        firstName: reqBody.firstName
-      }
-      // https://firebase.google.com/docs/firestore/manage-data/add-data
-      const commissions = collection(db, 'commissions')
-      const docRef = await addDoc(commissions, newCommission)
-      // https://firebase.google.com/docs/firestore/query-data/get-data#web_6
-      const insertedCommission = await getDoc(docRef)
-      const commissionData = insertedCommission.data()
-      return NextResponse.json(commissionData, {status: 200});
+      const newCommission = await commissionData.addCommission(
+        reqBody.firstName,
+        reqBody.lastName,
+        reqBody.email,
+        reqBody.commissionType,
+        reqBody.pieceVision,
+        reqBody.symmetryType,
+        reqBody.baseMaterial,
+        reqBody.colors,
+        reqBody.fabrics,
+        reqBody.shapePatterns,
+        reqBody.distress,
+        reqBody.retailor,
+        reqBody.pockets,
+        reqBody.weeklyChecks,
+        reqBody.extra
+      )
+      return NextResponse.json(newCommission, {status: 200});
     } catch (e) {
+      console.log(e)
       return NextResponse.json({error: e}, {status: 500})
     }
 
