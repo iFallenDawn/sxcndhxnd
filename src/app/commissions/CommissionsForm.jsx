@@ -52,11 +52,22 @@ const CommissionsForm = (props) => {
         Are you providing the base article of clothing, or do you want me to source it?
       </label>
       <label>
-        You receive a 10% discount for providing the base clothes.
+        *You receive a 10% discount for providing the base clothes.
         <select name='baseMaterial'>
           <option value="">Select one...</option>
-          <option value='Yes'>Yes, I'm providing the base.</option>
+          <option value='Yes'>Yes, I{'\''}m providing the base.</option>
           <option value='No'>No, I want you to source all of the materials.</option>
+        </select>
+      </label>
+      <label>
+        Do you want full creative control/customization of the piece?
+      </label>
+      <label>
+        *This costs an additional $50
+        <select name='creativeControl'>
+          <option value="">Select one...</option>
+          <option value='Yes'>Yes, I want creative control.</option>
+          <option value='No'>No, I{'\''}m fine if you make the creative decisions based on my description.</option>
         </select>
       </label>
       <label>
@@ -80,7 +91,7 @@ const CommissionsForm = (props) => {
         </select>
       </label>
       <label>
-        If it's an old piece, do you need it retailored?
+        If it{'\''}s an old piece, do you need it retailored?
         <select name="retailor" >
           <option value="">Select one...</option>
           <option value='Yes'>Yes</option>
@@ -88,7 +99,7 @@ const CommissionsForm = (props) => {
         </select>
       </label>
       <label>
-        If you would like pockets, where would you want me to add them? Please specify if you don't want pockets
+        If you would like pockets, where would you want me to add them? Please specify if you don{'\''}t want pockets
         <input type="text" name="pockets" />
       </label>
       <label>
