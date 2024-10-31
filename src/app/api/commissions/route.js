@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import validation from '@/utils/validation'
-import db from '@/utils/firestore'
-import { collection } from 'firebase/firestore'
+import db from '@/config/firestore'
+import { collection, addDoc, getDoc } from 'firebase/firestore'
 
 export async function POST(req) {
   let reqBody = null
@@ -13,7 +13,6 @@ export async function POST(req) {
         {status: 400}
       );
     }
-    console.log(reqBody)
     // check all the variables
     try {
       reqBody.firstName = validation.checkString(reqBody.firstName, 'First Name')
@@ -25,9 +24,13 @@ export async function POST(req) {
       const newCommission = {
         firstName: reqBody.firstName
       }
-      const commissions = db.collection('commissions')
-      await commissions.add(newCommission)
-      return NextResponse.json(newCommission, {status: 200});
+      // https://firebase.google.com/docs/firestore/manage-data/add-data
+      const commissions = collection(db, 'commissions')
+      const docRef = await addDoc(commissions, newCommission)
+      // https://firebase.google.com/docs/firestore/query-data/get-data#web_6
+      const insertedCommission = await getDoc(docRef)
+      const commissionData = insertedCommission.data()
+      return NextResponse.json(commissionData, {status: 200});
     } catch (e) {
       return NextResponse.json({error: e}, {status: 500})
     }
