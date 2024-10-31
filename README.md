@@ -14,6 +14,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [React](https://docs.astro.build/en/guides/integrations-guide/react/)
 - [Lucide](https://lucide.dev/)
 - [Firebase Firestore](https://firebase.google.com/docs/firestore)
+- [Postman](https://www.postman.com/)
 
 ## Getting Started
 
@@ -90,3 +91,6 @@ All fields required except userAccount
     extra: string
 }
 ```
+
+## Postman Collection
+The Postman collection for this can be found [here](https://wangshun-7257.postman.co/workspace/Wangshun-Workspace~c59e525d-2b21-413c-abc6-ba072b90e8b0/collection/21868533-4b12fbcf-9486-4523-b546-34a7fc3e4ad1?action=share&creator=21868533).
