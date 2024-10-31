@@ -2,6 +2,17 @@ import { commissionData } from "@/data/index";
 import { NextResponse } from "next/server";
 import validation from "@/data/validation";
 
+// have to decide if we want to protect this route later on
+export async function GET(req) {
+  try {
+    const commissionList = await commissionData.getAllCommissions()
+    return NextResponse.json({ commissionList }, { status: 200 });
+  } catch (e) {
+    return NextResponse.json({ error: e }, { status: 500 });
+  }
+}
+
+// commission creation, still need to check if there's an authorized user, attach the userId to that commission
 export async function POST(req) {
   let reqBody = null;
   try {
@@ -19,15 +30,15 @@ export async function POST(req) {
       reqBody.email = validation.checkString(reqBody.email, "Email");
       reqBody.commissionType = validation.checkString(reqBody.commissionType, "Commission Type");
       reqBody.pieceVision = validation.checkString(reqBody.pieceVision, "Piece Vision");
-      reqBody.symmetryType = validation.checkString( reqBody.symmetryType, "Symmetry Type");
-      reqBody.baseMaterial = validation.checkString( reqBody.baseMaterial, "Base Material");
+      reqBody.symmetryType = validation.checkString(reqBody.symmetryType, "Symmetry Type");
+      reqBody.baseMaterial = validation.checkString(reqBody.baseMaterial, "Base Material");
       reqBody.colors = validation.checkString(reqBody.colors, "Colors");
       reqBody.fabrics = validation.checkString(reqBody.fabrics, "Fabrics");
-      reqBody.shapePatterns = validation.checkString( reqBody.shapePatterns, "Shape Patterns");
+      reqBody.shapePatterns = validation.checkString(reqBody.shapePatterns, "Shape Patterns");
       reqBody.distress = validation.checkString(reqBody.distress, "Distress");
       reqBody.retailor = validation.checkString(reqBody.retailor, "Retailor");
       reqBody.pockets = validation.checkString(reqBody.pockets, "Pockets");
-      reqBody.weeklyChecks = validation.checkString( reqBody.weeklyChecks, "Weekly Checks");
+      reqBody.weeklyChecks = validation.checkString(reqBody.weeklyChecks, "Weekly Checks");
       reqBody.extra = validation.checkString(reqBody.extra, "Extra");
     } catch (e) {
       return NextResponse.json({ error: e }, { status: 400 });
@@ -63,25 +74,3 @@ export async function POST(req) {
     );
   }
 }
-
-// async function createUser(firstName, lastName, username, password, email, socialMediaHandles) {
-//   // validation here
-
-//   // check if they exist
-//   const users = db.collection('users')
-//   let newUser = {
-//     firstName: firstName,
-//     lastName: lastName,
-//     username: username,
-//     password: password,
-//     email: email,
-//     socialMediaHandles: socialMediaHandles
-//   }
-//   const insertInfo = await users.add(newUser)
-//   if (!insertInfo) throw 'Error: Could not add user';
-//   return {userInserted: true};
-// }
-
-// module.exports = {
-//   createUser
-// }

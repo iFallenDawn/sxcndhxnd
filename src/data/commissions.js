@@ -1,18 +1,25 @@
 import db from "@/firebase/firestore"
-import { collection, doc, addDoc, getDoc } from "firebase/firestore"
+import { collection, doc, addDoc, getDoc, getDocs } from "firebase/firestore"
 import validation from "@/data/validation"
 
 let exportedMethods = {
+  // for querying https://firebase.google.com/docs/firestore/query-data/get-data#web_6
   async getCommissionById(id) {
     id = validation.checkId(id)
-    // https://firebase.google.com/docs/firestore/query-data/get-data#web_6
     const docRef = doc(db, "commissions", id)
     const commission = await getDoc(docRef)
     if (!commission) throw `Error: User not found`
     return commission.data()
   },
-  async addCommission(firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) 
-  {
+  async getAllCommissions() {
+    const querySnapshot = await getDocs(collection(db, 'commissions'))
+    if (!querySnapshot) throw `Error: Could not get all commissions`
+    const commissionList = querySnapshot.docs.map((doc) => doc.data())
+    console.log(commissionList)
+    return commissionList
+  },
+  // adding and setting data https://firebase.google.com/docs/firestore/manage-data/add-data
+  async addCommission(firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
     firstName = validation.checkString(firstName, "First Name")
     lastName = validation.checkString(lastName, "Last Name")
     email = validation.checkString(email, "Email")
@@ -46,7 +53,7 @@ let exportedMethods = {
       weeklyChecks: weeklyChecks,
       extra: extra,
     }
-    // https://firebase.google.com/docs/firestore/manage-data/add-data
+
     const commissions = collection(db, "commissions")
     const docRef = await addDoc(commissions, newCommission)
     if (!docRef) throw `Error: Failed to add user`
