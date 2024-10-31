@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 // these are all server actions
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
 export async function createCommission(prevState, formData) {
-  let firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra = null
+  let firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, creativeControl, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra = null
   let id = null
   let success = false
   let errors = []
@@ -17,6 +17,7 @@ export async function createCommission(prevState, formData) {
   pieceVision = formData.get('pieceVision')
   symmetryType = formData.get('symmetryType')
   baseMaterial = formData.get('baseMaterial')
+  creativeControl = formData.get('creativeControl')
   colors = formData.get('colors')
   fabrics = formData.get('fabrics')
   shapePatterns = formData.get('shapePatterns')
@@ -32,7 +33,7 @@ export async function createCommission(prevState, formData) {
   } catch (e) {
     errors.push(e)
   }
-    
+
   try {
     lastName = validation.checkString(lastName, 'Last Name')
   } catch (e) {
@@ -65,6 +66,12 @@ export async function createCommission(prevState, formData) {
 
   try {
     baseMaterial = validation.checkString(baseMaterial, 'Base Material')
+  } catch (e) {
+    errors.push(e)
+  }
+
+  try {
+    creativeControl = validation.checkString(creativeControl, 'Creative Control')
   } catch (e) {
     errors.push(e)
   }
@@ -125,6 +132,7 @@ export async function createCommission(prevState, formData) {
     pieceVision: pieceVision,
     symmetryType: symmetryType,
     baseMaterial: baseMaterial,
+    creativeControl, creativeControl,
     colors: colors,
     fabrics: fabrics,
     shapePatterns: shapePatterns,
@@ -161,6 +169,7 @@ export async function createCommission(prevState, formData) {
   // console.log(pieceVision)
   // console.log(symmetryType)
   // console.log(baseMaterial)
+  // console.log(creativeControl)
   // console.log(colors)
   // console.log(fabrics)
   // console.log(shapePatterns)

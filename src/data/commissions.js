@@ -18,7 +18,7 @@ let exportedMethods = {
     return commissionList
   },
   // adding and setting data https://firebase.google.com/docs/firestore/manage-data/add-data
-  async addCommission(firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+  async addCommission(firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, creativeControl, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
     firstName = validation.checkString(firstName, "First Name")
     lastName = validation.checkString(lastName, "Last Name")
     email = validation.checkString(email, "Email")
@@ -26,6 +26,7 @@ let exportedMethods = {
     pieceVision = validation.checkString(pieceVision, "Piece Vision")
     symmetryType = validation.checkString(symmetryType, "Symmetry Type")
     baseMaterial = validation.checkString(baseMaterial, "Base Material")
+    creativeControl = validation.checkString(creativeControl, "Creative Control")
     colors = validation.checkString(colors, "Colors")
     fabrics = validation.checkString(fabrics, "Fabrics")
     shapePatterns = validation.checkString(shapePatterns, "Shape Patterns")
@@ -43,6 +44,7 @@ let exportedMethods = {
       pieceVision: pieceVision,
       symmetryType: symmetryType,
       baseMaterial: baseMaterial,
+      creativeControl: creativeControl,
       colors: colors,
       fabrics: fabrics,
       shapePatterns: shapePatterns,
@@ -52,7 +54,6 @@ let exportedMethods = {
       weeklyChecks: weeklyChecks,
       extra: extra,
     }
-
     const commissions = collection(db, "commissions")
     const docRef = await addDoc(commissions, newCommission)
     if (!docRef) throw `Error: Failed to add user`

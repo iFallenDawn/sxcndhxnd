@@ -32,6 +32,7 @@ export async function POST(req) {
       reqBody.pieceVision = validation.checkString(reqBody.pieceVision, "Piece Vision");
       reqBody.symmetryType = validation.checkString(reqBody.symmetryType, "Symmetry Type");
       reqBody.baseMaterial = validation.checkString(reqBody.baseMaterial, "Base Material");
+      reqBody.creativeControl = validation.checkString(reqBody.creativeControl, "Creative Control");
       reqBody.colors = validation.checkString(reqBody.colors, "Colors");
       reqBody.fabrics = validation.checkString(reqBody.fabrics, "Fabrics");
       reqBody.shapePatterns = validation.checkString(reqBody.shapePatterns, "Shape Patterns");
@@ -53,6 +54,7 @@ export async function POST(req) {
         reqBody.pieceVision,
         reqBody.symmetryType,
         reqBody.baseMaterial,
+        reqBody.creativeControl,
         reqBody.colors,
         reqBody.fabrics,
         reqBody.shapePatterns,
@@ -64,7 +66,6 @@ export async function POST(req) {
       );
       return NextResponse.json(newCommission, { status: 200 });
     } catch (e) {
-      console.log(e);
       return NextResponse.json({ error: e }, { status: 500 });
     }
   } catch (e) {

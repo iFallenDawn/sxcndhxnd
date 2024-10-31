@@ -79,15 +79,16 @@ All fields required except userAccount
     commissionType: string,
     pieceVision: string,
     symmetryType: string,
-    baseMaterial: boolean,
+    baseMaterial: string,
+    creativeControl: string,
     colors: string,
     fabrics: string,
     shapePatterns: string,
-    distress: boolean,
-    retailor: boolean,
-    wantPockets: boolean,
+    distress: string,
+    retailor: string,
+    wantPockets: string,
     wherePockets: string,
-    weeklyCheckins: boolean,
+    weeklyCheckins: string,
     extra: string
 }
 ```
