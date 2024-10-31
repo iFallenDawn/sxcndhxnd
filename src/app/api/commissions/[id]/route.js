@@ -16,3 +16,16 @@ export async function GET(req, { params }) {
     return NextResponse.json({ error: e }, { status: 404 })
   }
 }
+
+// nixon fill this out
+export async function PUT(req, { params }) {
+
+}
+
+export async function PATCH(req, { params }) {
+
+}
+
+export async function DELETE(req, { params }) {
+
+}

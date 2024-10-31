@@ -58,6 +58,16 @@ let exportedMethods = {
     if (!docRef) throw `Error: Failed to add user`
     return await this.getCommissionById(docRef.id)
   },
+  // nixon fill these out
+  async updateCommissionPatch(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+
+  },
+  async updateCommissionPost(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+
+  },
+  async deleteCommission(id) {
+
+  }
 }
 
 export default exportedMethods
