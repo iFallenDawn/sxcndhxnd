@@ -42,7 +42,7 @@ export async function PUT(req, { params }) {
       const updatedCommission = await commissionData.updateCommissionPut(params.id, updatedReqBody);
       return NextResponse.json(updatedCommission, {status:200});
     } catch (e) {
-      return NextResponse.json({error: e}, {status: 400});
+      return NextResponse.json({error: e}, {status: 404});
     }
 
   }
