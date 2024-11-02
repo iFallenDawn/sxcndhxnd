@@ -47,7 +47,9 @@ let exportedMethods = {
 
   },
   async deleteCommission(id) {
-
+    // get the document
+    // delete the document
+    // return the deleted document
   }
 }
 
