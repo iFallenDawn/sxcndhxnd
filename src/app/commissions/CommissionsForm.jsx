@@ -11,6 +11,21 @@ const CommissionsForm = (props) => {
 
   return (
     <form action={formAction} className='flex flex-col'>
+       {state && state.message && (
+        <ul
+          aria-live='polite'
+          className={`sr-only`}
+          role='status'
+        >
+          {state.message.map((msg, index) => {
+            return (
+              <li className='error' key={index}>
+                {msg}
+              </li>
+            );
+          })}
+        </ul>
+      )}
       <label>
         First Name:
         <input type="text" name="firstName" />

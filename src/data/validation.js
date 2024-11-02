@@ -50,6 +50,26 @@ const exportedMethods = {
     if (typeof bool !== "boolean") throw `Error: You must provide a valid bool`
     return bool
   },
+  validateCommissionFields(reqBody) {
+    return {
+      firstName: this.checkString(reqBody.firstName, 'First Name'),
+      lastName: this.checkString(reqBody.lastName, 'Last Name'),
+      email: this.checkString(reqBody.email, 'Email'),
+      commissionType: this.checkString(reqBody.commissionType, 'Commission Type'),
+      pieceVision: this.checkString(reqBody.pieceVision, 'Piece Vision'),
+      symmetryType: this.checkString(reqBody.symmetryType, 'Symmetry Type'),
+      baseMaterial: this.checkString(reqBody.baseMaterial, 'Base Material'),
+      creativeControl: this.checkString(reqBody.creativeControl, "Creative Control"),
+      colors: this.checkString(reqBody.colors, "Colors"),
+      fabrics: this.checkString(reqBody.fabrics, 'Fabrics'),
+      shapePatterns: this.checkString(reqBody.shapePatterns, 'Shape Patterns'),
+      distress: this.checkString(reqBody.distress, 'Distress'),
+      retailor: this.checkString(reqBody.retailor, 'Retailor'),
+      pockets: this.checkString(reqBody.pockets, 'Pockets'),
+      weeklyChecks: this.checkString(reqBody.weeklyChecks, 'Weekly Checks'),
+      extra: this.checkString(reqBody.extra, 'Extra')
+    }
+  }
 }
 
 export default exportedMethods

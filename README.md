@@ -86,9 +86,8 @@ All fields required except userAccount
     shapePatterns: string,
     distress: string,
     retailor: string,
-    wantPockets: string,
-    wherePockets: string,
-    weeklyCheckins: string,
+    pockets: string,
+    weeklyChecks: string,
     extra: string
 }
 ```

@@ -1,8 +1,10 @@
 import db from "@/firebase/firestore"
-import { collection, doc, addDoc, getDoc, getDocs } from "firebase/firestore"
+import { collection, doc, addDoc, getDoc, getDocs, setDoc } from "firebase/firestore"
 import validation from "@/data/validation"
+import { commissionData } from "."
 
 let exportedMethods = {
+
   // for querying https://firebase.google.com/docs/firestore/query-data/get-data#web_6
   async getCommissionById(id) {
     id = validation.checkId(id)
@@ -18,44 +20,10 @@ let exportedMethods = {
     return commissionList
   },
   // adding and setting data https://firebase.google.com/docs/firestore/manage-data/add-data
-  async addCommission(firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, creativeControl, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
-    firstName = validation.checkString(firstName, "First Name")
-    lastName = validation.checkString(lastName, "Last Name")
-    email = validation.checkString(email, "Email")
-    commissionType = validation.checkString(commissionType, "Commission Type")
-    pieceVision = validation.checkString(pieceVision, "Piece Vision")
-    symmetryType = validation.checkString(symmetryType, "Symmetry Type")
-    baseMaterial = validation.checkString(baseMaterial, "Base Material")
-    creativeControl = validation.checkString(creativeControl, "Creative Control")
-    colors = validation.checkString(colors, "Colors")
-    fabrics = validation.checkString(fabrics, "Fabrics")
-    shapePatterns = validation.checkString(shapePatterns, "Shape Patterns")
-    distress = validation.checkString(distress, "Distress")
-    retailor = validation.checkString(retailor, "Retailor")
-    pockets = validation.checkString(pockets, "Pockets")
-    weeklyChecks = validation.checkString(weeklyChecks, "Weekly Checks")
-    extra = validation.checkString(extra, "Extra")
-
-    const newCommission = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      commissionType: commissionType,
-      pieceVision: pieceVision,
-      symmetryType: symmetryType,
-      baseMaterial: baseMaterial,
-      creativeControl: creativeControl,
-      colors: colors,
-      fabrics: fabrics,
-      shapePatterns: shapePatterns,
-      distress: distress,
-      retailor: retailor,
-      pockets: pockets,
-      weeklyChecks: weeklyChecks,
-      extra: extra,
-    }
-    const commissions = collection(db, "commissions")
-    const docRef = await addDoc(commissions, newCommission)
+  async addCommission(reqBody) {
+    const newCommission = validation.validateCommissionFields(reqBody)
+    const commissionCollection = collection(db, "commissions")
+    const docRef = await addDoc(commissionCollection, newCommission)
     if (!docRef) throw `Error: Failed to add user`
     return await this.getCommissionById(docRef.id)
   },
@@ -63,10 +31,19 @@ let exportedMethods = {
   // PUT - update a resource, REPLACE the entire resource with new data.
   // PATCH - update a resource, update some fields in the resource IN PLACE.
 
-  async updateCommissionPut(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+  async updateCommissionPut(id, updatedCommission) {
+    id = validation.checkId(id)
+    let updatedCommissionData = validation.validateCommissionFields(updatedCommission)
+    const commissionExists = await this.getCommissionById(id)
+    if (!commissionExists) throw 'Commission not found'
+    const commissionsCollection = collection(db, "commissions")
+    const docRef = doc(commissionsCollection, id)
+    if (!docRef) throw `Error: Failed to update user PUT`
+    await setDoc(docRef, updatedCommissionData)
 
+    return await this.getCommissionById(docRef.id)
   },
-  async updateCommissionPatch(id, firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra) {
+  async updateCommissionPatch(id, updatedCommission) {
 
   },
   async deleteCommission(id) {
