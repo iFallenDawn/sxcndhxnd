@@ -26,8 +26,8 @@ export async function PUT(req, { params }) {
 
     if (!reqBody || Object.keys(reqBody).length === 0) {
       return NextResponse.json(
-        {error: 'There are no fields in the request body'},
-        {status: 400}
+        { error: 'There are no fields in the request body' },
+        { status: 400 }
       );
     }
     let updatedReqBody = null
@@ -36,20 +36,20 @@ export async function PUT(req, { params }) {
       params.id = validation.checkId(params.id);
       updatedReqBody = validation.validateCommissionFields(reqBody)
     } catch (e) {
-      return NextResponse.json({error:e}, {status:400});
+      return NextResponse.json({ error: e }, { status: 400 });
     }
     try {
       const updatedCommission = await commissionData.updateCommissionPut(params.id, updatedReqBody);
-      return NextResponse.json(updatedCommission, {status:200});
+      return NextResponse.json(updatedCommission, { status: 200 });
     } catch (e) {
-      return NextResponse.json({error: e}, {status: 404});
+      return NextResponse.json({ error: e }, { status: 404 });
     }
 
   }
   catch (e) {
     return NextResponse.json(
-      {error: 'There is no request body'},
-      {status: 400}
+      { error: 'There is no request body' },
+      { status: 400 }
     );
   }
 }
@@ -62,32 +62,32 @@ export async function PATCH(req, { params }) {
 
     if (!reqBody || Object.keys(reqBody).length === 0) {
       return NextResponse.json(
-        {error: 'There are no fields in the request body'},
-        {status: 400}
+        { error: 'There are no fields in the request body' },
+        { status: 400 }
       )
     }
     const updatedReqBody = {}
     try {
       params.id = validation.checkId(params.id)
-      for (const [key,value] of Object.entries(reqBody)) {
-        console.log(typeof(key), key)
-        console.log(typeof(value), value)
+      for (const [key, value] of Object.entries(reqBody)) {
+        console.log(typeof (key), key)
+        console.log(typeof (value), value)
         updatedReqBody[key] = validation.checkString(value, key)
-    }
-  } catch (e) {
-      return NextResponse.json({error: e}, {status: 400})
+      }
+    } catch (e) {
+      return NextResponse.json({ error: e }, { status: 400 })
     }
     try {
       const updatedCommission = await commissionData.updateCommissionPatch(params.id, updatedReqBody)
-      return NextResponse.json(updatedCommission, {status: 200})
+      return NextResponse.json(updatedCommission, { status: 200 })
     } catch (e) {
-      return NextResponse.json({error:e}, {status:404})
+      return NextResponse.json({ error: e }, { status: 404 })
     }
 
   } catch (e) {
     return NextResponse.json(
-      {error: 'There is no request body'},
-      {status: 400}
+      { error: 'There is no request body' },
+      { status: 400 }
     )
   }
 
@@ -98,14 +98,14 @@ export async function DELETE(req, { params }) {
   try {
     params.id = validation.checkId(params.id, 'id URL Param')
   } catch (e) {
-    return NextResponse.json({error: e}, {status: 400})
+    return NextResponse.json({ error: e }, { status: 400 })
   }
   //try to delete post
   try {
     let deletedCommission = await commissionData.deleteCommission(params.id)
-    return NextResponse.json(deletedCommission, {status: 200})
+    return NextResponse.json(deletedCommission, { status: 200 })
   } catch (e) {
-    return NextResponse.json({error: e}, {status: 404})
+    return NextResponse.json({ error: e }, { status: 404 })
   }
 
 }

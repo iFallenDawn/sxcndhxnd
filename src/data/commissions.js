@@ -1,5 +1,5 @@
 import db from "@/firebase/firestore"
-import { collection, doc, addDoc, getDoc, getDocs, setDoc , deleteDoc } from "firebase/firestore"
+import { collection, doc, addDoc, getDoc, getDocs, setDoc, deleteDoc } from "firebase/firestore"
 import validation from "@/data/validation"
 import { commissionData } from "."
 
@@ -27,10 +27,6 @@ let exportedMethods = {
     if (!docRef) throw `Error: Failed to add user`
     return await this.getCommissionById(docRef.id)
   },
-  // nixon fill these out, if need help on put vs patch google or reference advanced-api-blog-nextjs/src/data/posts.js
-  // PUT - update a resource, REPLACE the entire resource with new data.
-  // PATCH - update a resource, update some fields in the resource IN PLACE.
-
   async updateCommissionPut(id, updatedCommission) {
     id = validation.checkId(id)
     let updatedCommissionData = validation.validateCommissionFields(updatedCommission)
@@ -49,7 +45,7 @@ let exportedMethods = {
     const commissionExists = await this.getCommissionById(id)
     if (!commissionExists) throw 'Commission not found'
     // if field in updatedCommission exists, validate and store in updatedCommissionData. do for all fields
-    for (const [key,value] of Object.entries(updatedCommission)) {
+    for (const [key, value] of Object.entries(updatedCommission)) {
       try {
         updatedCommissionData[key] = validation.checkString(value, key)
         console.log(updatedCommissionData)
@@ -61,12 +57,11 @@ let exportedMethods = {
     const commissionsCollection = collection(db, "commissions")
     const docRef = doc(commissionsCollection, id)
     if (!docRef) throw `Error: Failed to update commission PATCH`
-    await setDoc(docRef, updatedCommissionData, {merge: true})    
-    // const commissionsCollection 
+    await setDoc(docRef, updatedCommissionData, { merge: true })
     return await this.getCommissionById(docRef.id)
   },
   async deleteCommission(id) {
-    id = validation.checkId(id)    
+    id = validation.checkId(id)
     // get the document
     const commissionExists = await this.getCommissionById(id)
     if (!commissionExists) throw `Commission not found`
