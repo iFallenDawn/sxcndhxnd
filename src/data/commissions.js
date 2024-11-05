@@ -67,8 +67,8 @@ let exportedMethods = {
     const docRef = doc(commissionsCollection, id)
     if (!docRef) throw `Error: Failed to update commission DELETE`
     // return the deleted document
-    const deletedCommission = await deleteDoc(docRef)
-    return await deletedCommission
+    await deleteDoc(docRef)
+    return commissionExists
   }
 }
 
