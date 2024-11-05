@@ -69,6 +69,29 @@ const exportedMethods = {
       weeklyChecks: this.checkString(reqBody.weeklyChecks, 'Weekly Checks'),
       extra: this.checkString(reqBody.extra, 'Extra')
     }
+  },
+  validateCommissionKey(str) {
+    const commissionKeys = [
+      'firstName',
+      'lastName',
+      'email',
+      'commissionType',
+      'pieceVision',
+      'symmetryType',
+      'baseMaterial',
+      'creativeControl',
+      'colors',
+      'fabrics',
+      'shapePatterns',
+      'distress',
+      'retailor',
+      'pockets',
+      'weeklyChecks',
+      'extra'
+    ]
+    if (commissionKeys.includes(str))
+      return true
+    return false
   }
 }
 

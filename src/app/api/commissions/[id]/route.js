@@ -19,10 +19,9 @@ export async function GET(req, { params }) {
 
 // nixon fill these out, if need help on put vs patch google or reference advanced-api-blog-nextjs/src/app/api/posts/[id]/route.js
 export async function PUT(req, { params }) {
-  let reqBody = null;
   // check if there is no request body, or if request body empty
   try {
-    reqBody = await req.json();
+    let reqBody = await req.json();
 
     if (!reqBody || Object.keys(reqBody).length === 0) {
       return NextResponse.json(
@@ -55,10 +54,8 @@ export async function PUT(req, { params }) {
 }
 
 export async function PATCH(req, { params }) {
-  let reqBody = null
   try {
     let reqBody = await req.json()
-    console.log(reqBody)
 
     if (!reqBody || Object.keys(reqBody).length === 0) {
       return NextResponse.json(
@@ -69,10 +66,12 @@ export async function PATCH(req, { params }) {
     const updatedReqBody = {}
     try {
       params.id = validation.checkId(params.id)
+      // this only checks for the variables that exist in reqBody
       for (const [key, value] of Object.entries(reqBody)) {
-        console.log(typeof (key), key)
-        console.log(typeof (value), value)
-        updatedReqBody[key] = validation.checkString(value, key)
+        // only allow valid commission keys in updated request
+        if (validation.validateCommissionKey(key)) {
+          updatedReqBody[key] = validation.checkString(value, key)
+        }
       }
     } catch (e) {
       return NextResponse.json({ error: e }, { status: 400 })

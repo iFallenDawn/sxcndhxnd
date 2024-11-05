@@ -40,17 +40,14 @@ let exportedMethods = {
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPatch(id, updatedCommission) {
-    // updatePostPatch does not do a checkId, whys that?
+    id = validation.checkId(id)
     const updatedCommissionData = {}
     const commissionExists = await this.getCommissionById(id)
     if (!commissionExists) throw 'Commission not found'
     // if field in updatedCommission exists, validate and store in updatedCommissionData. do for all fields
     for (const [key, value] of Object.entries(updatedCommission)) {
-      try {
+      if (validation.validateCommissionKey(key)) {
         updatedCommissionData[key] = validation.checkString(value, key)
-        console.log(updatedCommissionData)
-      } catch (e) {
-        errors.push(e)
       }
     }
     // update in firebase
