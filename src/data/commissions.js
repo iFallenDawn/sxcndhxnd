@@ -1,5 +1,5 @@
 import db from "@/firebase/firestore"
-import { collection, doc, addDoc, getDoc, getDocs, setDoc } from "firebase/firestore"
+import { collection, doc, addDoc, getDoc, getDocs, setDoc , deleteDoc } from "firebase/firestore"
 import validation from "@/data/validation"
 import { commissionData } from "."
 
@@ -38,18 +38,45 @@ let exportedMethods = {
     if (!commissionExists) throw 'Commission not found'
     const commissionsCollection = collection(db, "commissions")
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to update user PUT`
+    if (!docRef) throw `Error: Failed to update commission PUT`
     await setDoc(docRef, updatedCommissionData)
 
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPatch(id, updatedCommission) {
-
+    // updatePostPatch does not do a checkId, whys that?
+    const updatedCommissionData = {}
+    const commissionExists = await this.getCommissionById(id)
+    if (!commissionExists) throw 'Commission not found'
+    // if field in updatedCommission exists, validate and store in updatedCommissionData. do for all fields
+    for (const [key,value] of Object.entries(updatedCommission)) {
+      try {
+        updatedCommissionData[key] = validation.checkString(value, key)
+        console.log(updatedCommissionData)
+      } catch (e) {
+        errors.push(e)
+      }
+    }
+    // update in firebase
+    const commissionsCollection = collection(db, "commissions")
+    const docRef = doc(commissionsCollection, id)
+    if (!docRef) throw `Error: Failed to update commission PATCH`
+    await setDoc(docRef, updatedCommissionData, {merge: true})    
+    // const commissionsCollection 
+    return await this.getCommissionById(docRef.id)
   },
   async deleteCommission(id) {
+    id = validation.checkId(id)    
     // get the document
+    const commissionExists = await this.getCommissionById(id)
+    if (!commissionExists) throw `Commission not found`
     // delete the document
+    const commissionsCollection = collection(db, 'commissions')
+    const docRef = doc(commissionsCollection, id)
+    if (!docRef) throw `Error: Failed to update commission DELETE`
     // return the deleted document
+    const deletedCommission = await deleteDoc(docRef)
+    return await deletedCommission
   }
 }
 

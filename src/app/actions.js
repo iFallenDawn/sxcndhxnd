@@ -29,6 +29,7 @@ export async function createCommission(prevState, formData) {
     try {
       let keyFormData = formData.get(key)
       keyFormData = validation.checkString(keyFormData, value)
+      // why do we use commissionFields instead of newCommission?
       commissionFields[key] = keyFormData
     } catch (e) {
       errors.push(e)
