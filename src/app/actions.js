@@ -6,142 +6,36 @@ import { revalidatePath } from 'next/cache'
 // these are all server actions
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
 export async function createCommission(prevState, formData) {
-  let firstName, lastName, email, commissionType, pieceVision, symmetryType, baseMaterial, creativeControl, colors, fabrics, shapePatterns, distress, retailor, pockets, weeklyChecks, extra = null
-  let id = null
+  // we set the values as the parameter we're checking in checkstring to make it easier to view errors
+  let newCommission = {
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    email: 'Email',
+    commissionType: 'Commission Type',
+    pieceVision: 'Piece Vision',
+    symmetryType: 'Symmetry Type',
+    baseMaterial: 'Base Material',
+    creativeControl: 'Creative Control',
+    colors: 'Colors',
+    fabrics: 'Fabrics',
+    shapePatterns: 'Shape Patterns',
+    distress: 'Distress',
+    retailor: 'Retailor',
+    pockets: 'Pockets',
+    weeklyChecks: 'Weekly Checks',
+    extra: 'Extra'
+  }
+  for (const [key, value] of Object.entries(newCommission)) {
+    try {
+      let keyFormData = formData.get(key)
+      keyFormData = validation.checkString(keyFormData, value)
+      newCommission[key] = keyFormData
+    } catch (e) {
+      errors.push(e)
+    }
+  }
   let success = false
   let errors = []
-  firstName = formData.get('firstName')
-  lastName = formData.get('lastName')
-  email = formData.get('email')
-  commissionType = formData.get('commissionType')
-  pieceVision = formData.get('pieceVision')
-  symmetryType = formData.get('symmetryType')
-  baseMaterial = formData.get('baseMaterial')
-  creativeControl = formData.get('creativeControl')
-  colors = formData.get('colors')
-  fabrics = formData.get('fabrics')
-  shapePatterns = formData.get('shapePatterns')
-  distress = formData.get('distress')
-  retailor = formData.get('retailor')
-  pockets = formData.get('pockets')
-  weeklyChecks = formData.get('weeklyChecks')
-  extra = formData.get('extra')
-
-  // check that the user input values are valid
-  try {
-    firstName = validation.checkString(firstName, 'First Name')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    lastName = validation.checkString(lastName, 'Last Name')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    email = validation.checkString(email, 'Email')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    commissionType = validation.checkString(commissionType, 'Commission Type')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    pieceVision = validation.checkString(pieceVision, 'Piece Vision')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    symmetryType = validation.checkString(symmetryType, 'Symmetry Type')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    baseMaterial = validation.checkString(baseMaterial, 'Base Material')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    creativeControl = validation.checkString(creativeControl, 'Creative Control')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    colors = validation.checkString(colors, 'Colors')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    fabrics = validation.checkString(fabrics, 'Fabrics')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    shapePatterns = validation.checkString(shapePatterns, 'Shape Patterns')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    distress = validation.checkString(distress, 'Distress')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    retailor = validation.checkString(retailor, 'Retailor')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    pockets = validation.checkString(pockets, 'Pockets')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    weeklyChecks = validation.checkString(weeklyChecks, 'Weekly Checks')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  try {
-    extra = validation.checkString(extra, 'Extra')
-  } catch (e) {
-    errors.push(e)
-  }
-
-  let newCommission = {
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    commissionType: commissionType,
-    pieceVision: pieceVision,
-    symmetryType: symmetryType,
-    baseMaterial: baseMaterial,
-    creativeControl, creativeControl,
-    colors: colors,
-    fabrics: fabrics,
-    shapePatterns: shapePatterns,
-    distress: distress,
-    retailor: retailor,
-    pockets: pockets,
-    weeklyChecks: weeklyChecks,
-    extra: extra
-  }
 
   if (errors.length > 0) {
     return { message: errors }
