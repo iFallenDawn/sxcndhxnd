@@ -6,6 +6,11 @@ Inspired by a talk I had with Nico at Leg Up On Life about adding a shopping car
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+# Authors
+- Jordan Wang
+- Nixon Puertollano
+- Jenny Garino
+
 # Technologies
 
 - [SVGR](https://github.com/gregberge/svgr)
