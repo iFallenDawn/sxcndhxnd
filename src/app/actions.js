@@ -25,6 +25,7 @@ export async function createCommission(prevState, formData) {
     weeklyChecks: 'Weekly Checks',
     extra: 'Extra'
   }
+  let errors = []
   for (const [key, value] of Object.entries(newCommission)) {
     try {
       let keyFormData = formData.get(key)
@@ -35,7 +36,6 @@ export async function createCommission(prevState, formData) {
     }
   }
   let success = false
-  let errors = []
 
   if (errors.length > 0) {
     return { message: errors }
