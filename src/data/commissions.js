@@ -1,7 +1,6 @@
 import db from "@/firebase/firestore"
 import { collection, doc, addDoc, getDoc, getDocs, setDoc, deleteDoc } from "firebase/firestore"
 import validation from "@/data/validation"
-import { commissionData } from "."
 
 let exportedMethods = {
 
