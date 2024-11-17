@@ -19,11 +19,11 @@ let exportedMethods = {
     return commissionList
   },
   // adding and setting data https://firebase.google.com/docs/firestore/manage-data/add-data
-  async addCommission(reqBody) {
+  async createCommission(reqBody) {
     const newCommission = validation.validateCommissionFields(reqBody)
     const commissionCollection = collection(db, "commissions")
     const docRef = await addDoc(commissionCollection, newCommission)
-    if (!docRef) throw `Error: Failed to add user`
+    if (!docRef) throw `Error: Failed to create user`
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPut(id, updatedCommission) {

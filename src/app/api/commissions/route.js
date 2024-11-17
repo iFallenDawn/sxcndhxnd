@@ -46,7 +46,7 @@ export async function POST(req) {
     }
 
     try {
-      const newCommission = await commissionData.addCommission(reqBody)
+      const newCommission = await commissionData.createCommission(reqBody)
       return NextResponse.json(newCommission, { status: 200 })
     } catch (e) {
       console.log(e)
