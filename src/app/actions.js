@@ -2,9 +2,37 @@
 import validation from '@/data/validation'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import app from '@/firebase/firebase'
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 // these are all server actions
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
+
+export async function createUser(prevState, formData) {
+  const email = formData.get('email')
+  const password = formData.get('password')
+  if (!email) {
+    console.log("email failed")
+    return "email failed"
+  }
+  if (!password) {
+    console.log("pw failed")
+    return "pw failed"
+  }
+  const auth = getAuth(app)
+  const userCreated = await createUserWithEmailAndPassword(auth, email, password)
+  if (!userCreated) {
+    console.log("failed to create user")
+  }
+  else {
+    console.log("user created")
+  }
+}
+
+export async function loginUser(prevState, formData) {
+  console.log('hello world!')
+}
+
 export async function createCommission(prevState, formData) {
   // we set the values as the parameter we're checking in checkstring to make it easier to view errors
   let newCommission = {

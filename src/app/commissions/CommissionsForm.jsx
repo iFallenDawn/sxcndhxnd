@@ -1,13 +1,12 @@
+import { useActionState } from "react";
 'use client'
-import { useState } from 'react'
-import { useFormState } from 'react-dom'
 import { createCommission } from '@/app/actions'
 const initialState = {
   message: null
 }
 
 const CommissionsForm = (props) => {
-  const [state, formAction] = useFormState(createCommission, initialState)
+  const [state, formAction] = useActionState(createCommission, initialState)
 
   return (
     <form action={formAction} className='flex flex-col'>
