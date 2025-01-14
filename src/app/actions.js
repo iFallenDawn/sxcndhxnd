@@ -2,9 +2,13 @@
 import validation from '@/data/validation'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { commissionData } from '@/data'
 
 // these are all server actions
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
+// server actions DIRECTLY call the firebase functions, don't need to make api calls
+// ONLY used for POST functionality
+
 export async function createCommission(prevState, formData) {
   // we set the values as the parameter we're checking in checkstring to make it easier to view errors
   let newCommission = {
@@ -43,33 +47,15 @@ export async function createCommission(prevState, formData) {
   else {
     try {
       // create the new commission
-      await fetch('/api/commissions', {
-        method: 'POST',
-        body: JSON.stringify(newCommission)
-      })
+      const createdCommission = await commissionData.createCommission(newCommission)
+      success = true
+      console.log("hello world")
     } catch (e) {
       return { message: e }
     } finally {
       if (success) {
-        console.log('wow we created a commission')
+        return { message: 'Commission submitted!' }
       }
     }
   }
-
-  // console.log(firstName)
-  // console.log(lastName)
-  // console.log(email)
-  // console.log(commissionType)
-  // console.log(pieceVision)
-  // console.log(symmetryType)
-  // console.log(baseMaterial)
-  // console.log(creativeControl)
-  // console.log(colors)
-  // console.log(fabrics)
-  // console.log(shapePatterns)
-  // console.log(distress)
-  // console.log(retailor)
-  // console.log(pockets)
-  // console.log(weeklyChecks)
-  // console.log(extra)
 }

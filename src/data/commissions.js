@@ -10,7 +10,10 @@ let exportedMethods = {
     const docRef = doc(db, "commissions", id)
     const commission = await getDoc(docRef)
     if (!commission) throw `Error: User not found`
-    return commission.data()
+    return {
+      id: docRef.id,
+      ...commission.data()
+    }
   },
   async getAllCommissions() {
     const querySnapshot = await getDocs(collection(db, 'commissions'))
