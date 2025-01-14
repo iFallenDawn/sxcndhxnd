@@ -9,7 +9,7 @@ let exportedMethods = {
     id = validation.checkId(id)
     const docRef = doc(db, "commissions", id)
     const commission = await getDoc(docRef)
-    if (!commission) throw `Error: User not found`
+    if (!commission) throw `Error: Commission not found`
     return {
       id: docRef.id,
       ...commission.data()
@@ -26,7 +26,7 @@ let exportedMethods = {
     const newCommission = validation.validateCommissionFields(reqBody)
     const commissionCollection = collection(db, "commissions")
     const docRef = await addDoc(commissionCollection, newCommission)
-    if (!docRef) throw `Error: Failed to create user`
+    if (!docRef) throw `Error: Failed to create commission`
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPut(id, updatedCommission) {

@@ -4,12 +4,22 @@ import validation from "@/data/validation"
 
 let exportedMethods = {
   async getUserById(id) {
-
+    id = validation.checkId(id)
+    const docRef = doc(db, "users", id)
+    const user = await getDoc(docRef)
+    if (!user) throw `Error: User not found`
+    return {
+      id: docRef.id,
+      ...user.data()
+    }
   },
   async getAllUsers(id) {
-
+    const querySnapshot = await getDocs(collection(db, 'users'))
+    if (!querySnapshot) throw `Error: Could not get all users`
+    const userList = querySnapshot.docs.map((doc) => doc.data())
+    return userList
   },
-  async createUser() {
+  async createUser(reqBody) {
 
   },
   async updateUserEmail(userId, password, newEmail) {
