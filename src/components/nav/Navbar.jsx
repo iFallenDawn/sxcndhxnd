@@ -16,7 +16,6 @@ const Close = (props) => (
     strokeLinejoin="round"
     strokeWidth={2}
     className="lucide lucide-x"
-    {...props}
   >
     <path d="M18 6 6 18M6 6l12 12" />
   </svg>
@@ -33,7 +32,6 @@ const ShoppingCart = (props) => (
     strokeLinejoin="round"
     strokeWidth={2}
     className="lucide lucide-shopping-cart"
-    {...props}
   >
     <circle cx={8} cy={21} r={1} />
     <circle cx={19} cy={21} r={1} />
@@ -52,18 +50,37 @@ const Hamburger = (props) => (
     strokeLinejoin="round"
     strokeWidth={2}
     className="lucide lucide-menu"
-    {...props}
   >
     <path d="M4 12h16M4 6h16M4 18h16" />
   </svg>
 )
+
+const Account = (props) => {
+  return (
+    <a href={'/account'}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="lucide lucide-user"
+      >
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </a>
+  )
+}
 
 const Navbar = (props) => {
   const { currentPage } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const routes = [
-    ["/", "Home"],
     ["/about", "About Me"],
     ["/commissions", "Commissions"],
     ["/contact", "Contact"],
@@ -117,6 +134,7 @@ const Navbar = (props) => {
         <div className='flex flex-row w-full items-center justify-between px-4 py-1 bg-amber-400'>
           <Logo />
           <div className='flex flex-row items-center justify-between'>
+            <Account />
             <ShoppingCart />
             <MobileNavIcon />
           </div>
@@ -147,6 +165,7 @@ const Navbar = (props) => {
           <div className='flex flex-row items-center'>
             <ul className='flex flex-row items-center justify-between'>
               {links}
+              <Account />
               <ShoppingCart />
             </ul>
           </div>

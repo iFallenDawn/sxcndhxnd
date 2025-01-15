@@ -2,7 +2,7 @@
 import validation from '@/data/validation'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { commissionData } from '@/data'
+import { commissionData, userData } from '@/data'
 import firebaseApp from '@/firebase/firebase'
 import { getAuth, createUserWithEmailAndPassword, validatePassword } from 'firebase/auth'
 
@@ -67,7 +67,8 @@ export async function createUser(prevState, formData) {
     firstName: 'First Name',
     lastName: 'Last Name',
     email: 'Email',
-    password: 'Password'
+    password: 'Password',
+    instagram: 'Instagram'
   }
   let errors = []
   for (const [key, value] of Object.entries(newUser)) {
@@ -106,8 +107,10 @@ export async function createUser(prevState, formData) {
   }
   else {
     try {
-      // create the user
+      // create the user in firebase auth
       const createFirebaseUser = await createUserWithEmailAndPassword(auth, newUser.email, formData.get('password'))
+      // create the user in firestore collection
+      const createdUser = await userData.createUser(newUser)
       success = true
     } catch (e) {
       return { message: e }

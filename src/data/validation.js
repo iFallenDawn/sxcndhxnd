@@ -57,6 +57,16 @@ const exportedMethods = {
     if (!EmailValidator.validate(email)) throw "Email is invalid.";
     return email.toLowerCase(); //for storage purposes, not case sensitive
   },
+  validateUserFields(reqBody) {
+    return {
+      firstName: this.checkString(reqBody.firstName, 'First Name'),
+      lastName: this.checkString(reqBody.lastName, 'Last Name'),
+      email: this.checkEmail(reqBody.email, 'Email'),
+      instagram: this.checkString(reqBody.instagram, 'Instagram'),
+      commissionIds: [],
+      productIds: []
+    }
+  },
   validateCommissionFields(reqBody) {
     return {
       firstName: this.checkString(reqBody.firstName, 'First Name'),

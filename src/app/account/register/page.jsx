@@ -45,6 +45,10 @@ const Register = (props) => {
         Password:
         <input type="Password" name="password" />
       </label>
+      <label>
+        Instagram:
+        <input type="text" name="instagram" />
+      </label>
       <button>Submit</button>
     </form>
   )

@@ -13,14 +13,18 @@ let exportedMethods = {
       ...user.data()
     }
   },
-  async getAllUsers(id) {
+  async getAllUsers() {
     const querySnapshot = await getDocs(collection(db, 'users'))
     if (!querySnapshot) throw `Error: Could not get all users`
     const userList = querySnapshot.docs.map((doc) => doc.data())
     return userList
   },
   async createUser(reqBody) {
-
+    const newUser = validation.validateUserFields(reqBody)
+    const userCollection = collection(db, "users")
+    const docRef = await addDoc(userCollection, newUser)
+    if (!docRef) throw `Error: Failed to create user`
+    return await this.getUserById(docRef.id)
   },
   async updateUserEmail(userId, password, newEmail) {
 
