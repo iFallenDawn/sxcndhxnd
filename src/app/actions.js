@@ -51,7 +51,6 @@ export async function createCommission(prevState, formData) {
       // create the new commission
       const createdCommission = await commissionData.createCommission(newCommission)
       success = true
-      console.log("hello world")
     } catch (e) {
       return { message: e }
     } finally {
@@ -106,11 +105,25 @@ export async function createUser(prevState, formData) {
     return { message: errors }
   }
   else {
+    //create user in firebase auth
+    let firebaseAuthId = ''
     try {
-      // create the user in firebase auth
       const createFirebaseUser = await createUserWithEmailAndPassword(auth, newUser.email, formData.get('password'))
+      firebaseAuthId = createFirebaseUser.user.uid
+    } catch (e) {
+      //https://firebase.google.com/docs/auth/admin/errors
+      let error = ''
+      if (e.code === 'auth/email-already-in-use')
+        error = 'This email already has an account!'
+      else if (e.code === 'auth/invalid-email')
+        error = 'Invalid email'
+      else if (e.code === 'auth/weak-password')
+        error = 'Password is too weak'
+      return { message: error }
+    }
+    try {
       // create the user in firestore collection
-      const createdUser = await userData.createUser(newUser)
+      const createdUser = await userData.createUser(newUser, firebaseAuthId)
       success = true
     } catch (e) {
       return { message: e }

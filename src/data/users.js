@@ -1,5 +1,7 @@
 import db from "@/firebase/firestore"
-import { collection, doc, addDoc, getDoc, getDocs, setDoc, deleteDoc } from "firebase/firestore"
+import firebaseApp from '@/firebase/firebase'
+import { collection, doc, addDoc, getDoc, getDocs, setDoc, deleteDoc, query, where } from "firebase/firestore"
+import { getAuth, updateEmail } from 'firebase/auth'
 import validation from "@/data/validation"
 
 let exportedMethods = {
@@ -7,10 +9,27 @@ let exportedMethods = {
     id = validation.checkId(id)
     const docRef = doc(db, "users", id)
     const user = await getDoc(docRef)
-    if (!user) throw `Error: User not found`
+    if (!user) throw `Error: User with id ${id} not found`
     return {
       id: docRef.id,
       ...user.data()
+    }
+  },
+  async getUserByEmail(email, userCreation) {
+    email = validation.checkEmail(email)
+    const userCollection = collection(db, 'users')
+    const q = query(userCollection, where("email", "==", email))
+    const querySnapshot = await getDocs(q)
+    //there should only be one since emails are unique. for createUser throw an error there instead so this will work with the API
+    if (userCreation === false && querySnapshot.size === 0) throw `Error: Could not find user with email ${email}`
+    //usercreation is true
+    if (querySnapshot.size === 0) {
+      return false
+    }
+    const docRef = querySnapshot.docs[0]
+    return {
+      id: docRef.id,
+      ...docRef.data()
     }
   },
   async getAllUsers() {
@@ -19,14 +38,35 @@ let exportedMethods = {
     const userList = querySnapshot.docs.map((doc) => doc.data())
     return userList
   },
-  async createUser(reqBody) {
+  async createUser(reqBody, firebaseAuthId) {
+    //account for the case where we're sending an api call in directly to make
+    //a user versus with firebase auth
+    if (firebaseAuthId)
+      firebaseAuthId = validation.checkString(firebaseAuthId)
     const newUser = validation.validateUserFields(reqBody)
-    const userCollection = collection(db, "users")
-    const docRef = await addDoc(userCollection, newUser)
-    if (!docRef) throw `Error: Failed to create user`
-    return await this.getUserById(docRef.id)
+    const emailExists = await this.getUserByEmail(reqBody.email, true)
+    if (emailExists) throw `Error: email ${reqBody.email} already exists`
+    //we have to use setDoc here because we're matching Firebase Auth id
+    //with firestore doc id
+    if (firebaseAuthId) {
+      await setDoc(doc(db, "users", firebaseAuthId), newUser)
+      return await this.getUserById(firebaseAuthId)
+    }
+    else {
+      const userCollection = collection(db, "users")
+      const docRef = await addDoc(userCollection, newUser)
+      if (!docRef) throw `Error: Failed to create user`
+      return await this.getUserById(docRef.id)
+    }
   },
-  async updateUserEmail(userId, password, newEmail) {
+  //requires user to be signed in first!
+  async updateUserEmail(id, newEmail) {
+    id = validation.checkId(id)
+    newEmail = validation.checkEmail(newEmail)
+    const auth = getAuth(firebaseApp)
+    const currentUser = auth.currentUser
+    if (!user) throw `Error: User is not signed in!`
+    const updatedEmail = await updateEmail(currentUser, newEmail)
 
   },
   async updateUserByPut() {

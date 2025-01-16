@@ -11,7 +11,7 @@ const Register = (props) => {
   return (
     <form action={formAction} className='flex flex-col'>
       {state && state.message && !Array.isArray(state.message) && (
-        <h1>{state.message}</h1>
+        <h1 className='error'>{state.message}</h1>
       )}
       {state && state.message && Array.isArray(state.message) && (
         <ul
