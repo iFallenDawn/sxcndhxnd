@@ -41,23 +41,14 @@ let exportedMethods = {
   async createUser(reqBody, firebaseAuthId) {
     //account for the case where we're sending an api call in directly to make
     //a user versus with firebase auth
-    if (firebaseAuthId)
-      firebaseAuthId = validation.checkString(firebaseAuthId)
+    firebaseAuthId = validation.checkString(firebaseAuthId)
     const newUser = validation.validateUserFields(reqBody)
     const emailExists = await this.getUserByEmail(reqBody.email, true)
     if (emailExists) throw `Error: email ${reqBody.email} already exists`
     //we have to use setDoc here because we're matching Firebase Auth id
-    //with firestore doc id
-    if (firebaseAuthId) {
-      await setDoc(doc(db, "users", firebaseAuthId), newUser)
-      return await this.getUserById(firebaseAuthId)
-    }
-    else {
-      const userCollection = collection(db, "users")
-      const docRef = await addDoc(userCollection, newUser)
-      if (!docRef) throw `Error: Failed to create user`
-      return await this.getUserById(docRef.id)
-    }
+    await setDoc(doc(db, "users", firebaseAuthId), newUser)
+    return await this.getUserById(firebaseAuthId)
+
   },
   //requires user to be signed in first!
   async updateUserEmail(id, newEmail) {

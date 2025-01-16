@@ -23,24 +23,9 @@ export async function POST(req) {
         { status: 400 }
       )
     }
-    // check all the variables
+    // validate all the variables
     try {
-      reqBody.firstName = validation.checkString(reqBody.firstName, "First Name")
-      reqBody.lastName = validation.checkString(reqBody.lastName, "Last Name")
-      reqBody.email = validation.checkString(reqBody.email, "Email")
-      reqBody.commissionType = validation.checkString(reqBody.commissionType, "Commission Type")
-      reqBody.pieceVision = validation.checkString(reqBody.pieceVision, "Piece Vision")
-      reqBody.symmetryType = validation.checkString(reqBody.symmetryType, "Symmetry Type")
-      reqBody.baseMaterial = validation.checkString(reqBody.baseMaterial, "Base Material")
-      reqBody.creativeControl = validation.checkString(reqBody.creativeControl, "Creative Control")
-      reqBody.colors = validation.checkString(reqBody.colors, "Colors")
-      reqBody.fabrics = validation.checkString(reqBody.fabrics, "Fabrics")
-      reqBody.shapePatterns = validation.checkString(reqBody.shapePatterns, "Shape Patterns")
-      reqBody.distress = validation.checkString(reqBody.distress, "Distress")
-      reqBody.retailor = validation.checkString(reqBody.retailor, "Retailor")
-      reqBody.pockets = validation.checkString(reqBody.pockets, "Pockets")
-      reqBody.weeklyChecks = validation.checkString(reqBody.weeklyChecks, "Weekly Checks")
-      reqBody.extra = validation.checkString(reqBody.extra, "Extra")
+      reqBody = validation.validateCommissionFields(reqBody)
     } catch (e) {
       return NextResponse.json({ error: e }, { status: 400 })
     }
@@ -49,7 +34,6 @@ export async function POST(req) {
       const newCommission = await commissionData.createCommission(reqBody)
       return NextResponse.json(newCommission, { status: 200 })
     } catch (e) {
-      console.log(e)
       return NextResponse.json({ error: e }, { status: 500 })
     }
   } catch (e) {
