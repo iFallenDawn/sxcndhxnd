@@ -17,7 +17,10 @@ export async function GET(req, { params }) {
   }
 }
 
-// nixon fill these out, if need help on put vs patch google or reference advanced-api-blog-nextjs/src/app/api/posts/[id]/route.js
+//if need help on put vs patch google or reference advanced-api-blog-nextjs/src/app/api/posts/[id]/route.js
+// PUT - update a resource, REPLACE the entire resource with new data.
+// PATCH - update a resource, update some fields in the resource IN PLACE.
+
 export async function PUT(req, { params }) {
   // check if there is no request body, or if request body empty
   try {
