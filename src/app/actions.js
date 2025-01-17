@@ -123,7 +123,7 @@ export async function createUser(prevState, formData) {
     }
     try {
       // create the user in firestore collection
-      const newUser = await userData.createUser(newUser, firebaseAuthId)
+      const createdUser = await userData.createUser(newUser, firebaseAuthId)
       success = true
     } catch (e) {
       return { message: e }

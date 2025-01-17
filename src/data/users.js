@@ -9,7 +9,7 @@ let exportedMethods = {
     id = validation.checkId(id)
     const docRef = doc(db, "users", id)
     const user = await getDoc(docRef)
-    if (!user) throw `Error: User with id ${id} not found`
+    if (!user.exists()) throw `Error: User with id '${id}' not found`
     return {
       id: docRef.id,
       ...user.data()
@@ -21,9 +21,9 @@ let exportedMethods = {
     const q = query(userCollection, where("email", "==", email))
     const querySnapshot = await getDocs(q)
     //there should only be one since emails are unique. for createUser throw an error there instead so this will work with the API
-    if (userCreation === false && querySnapshot.size === 0) throw `Error: Could not find user with email ${email}`
+    if (userCreation === false && querySnapshot.empty) throw `Error: Could not find user with email ${email}`
     //usercreation is true
-    if (querySnapshot.size === 0) {
+    if (querySnapshot.empty) {
       return false
     }
     const docRef = querySnapshot.docs[0]
@@ -34,7 +34,7 @@ let exportedMethods = {
   },
   async getAllUsers() {
     const querySnapshot = await getDocs(collection(db, 'users'))
-    if (!querySnapshot) throw `Error: Could not get all users`
+    if (querySnapshot.empty) throw `Error: There are no users in the collection`
     const userList = querySnapshot.docs.map((doc) => doc.data())
     return userList
   },
