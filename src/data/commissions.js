@@ -9,7 +9,7 @@ let exportedMethods = {
     id = validation.checkId(id)
     const docRef = doc(db, "commissions", id)
     const commission = await getDoc(docRef)
-    if (!commission) throw `Error: User not found`
+    if (!commission.exists()) throw `Error: Commission with id '${id}' not found`
     return {
       id: docRef.id,
       ...commission.data()
@@ -17,7 +17,7 @@ let exportedMethods = {
   },
   async getAllCommissions() {
     const querySnapshot = await getDocs(collection(db, 'commissions'))
-    if (!querySnapshot) throw `Error: Could not get all commissions`
+    if (querySnapshot.empty) throw `Error: There are no commissions in the collection`
     const commissionList = querySnapshot.docs.map((doc) => doc.data())
     return commissionList
   },
@@ -26,17 +26,17 @@ let exportedMethods = {
     const newCommission = validation.validateCommissionFields(reqBody)
     const commissionCollection = collection(db, "commissions")
     const docRef = await addDoc(commissionCollection, newCommission)
-    if (!docRef) throw `Error: Failed to create user`
+    if (!docRef) throw `Error: Failed to create commission`
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPut(id, updatedCommission) {
     id = validation.checkId(id)
     let updatedCommissionData = validation.validateCommissionFields(updatedCommission)
     const commissionExists = await this.getCommissionById(id)
-    if (!commissionExists) throw 'Commission not found'
+    if (!commissionExists) throw `Commission with id '${id}' not found`
     const commissionsCollection = collection(db, "commissions")
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to update commission PUT`
+    if (!docRef) throw `Error: Failed to update commission with id '${id}' PUT`
     await setDoc(docRef, updatedCommissionData)
 
     return await this.getCommissionById(docRef.id)
@@ -45,7 +45,7 @@ let exportedMethods = {
     id = validation.checkId(id)
     const updatedCommissionData = {}
     const commissionExists = await this.getCommissionById(id)
-    if (!commissionExists) throw 'Commission not found'
+    if (!commissionExists) throw `Commission with id '${id}' not found`
     // if field in updatedCommission exists, validate and store in updatedCommissionData. do for all fields
     for (const [key, value] of Object.entries(updatedCommission)) {
       if (validation.validateCommissionKey(key)) {
@@ -55,7 +55,7 @@ let exportedMethods = {
     // update in firebase
     const commissionsCollection = collection(db, "commissions")
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to update commission PATCH`
+    if (!docRef) throw `Error: Failed to update commission with id '${id}' PATCH`
     await setDoc(docRef, updatedCommissionData, { merge: true })
     return await this.getCommissionById(docRef.id)
   },
@@ -63,11 +63,11 @@ let exportedMethods = {
     id = validation.checkId(id)
     // get the document
     const commissionExists = await this.getCommissionById(id)
-    if (!commissionExists) throw `Commission not found`
+    if (!commissionExists) throw `Commission with id '${id}' not found`
     // delete the document
     const commissionsCollection = collection(db, 'commissions')
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to update commission DELETE`
+    if (!docRef) throw `Error: Failed to delete commission with id '${id}'`
     // return the deleted document
     await deleteDoc(docRef)
     return commissionExists

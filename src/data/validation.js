@@ -1,3 +1,5 @@
+import * as EmailValidator from 'email-validator'
+
 const exportedMethods = {
   checkId(id) {
     if (!id) throw "Error: You must provide an id to search for"
@@ -50,11 +52,26 @@ const exportedMethods = {
     if (typeof bool !== "boolean") throw `Error: You must provide a valid bool`
     return bool
   },
+  checkEmail(email, varName) {
+    this.checkString(email, varName);
+    if (!EmailValidator.validate(email)) throw "Email is invalid.";
+    return email.toLowerCase(); //for storage purposes, not case sensitive
+  },
+  validateUserFields(reqBody) {
+    return {
+      firstName: this.checkString(reqBody.firstName, 'First Name'),
+      lastName: this.checkString(reqBody.lastName, 'Last Name'),
+      email: this.checkEmail(reqBody.email, 'Email'),
+      instagram: this.checkString(reqBody.instagram, 'Instagram'),
+      commissionIds: [],
+      productIds: []
+    }
+  },
   validateCommissionFields(reqBody) {
     return {
       firstName: this.checkString(reqBody.firstName, 'First Name'),
       lastName: this.checkString(reqBody.lastName, 'Last Name'),
-      email: this.checkString(reqBody.email, 'Email'),
+      email: this.checkEmail(reqBody.email, 'Email'),
       commissionType: this.checkString(reqBody.commissionType, 'Commission Type'),
       pieceVision: this.checkString(reqBody.pieceVision, 'Piece Vision'),
       symmetryType: this.checkString(reqBody.symmetryType, 'Symmetry Type'),
