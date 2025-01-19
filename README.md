@@ -11,6 +11,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - Nixon Puertollano
 - Jenny Garino
 
+# Notion Board
+For all of our progress and thoughts! [Link](https://www.notion.so/sxcndhxnd-139ea1cbcfb18016b24bed3bea471278?pvs=4)
+
 # Technologies
 
 - [SVGR](https://github.com/gregberge/svgr)
