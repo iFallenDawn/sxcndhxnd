@@ -67,6 +67,7 @@ export async function PATCH(req, { params }) {
       )
     }
     const updatedReqBody = {}
+    //validate the variables in the body
     try {
       params.id = validation.checkId(params.id)
       // this only checks for the variables that exist in reqBody
@@ -79,6 +80,7 @@ export async function PATCH(req, { params }) {
     } catch (e) {
       return NextResponse.json({ error: e }, { status: 400 })
     }
+    //call the data function
     try {
       const updatedCommission = await commissionData.updateCommissionPatch(params.id, updatedReqBody)
       return NextResponse.json(updatedCommission, { status: 200 })

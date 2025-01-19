@@ -9,7 +9,7 @@ let exportedMethods = {
     id = validation.checkId(id)
     const docRef = doc(db, "commissions", id)
     const commission = await getDoc(docRef)
-    if (!commission.exists()) throw `Error: Commission with id '${id}' not found`
+    if (!commission.exists()) throw `Commission with id '${id}' not found`
     return {
       id: docRef.id,
       ...commission.data()
@@ -17,7 +17,7 @@ let exportedMethods = {
   },
   async getAllCommissions() {
     const querySnapshot = await getDocs(collection(db, 'commissions'))
-    if (querySnapshot.empty) throw `Error: There are no commissions in the collection`
+    if (querySnapshot.empty) throw `There are no commissions in the collection`
     const commissionList = querySnapshot.docs.map((doc) => doc.data())
     return commissionList
   },
@@ -26,7 +26,7 @@ let exportedMethods = {
     const newCommission = validation.validateCommissionFields(reqBody)
     const commissionCollection = collection(db, "commissions")
     const docRef = await addDoc(commissionCollection, newCommission)
-    if (!docRef) throw `Error: Failed to create commission`
+    if (!docRef) throw `Failed to create commission`
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPut(id, updatedCommission) {
@@ -36,9 +36,8 @@ let exportedMethods = {
     if (!commissionExists) throw `Commission with id '${id}' not found`
     const commissionsCollection = collection(db, "commissions")
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to update commission with id '${id}' PUT`
+    if (!docRef) throw `Failed to update commission with id '${id}' PUT`
     await setDoc(docRef, updatedCommissionData)
-
     return await this.getCommissionById(docRef.id)
   },
   async updateCommissionPatch(id, updatedCommission) {
@@ -55,7 +54,7 @@ let exportedMethods = {
     // update in firebase
     const commissionsCollection = collection(db, "commissions")
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to update commission with id '${id}' PATCH`
+    if (!docRef) throw `Failed to update commission with id '${id}' PATCH`
     await setDoc(docRef, updatedCommissionData, { merge: true })
     return await this.getCommissionById(docRef.id)
   },
@@ -67,7 +66,7 @@ let exportedMethods = {
     // delete the document
     const commissionsCollection = collection(db, 'commissions')
     const docRef = doc(commissionsCollection, id)
-    if (!docRef) throw `Error: Failed to delete commission with id '${id}'`
+    if (!docRef) throw `Failed to delete commission with id '${id}'`
     // return the deleted document
     await deleteDoc(docRef)
     return commissionExists
