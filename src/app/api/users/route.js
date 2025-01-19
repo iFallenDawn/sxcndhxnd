@@ -1,4 +1,4 @@
-import firebaseApp from '@/firebase/firestore'
+import firebaseApp from '@/firebase/firebase'
 import { getAuth, createUserWithEmailAndPassword, validatePassword } from 'firebase/auth'
 import { userData } from '@/data/index'
 import { NextResponse } from "next/server"
@@ -27,6 +27,7 @@ export async function POST(req) {
     //validate password
     const auth = getAuth(firebaseApp)
     try {
+      validation.checkPassword(reqBody.password)
       const status = await validatePassword(auth, reqBody.password)
       let errors = []
       if (!status.isValid) {
@@ -44,6 +45,7 @@ export async function POST(req) {
       if (errors.length > 0)
         throw errors
     } catch (e) {
+      console.log(e)
       return NextResponse.json({ error: e }, { status: 400 })
     }
     //validate all the user fields
@@ -78,8 +80,9 @@ export async function POST(req) {
       return NextResponse.json({ error: e }, { status: 500 })
     }
   } catch (e) {
+    console.log(e)
     return NextResponse.json(
-      { error: "There is no request body" },
+      { error: e },
       { status: 400 }
     )
   }
