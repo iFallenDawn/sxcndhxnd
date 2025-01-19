@@ -109,6 +109,19 @@ const exportedMethods = {
     if (commissionKeys.includes(str))
       return true
     return false
+  },
+  validateUserKey(str) {
+    const userKeys = [
+      'firstName',
+      'lastName',
+      'email',
+      'instagram',
+      'commissionIds',
+      'productIds'
+    ]
+    if (userKeys.includes(str))
+      return true
+    return false
   }
 }
 

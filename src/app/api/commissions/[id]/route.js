@@ -67,6 +67,7 @@ export async function PATCH(req, { params }) {
       )
     }
     const updatedReqBody = {}
+    //validate the variables in the body
     try {
       params.id = validation.checkId(params.id)
       // this only checks for the variables that exist in reqBody
@@ -79,6 +80,7 @@ export async function PATCH(req, { params }) {
     } catch (e) {
       return NextResponse.json({ error: e }, { status: 400 })
     }
+    //call the data function
     try {
       const updatedCommission = await commissionData.updateCommissionPatch(params.id, updatedReqBody)
       return NextResponse.json(updatedCommission, { status: 200 })
@@ -92,13 +94,12 @@ export async function PATCH(req, { params }) {
       { status: 400 }
     )
   }
-
 }
 
 export async function DELETE(req, { params }) {
   //check the id
   try {
-    params.id = validation.checkId(params.id, 'id URL Param')
+    params.id = validation.checkId(params.id)
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }
@@ -109,5 +110,4 @@ export async function DELETE(req, { params }) {
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 404 })
   }
-
 }
