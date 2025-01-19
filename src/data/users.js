@@ -15,17 +15,13 @@ let exportedMethods = {
       ...user.data()
     }
   },
-  async getUserByEmail(email, userCreation) {
+  async getUserByEmail(email) {
     email = validation.checkEmail(email)
     const userCollection = collection(db, 'users')
     const q = query(userCollection, where("email", "==", email))
     const querySnapshot = await getDocs(q)
     //there should only be one since emails are unique. for createUser throw an error there instead so this will work with the API
-    if (userCreation === false && querySnapshot.empty) throw `Error: Could not find user with email ${email}`
-    //usercreation is true
-    if (querySnapshot.empty) {
-      return false
-    }
+    if (querySnapshot.empty) throw `Error: Could not find user with email ${email}`
     const docRef = querySnapshot.docs[0]
     return {
       id: docRef.id,
@@ -43,7 +39,7 @@ let exportedMethods = {
     //a user versus with firebase auth
     firebaseAuthId = validation.checkString(firebaseAuthId)
     const newUser = validation.validateUserFields(reqBody)
-    const emailExists = await this.getUserByEmail(reqBody.email, true)
+    const emailExists = await this.getUserByEmail(reqBody.email)
     if (emailExists) throw `Error: email ${reqBody.email} already exists`
     //we have to use setDoc here because we're matching Firebase Auth id
     await setDoc(doc(db, "users", firebaseAuthId), newUser)
