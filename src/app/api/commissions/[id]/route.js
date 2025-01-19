@@ -94,13 +94,12 @@ export async function PATCH(req, { params }) {
       { status: 400 }
     )
   }
-
 }
 
 export async function DELETE(req, { params }) {
   //check the id
   try {
-    params.id = validation.checkId(params.id, 'id URL Param')
+    params.id = validation.checkId(params.id)
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }
@@ -111,5 +110,4 @@ export async function DELETE(req, { params }) {
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 404 })
   }
-
 }

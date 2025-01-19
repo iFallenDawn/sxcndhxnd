@@ -1,6 +1,6 @@
 import db from "@/firebase/firestore"
 import firebaseApp from '@/firebase/firebase'
-import { collection, doc, addDoc, getDoc, getDocs, setDoc, deleteDoc, query, where } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where } from "firebase/firestore"
 import { getAuth, updateEmail } from 'firebase/auth'
 import validation from "@/data/validation"
 
@@ -91,7 +91,14 @@ let exportedMethods = {
     return await this.getUserById(docRef.id)
   },
   async deleteUser(id) {
-
+    id = validation.checkId(id)
+    const userExists = await this.getUserById(id)
+    if (!userExists) throw `User with id '${id}' not found`
+    const usersCollection = collection(db, 'users')
+    const docRef = doc(usersCollection, id)
+    if (!docRef) throw `Failed to delete user with id '${id}'`
+    await deleteDoc(docRef)
+    return userExists
   }
 }
 

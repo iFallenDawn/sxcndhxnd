@@ -87,3 +87,19 @@ export async function PATCH(req, { params }) {
     )
   }
 }
+
+export async function DELETE(req, { params }) {
+  //check the id
+  try {
+    params.id = validation.checkId(params.id)
+  } catch (e) {
+    return NextResponse.json({ error: e }, { status: 400 })
+  }
+  //try to delete post
+  try {
+    let deletedUser = await userData.deleteUser(params.id)
+    return NextResponse.json(deletedUser, { status: 200 })
+  } catch (e) {
+    return NextResponse.json({ error: e }, { status: 404 })
+  }
+}
