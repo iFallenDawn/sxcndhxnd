@@ -22,7 +22,7 @@ let exportedMethods = {
     const q = query(userCollection, where("email", "==", email))
     const querySnapshot = await getDocs(q)
     //there should only be one since emails are unique. for createUser throw an error there instead so this will work with the API
-    if (querySnapshot.empty) throw `Could not find user with email ${email}`
+    if (querySnapshot.empty) return
     const docRef = querySnapshot.docs[0]
     return {
       id: docRef.id,
