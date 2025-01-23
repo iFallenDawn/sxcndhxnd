@@ -8,6 +8,8 @@ import { NextResponse } from 'next/server'
 export async function POST(req) {
   let reqBody = null
   try {
+    const auth = getAuth(firebaseApp)
+    if (auth.currentUser) throw 'User already logged in!'
     reqBody = await req.json()
     if (!reqBody || Object.keys(reqBody).length == 0) {
       return NextResponse.json(
@@ -24,7 +26,6 @@ export async function POST(req) {
     }
     //login the user
     try {
-      const auth = getAuth(firebaseApp)
       await signInWithEmailAndPassword(auth, reqBody.email, reqBody.password)
     } catch (e) {
       let error = 'Unknown error'
