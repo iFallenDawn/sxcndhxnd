@@ -1,7 +1,12 @@
 import { create } from 'zustand'
+import { getAuth } from '@firebase/auth'
+import firebaseApp from '@/firebase/firebase'
 
-export const userStore = create((set) => ({
-  isLoggedIn: '',
+const auth = getAuth(firebaseApp)
+
+const userStore = create((set) => ({
+  isLoggedIn: auth.currentUser !== null,
+  loginError: '',
   user: {
     id: '',
     firstName: '',
@@ -15,3 +20,5 @@ export const userStore = create((set) => ({
     user: { ...newUser }
   }))
 }))
+
+export default userStore

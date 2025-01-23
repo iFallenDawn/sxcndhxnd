@@ -99,6 +99,24 @@ let exportedMethods = {
     if (!docRef) throw `Failed to delete user with id '${id}'`
     await deleteDoc(docRef)
     return userExists
+  },
+  async getPasswordErrors(password) {
+    let errors = []
+    const auth = getAuth(firebaseApp)
+    const status = await validatePassword(auth, password)
+    if (!status.isValid) {
+      if (!status.containsLowercaseLetter)
+        errors.push('Password requires at least one lowercase letter')
+      if (!status.containsUppercaseLetter)
+        errors.push('Password requires at least one uppercase character')
+      if (!status.containsNonAlphanumericCharacter)
+        errors.push('Password requires at least one special character')
+      if (!status.containsNumericCharacter)
+        errors.push('Password requires at least one number')
+      if (!status.meetsMinPasswordLength)
+        errors.push('Password needs to contain at least 8 characters')
+    }
+    return errors
   }
 }
 

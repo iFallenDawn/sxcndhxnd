@@ -1,12 +1,34 @@
 'use client'
-import { useFormState } from 'react-dom'
-import { loginUser } from '@/app/actions'
-const initialState = {
-  message: null
-}
+import { useState } from 'react'
+import validation from '@/data/validation'
 
 const Login = () => {
-  const [state, formAction] = useFormState(loginUser, initialState)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginSuccessful, setLoginSuccessful] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleEmail = (e) => setEmail(e.target.value)
+  const handlePassword = (e) => setPassword(e.target.value)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      await validation.checkEmail(email)
+      await validation.checkPassword(password)
+      //call api
+
+      //update store
+    } catch (e) {
+      console.log(e)
+      setError(e)
+      setLoginSuccessful(false)
+      setLoading(false)
+    }
+  }
+
   return (
     <form action={formAction} className='flex flex-col'>
       {state && state.message && !Array.isArray(state.message) && (
