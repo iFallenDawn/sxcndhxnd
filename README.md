@@ -27,11 +27,9 @@ For all of our progress and thoughts! [Link](https://www.notion.so/sxcndhxnd-139
 First, run the development server:
 
 ```bash
+cd frontend/
 npm run dev
 ```
 
-## notes
-anytime you run fastapi stuff, follow this link to setup venv [link](https://fastapi.tiangolo.com/virtual-environments/#create-a-virtual-environment)
-this link to read documentation [link](https://fastapi.tiangolo.com/#typer-the-fastapi-of-clis)
 
 
