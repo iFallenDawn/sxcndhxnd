@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from '../components/nav/Navbar'
+import { UserProvider } from '@/context/UserContext'
 
 const arnoProRegular = localFont({
   src: './fonts/ArnoPro-Regular.otf'
@@ -23,7 +24,9 @@ const RootLayout = ({ children }) => {
       <body className={`${arnoProRegular.className}`}>
         <Navbar />
         <div className='mt-12'>
-          {children}
+          <UserProvider>
+            {children}
+          </UserProvider>
         </div>
       </body>
     </html>

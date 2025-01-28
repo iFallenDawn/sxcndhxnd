@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { commissionData, userData } from '@/data'
 import firebaseApp from '@/firebase/firebase'
-import { getAuth, createUserWithEmailAndPassword, validatePassword } from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword, validatePassword, signInWithEmailAndPassword } from 'firebase/auth'
 
 // these are all server actions
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
@@ -84,24 +84,12 @@ export async function createUser(prevState, formData) {
       errors.push(e)
     }
   }
-
   const auth = getAuth(firebaseApp)
-  const status = await validatePassword(auth, formData.get('password'))
-  if (!status.isValid) {
-    if (!status.containsLowercaseLetter)
-      errors.push('Password requires at least one lowercase letter')
-    if (!status.containsUppercaseLetter)
-      errors.push('Password requires at least one uppercase character')
-    if (!status.containsNonAlphanumericCharacter)
-      errors.push('Password requires at least one special character')
-    if (!status.containsNumericCharacter)
-      errors.push('Password requires at least one number')
-    if (!status.meetsMinPasswordLength)
-      errors.push('Password needs to contain at least 8 characters')
-  }
-
+  let passwordErrors = await userData.getPasswordErrors(formData.get('password'))
+  errors = errors.concat(errors, passwordErrors)
   let success = false
   if (errors.length > 0) {
+    console.log(errors)
     return { message: errors }
   }
   else {
@@ -112,7 +100,7 @@ export async function createUser(prevState, formData) {
       firebaseAuthId = createFirebaseUser.user.uid
     } catch (e) {
       //https://firebase.google.com/docs/auth/admin/errors
-      let error = ''
+      let error = 'Unknown error'
       if (e.code === 'auth/email-already-in-use')
         error = 'This email already has an account!'
       else if (e.code === 'auth/invalid-email')

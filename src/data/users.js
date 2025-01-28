@@ -22,7 +22,7 @@ let exportedMethods = {
     const q = query(userCollection, where("email", "==", email))
     const querySnapshot = await getDocs(q)
     //there should only be one since emails are unique. for createUser throw an error there instead so this will work with the API
-    if (querySnapshot.empty) throw `Could not find user with email ${email}`
+    if (querySnapshot.empty) return
     const docRef = querySnapshot.docs[0]
     return {
       id: docRef.id,
@@ -99,6 +99,24 @@ let exportedMethods = {
     if (!docRef) throw `Failed to delete user with id '${id}'`
     await deleteDoc(docRef)
     return userExists
+  },
+  async getPasswordErrors(password) {
+    let errors = []
+    const auth = getAuth(firebaseApp)
+    const status = await validatePassword(auth, password)
+    if (!status.isValid) {
+      if (!status.containsLowercaseLetter)
+        errors.push('Password requires at least one lowercase letter')
+      if (!status.containsUppercaseLetter)
+        errors.push('Password requires at least one uppercase character')
+      if (!status.containsNonAlphanumericCharacter)
+        errors.push('Password requires at least one special character')
+      if (!status.containsNumericCharacter)
+        errors.push('Password requires at least one number')
+      if (!status.meetsMinPasswordLength)
+        errors.push('Password needs to contain at least 8 characters')
+    }
+    return errors
   }
 }
 

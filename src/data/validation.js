@@ -31,20 +31,10 @@ const exportedMethods = {
     }
     return arr
   },
-  checkUsername(username) {
-    this.checkString(username, "Username")
-    if (!/^[a-zA-Z0-9]+$/g.test(username))
-      throw `Error: Username contains illegal characters.`
-    if (username.length < 8)
-      throw `Error: Username must be at least 8 characters long.`
-    return username.toLowerCase()
-  },
   checkPassword(password) {
     this.checkString(password, "Password")
     if (/\s/g.test(password))
       throw `Error: Password contains illegal characters.`
-    if (password.length < 8)
-      throw `Error: Password must be at least 8 characters long.`
     return password
   },
   checkBoolean(bool) {
@@ -52,8 +42,8 @@ const exportedMethods = {
     if (typeof bool !== "boolean") throw `Error: You must provide a valid bool`
     return bool
   },
-  checkEmail(email, varName) {
-    this.checkString(email, varName);
+  checkEmail(email) {
+    this.checkString(email, 'Email');
     if (!EmailValidator.validate(email)) throw "Email is invalid.";
     return email.toLowerCase(); //for storage purposes, not case sensitive
   },
