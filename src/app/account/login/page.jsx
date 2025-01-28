@@ -1,8 +1,11 @@
 'use client'
+import { useUserContext } from '@/context/UserContext'
 import { useState } from 'react'
 import validation from '@/data/validation'
 
 const Login = () => {
+  const { user, setUser } = useUserContext()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginSuccessful, setLoginSuccessful] = useState('')
@@ -19,8 +22,22 @@ const Login = () => {
       await validation.checkEmail(email)
       await validation.checkPassword(password)
       //call api
-
-      //update store
+      const reqBody = {
+        email: email,
+        password: password
+      }
+      const response = await fetch('/api/users/login', {
+        method: 'POST',
+        body: JSON.stringify(reqBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      const data = await response.json()
+      if (!response.ok) throw data.error
+      setUser(data)
+      console.log(data)
+      setLoginSuccessful(true)
     } catch (e) {
       console.log(e)
       setError(e)
@@ -30,36 +47,23 @@ const Login = () => {
   }
 
   return (
-    <form action={formAction} className='flex flex-col'>
-      {state && state.message && !Array.isArray(state.message) && (
-        <h1 className='error'>{state.message}</h1>
+    <form onSubmit={handleSubmit} className='flex flex-col'>
+      {loginSuccessful && (
+        <h1>Successfully logged in!</h1>
       )}
-      {state && state.message && Array.isArray(state.message) && (
-        <ul
-          aria-live='polite'
-          // className={`sr-only`}
-          role='status'
-        >
-          {state.message.map((msg, index) => {
-            console.log(msg)
-            return (
-              <li className='error' key={index}>
-                {msg}
-              </li>
-            );
-          })}
-        </ul>
+      {!loginSuccessful && loginSuccessful !== '' && (
+        <h1>{error}</h1>
       )}
       <h1>Login</h1>
       <label>
         Email:
-        <input type="text" name="email" />
+        <input type="text" name="email" onChange={handleEmail} />
       </label>
       <label>
         Password:
-        <input type="Password" name="password" />
+        <input type="Password" name="password" onChange={handlePassword} />
       </label>
-      <button>Submit</button>
+      <button type="submit">Submit</button>
     </form>
   )
 }

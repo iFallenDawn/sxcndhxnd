@@ -42,8 +42,8 @@ const exportedMethods = {
     if (typeof bool !== "boolean") throw `Error: You must provide a valid bool`
     return bool
   },
-  checkEmail(email, varName) {
-    this.checkString(email, varName);
+  checkEmail(email) {
+    this.checkString(email, 'Email');
     if (!EmailValidator.validate(email)) throw "Email is invalid.";
     return email.toLowerCase(); //for storage purposes, not case sensitive
   },

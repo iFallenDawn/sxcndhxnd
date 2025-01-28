@@ -1,5 +1,5 @@
 import firebaseApp from '@/firebase/firebase'
-import { getAuth, validatePassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { userData } from '@/data/index'
 import validation from '@/data/validation'
 import { NextResponse } from 'next/server'
