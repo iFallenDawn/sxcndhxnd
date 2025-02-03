@@ -1,6 +1,5 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from ..data import commissions_util
-from ..firebase.firestore import db
 
 # we'll use commissions as our super documented example
 
@@ -12,7 +11,6 @@ router = APIRouter(
     responses={404: {"description": "Not found"}}
 )
 
-firestore_client = db()
 
 # https://fastapi.tiangolo.com/tutorial/handling-errors/ for errors
 
@@ -22,4 +20,4 @@ async def get_all_commissions():
 
 @router.get("/{commission_id}", tags=["commissions"])
 async def get_commission_by_id(commission_id: str):
-    print(commissions_util.get_commission_by_id(commission_id))
+    return await commissions_util.get_commission_by_id(commission_id)
