@@ -21,3 +21,6 @@ dist/
 # local env files
 .env*.local
 sxcndhxnd-service-account.json
+
+# python
+__pycache__/

@@ -4,6 +4,8 @@
 
 Setup a [virtual environment](https://fastapi.tiangolo.com/virtual-environments/#create-a-virtual-environment)
 
+Make sure you are in a WSL terminal
+
 should just be
 ```bash
 cd server
