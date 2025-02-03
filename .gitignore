@@ -17,3 +17,7 @@ dist/
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# local env files
+.env*.local
+sxcndhxnd-service-account.json
