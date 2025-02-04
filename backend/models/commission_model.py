@@ -1,9 +1,9 @@
 from pydantic import BaseModel, EmailStr
+from datetime import datetime as dt
 import datetime
-
 class Commission(BaseModel):
     id: str = None
-    date: datetime.date = datetime.now()
+    date: datetime.date = dt.now()
     user_id: str = None
     first_name: str 
     last_name: str

@@ -16,7 +16,7 @@ router = APIRouter(
 
 @router.get("/", tags=["commissions"])
 async def get_all_commissions():
-    return [{"hello": "world"}]
+    return await commissions_util.get_all_commissions()
 
 @router.get("/{commission_id}", tags=["commissions"])
 async def get_commission_by_id(commission_id: str):
