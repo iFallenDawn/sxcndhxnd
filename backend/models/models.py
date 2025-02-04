@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr, Field, ConfigDict
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, constr
 from datetime import datetime as dt
 
+# https://docs.pydantic.dev/latest/concepts/models
 class Commission(BaseModel):
     # model_config = ConfigDict(extra='forbid')
     # id: str  - this is handled elsewhere
@@ -8,7 +9,7 @@ class Commission(BaseModel):
     user_id: str | None = Field(default=None, alias='userId')
     first_name: str = Field(alias='firstName')
     last_name: str = Field(alias='lastName')
-    email: EmailStr
+    email: EmailStr = constr(to_lower=True)
     commission_type: str = Field(alias='commissionType')
     piece_vision: str = Field(alias='pieceVision')
     symmetry_type: str = Field(alias='symmetryType')

@@ -17,10 +17,12 @@ async def get_commission_by_id(commission_id: str) -> dict:
     doc_ref = commissions_collection.document(commission_id)
     commission = doc_ref.get()
     if not commission.exists:
-        raise HTTPException(status_code=404, detail=f'Commission with id {commission_id} not found')
+        raise HTTPException(status_code=404, detail=f'Commission with id {commission_id}not found')
     return {'id': doc_ref.id, **commission.to_dict()}
 
 # https://firebase.google.com/docs/firestore/manage-data/add-data
 async def create_commission(commission_model: Commission) -> dict:
     update_time, doc_ref = commissions_collection.add(commission_model.model_dump())
+    if not doc_ref.get().exists:
+        raise HTTPException(status_code=400, detail=f'Failed to create commission')
     return await get_commission_by_id(doc_ref.id)
