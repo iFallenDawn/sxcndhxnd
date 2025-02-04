@@ -1,5 +1,6 @@
 from ..firebase.firestore import db
 from fastapi import HTTPException
+from ..models import commission_model
 
 firestore_db = db()
 
