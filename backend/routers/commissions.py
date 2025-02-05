@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from ..data import commissions_util
 from ..models.models import Commission
 
-
 # we'll use commissions as our super documented example
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#path-operations-with-apirouter

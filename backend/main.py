@@ -2,11 +2,11 @@ from typing import Union
 
 from fastapi import FastAPI
 
-from .routers import commissions
+from .routers import router as api_router
 
 app = FastAPI()
 
-app.include_router(commissions.router)
+app.include_router(api_router)
 
 @app.get("/")
 def read_root():

@@ -1,15 +1,25 @@
-from pydantic import BaseModel, EmailStr, Field, ConfigDict, constr
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, constr, BeforeValidator
 from datetime import datetime as dt
+from typing_extensions import Annotated
+
+# https://docs.pydantic.dev/latest/api/config/
+config_dict = ConfigDict(str_strip_whitespace=True)
+
+# https://docs.pydantic.dev/latest/concepts/validators/#field-validators
+def email_to_lower(email: object) -> str:
+    return str(email).strip().lower()
 
 # https://docs.pydantic.dev/latest/concepts/models
+# note, these will be stored in database as written below, like first_name instead of firstName
+# aliases so life is easier when we make reqBody in frontend
 class Commission(BaseModel):
-    # model_config = ConfigDict(extra='forbid')
+    model_config = config_dict
     # id: str  - this is handled elsewhere
     date: str = dt.now().date().strftime('%m/%d/%Y')
     user_id: str | None = Field(default=None, alias='userId')
     first_name: str = Field(alias='firstName')
     last_name: str = Field(alias='lastName')
-    email: EmailStr = constr(to_lower=True)
+    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
     commission_type: str = Field(alias='commissionType')
     piece_vision: str = Field(alias='pieceVision')
     symmetry_type: str = Field(alias='symmetryType')
@@ -25,8 +35,16 @@ class Commission(BaseModel):
     extra: str
     
 class User(BaseModel):
-    big: str
-    
+    model_config = config_dict
+    # id: str  - this is handled elsewhere
+    first_name: str = Field(alias='firstName')
+    last_name: str = Field(alias='lastName')
+    password: str
+    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
+    instagram: str
+    commissionIds: list[str] | None
+    productIds: list[str] | None
     
 class Product(BaseModel):
+    model_config = config_dict
     big: str

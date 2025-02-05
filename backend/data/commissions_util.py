@@ -5,7 +5,7 @@ from ..models.models import Commission
 firestore_db = db()
 commissions_collection = firestore_db.collection('commissions')
 
-async def get_all_commissions() -> dict:
+async def get_all_commissions() -> list[dict]:
     commissions = commissions_collection.stream()
     commissions_data = []
     for commission in commissions:
