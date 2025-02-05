@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..data import commissions_util
-from ..models.models import Commission
+from ..models.models import CommissionIn, CommissionOut
 
 # we'll use commissions as our super documented example
 
@@ -16,13 +16,13 @@ router = APIRouter(
 # https://fastapi.tiangolo.com/tutorial/handling-errors/ for errors
 
 @router.get("/", tags=["commissions"])
-async def get_all_commissions():
+async def get_all_commissions() -> list[CommissionOut]:
     return await commissions_util.get_all_commissions()
 
 @router.get("/{commission_id}", tags=["commissions"])
-async def get_commission_by_id(commission_id: str):
+async def get_commission_by_id(commission_id: str) -> CommissionOut:
     return await commissions_util.get_commission_by_id(commission_id)
 
 @router.post("/")
-async def create_commission(commission_model: Commission):
+async def create_commission(commission_model: CommissionIn) -> CommissionOut:
     return await commissions_util.create_commission(commission_model)

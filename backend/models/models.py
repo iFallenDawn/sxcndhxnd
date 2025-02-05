@@ -12,9 +12,9 @@ def email_to_lower(email: object) -> str:
 # https://docs.pydantic.dev/latest/concepts/models
 # note, these will be stored in database as written below, like first_name instead of firstName
 # aliases so life is easier when we make reqBody in frontend
-class Commission(BaseModel):
+class CommissionIn(BaseModel):
     model_config = config_dict
-    # id: str  - this is handled elsewhere
+    # id: str - this is handled in CommissionOut
     date: str = dt.now().date().strftime('%m/%d/%Y')
     user_id: str | None = Field(default=None, alias='userId')
     first_name: str = Field(alias='firstName')
@@ -32,6 +32,29 @@ class Commission(BaseModel):
     retailor: str
     pockets: str
     weekly_checks: str = Field(alias='weeklyChecks')
+    extra: str
+    
+
+class CommissionOut(BaseModel):
+    model_config = config_dict
+    id: str
+    date: str 
+    user_id: str | None = Field(default=None, alias='userId')
+    first_name: str
+    last_name: str
+    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
+    commission_type: str
+    piece_vision: str 
+    symmetry_type: str 
+    base_material: str
+    creative_control: str 
+    colors: str
+    fabrics: str
+    shape_patterns: str 
+    distress: str
+    retailor: str
+    pockets: str
+    weekly_checks: str 
     extra: str
     
 class User(BaseModel):
