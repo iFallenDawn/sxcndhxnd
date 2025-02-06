@@ -57,7 +57,7 @@ class CommissionOut(BaseModel):
     weekly_checks: str 
     extra: str
     
-class User(BaseModel):
+class UserIn(BaseModel):
     model_config = config_dict
     # id: str  - this is handled elsewhere
     first_name: str = Field(alias='firstName')
@@ -68,6 +68,16 @@ class User(BaseModel):
     commissionIds: list[str] | None
     productIds: list[str] | None
     
+class UserOut(BaseModel):
+    model_config = config_dict
+    id: str
+    first_name: str = Field(alias='firstName')
+    last_name: str = Field(alias='lastName')
+    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
+    instagram: str
+    commissionIds: list[str] | None
+    productIds: list[str] | None
+
 class Product(BaseModel):
     model_config = config_dict
     big: str

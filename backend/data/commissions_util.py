@@ -1,8 +1,8 @@
-from ..firebase.firestore import db
+from ..firebase import app, db
 from fastapi import HTTPException
 from ..models.models import CommissionOut, CommissionIn
 
-firestore_db = db()
+firestore_db = db(app)
 commissions_collection = firestore_db.collection('commissions')
 
 async def get_all_commissions() -> list[CommissionOut]:

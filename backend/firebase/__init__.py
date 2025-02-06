@@ -1,7 +1,7 @@
-from .firebase import initialize_app
+from .firebase import app
 from .firestore import db
 
 __all__ = [
-    'initialize_app',
+    'app',
     'db'
 ]
