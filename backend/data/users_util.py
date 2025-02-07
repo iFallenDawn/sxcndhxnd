@@ -2,6 +2,7 @@ from ..firebase import app, db
 from ..models.models import UserIn, UserOut
 from fastapi import HTTPException
 from firebase_admin import auth
+from firebase_admin.exceptions import FirebaseError
 from google.cloud.firestore_v1.base_query import FieldFilter
 
 firestore_db = db(app)
@@ -30,7 +31,18 @@ async def get_user_by_email(user_email: str) -> UserOut:
     return {'id': user.id, **user.to_dict()}
 
 async def create_user(user_model: UserIn) -> UserOut:
-    return None
+    user = {}
+    # create in firebase auth
+    try:
+        user = auth.create_user(email=user_model.email, password=user_model.password)
+    except auth.EmailAlreadyExistsError:
+        raise HTTPException(status_code=400, detail=f'User with email {user_model.email} already exists')
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f'{e}')
+    user_id = user.uid
+    # update user collection
+    users_collection.add(document_data=user_model.model_dump(), document_id=user_id)
+    return await get_user_by_id(user_id)
 
 async def update_user_email(user_id: str, new_email: str):
     return None

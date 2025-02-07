@@ -71,8 +71,8 @@ class UserIn(BaseModel):
 class UserOut(BaseModel):
     model_config = config_dict
     id: str
-    first_name: str = Field(alias='firstName')
-    last_name: str = Field(alias='lastName')
+    first_name: str 
+    last_name: str 
     email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
     instagram: str
     commissionIds: list[str] | None
