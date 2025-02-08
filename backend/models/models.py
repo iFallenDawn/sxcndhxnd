@@ -10,6 +10,7 @@ def email_to_lower(email: object) -> str:
     return str(email).strip().lower()
 
 # https://docs.pydantic.dev/latest/concepts/models
+# https://fastapi.tiangolo.com/tutorial/extra-models/#reduce-duplication
 # note, these will be stored in database as written below, like first_name instead of firstName
 # aliases so life is easier when we make reqBody in frontend
 class CommissionIn(BaseModel):
@@ -57,26 +58,20 @@ class CommissionOut(BaseModel):
     weekly_checks: str 
     extra: str
     
-class UserIn(BaseModel):
+class UserBase(BaseModel):
     model_config = config_dict
-    # id: str  - this is handled elsewhere
+    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
+    instagram: str
+    commissionIds: list[str] | None
+    productIds: list[str] | None
+class UserIn(UserBase):
     first_name: str = Field(alias='firstName')
     last_name: str = Field(alias='lastName')
     password: str
-    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
-    instagram: str
-    commissionIds: list[str] | None
-    productIds: list[str] | None
-    
-class UserOut(BaseModel):
-    model_config = config_dict
+class UserOut(UserBase):
     id: str
-    first_name: str 
+    first_name: str
     last_name: str 
-    email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
-    instagram: str
-    commissionIds: list[str] | None
-    productIds: list[str] | None
 
 class Product(BaseModel):
     model_config = config_dict
