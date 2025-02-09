@@ -104,5 +104,7 @@ async def delete_user(user_id: str) -> UserOut:
         auth.delete_user(user_id)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f'{e}')
+    auth.delete_user(user_id)
+    users_collection.document(user_id).delete()
     return deleted_user
 

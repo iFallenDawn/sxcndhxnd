@@ -68,6 +68,8 @@ class UserIn(UserBase):
     first_name: str = Field(alias='firstName')
     last_name: str = Field(alias='lastName')
     password: str
+
+# UserOut is the model stored in users collection
 class UserOut(UserBase):
     id: str
     first_name: str
