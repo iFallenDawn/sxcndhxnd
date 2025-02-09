@@ -62,8 +62,8 @@ class UserBase(BaseModel):
     model_config = config_dict
     email: Annotated[EmailStr, BeforeValidator(email_to_lower)]
     instagram: str
-    commissionIds: list[str] | None
-    productIds: list[str] | None
+    commission_ids: list[str] = []
+    product_ids: list[str] = []
 class UserIn(UserBase):
     first_name: str = Field(alias='firstName')
     last_name: str = Field(alias='lastName')
