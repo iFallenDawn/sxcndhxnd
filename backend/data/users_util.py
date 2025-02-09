@@ -84,22 +84,25 @@ async def update_user_put(user_id: str, new_user_model: UserIn) -> UserOut:
     updated_user_data = await compare_user_models(old_user_model.model_dump(), new_user_model.model_dump())
     users_collection.document(user_id).set(updated_user_data.model_dump())
     return await get_user_by_id(user_id)
-    
-async def update_user_patch(user_id: str, new_user_model: UserIn) -> UserOut:
+
+async def update_user_patch(user_id: str, new_user_model: dict) -> UserOut:
+    if 'firstName' in new_user_model.keys():
+        new_user_model['first_name'] = new_user_model['firstName']
+    if 'lastName' in new_user_model.keys():
+        new_user_model['last_name'] = new_user_model['lastName']
     # check the user exists
     old_user_model = await get_user_by_id(user_id)
-    await get_user_by_id_auth(user_id)
-    # check if we can update firebase auth first before updating user collection
-    try:
-        auth.update_user(user_id, email=new_user_model.email, password=new_user_model.password)
-    except auth.EmailAlreadyExistsError:
-        raise HTTPException(status_code=400, detail=f'User with email {new_user_model.email} already exists')
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f'{e}')
-    updated_user_data = await compare_user_models(old_user_model.model_dump(), new_user_model.model_dump())
+    updated_user_data = await compare_user_models(old_user_model.model_dump(), new_user_model)
     users_collection.document(user_id).update(updated_user_data.model_dump())
     return await get_user_by_id(user_id)
 
 async def delete_user(user_id: str) -> UserOut:
-    return None
+    # check user exists
+    deleted_user = await get_user_by_id(user_id)
+    await get_user_by_id_auth(user_id)
+    try:
+        auth.delete_user(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f'{e}')
+    return deleted_user
 

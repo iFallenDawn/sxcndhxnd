@@ -25,10 +25,16 @@ async def get_user_by_id(user_id: str) -> UserOut:
 async def create_user(user_model: UserIn) -> UserOut:
     return await users_util.create_user(user_model)
 
+# replace the entire user
 @router.put("/{user_id}", tags=["users"], status_code=status.HTTP_201_CREATED)
 async def update_user_by_put(user_id: str, new_user_model: UserIn) -> UserOut:
     return await users_util.update_user_put(user_id, new_user_model)
 
-@router.put("/{user_id}", tags=["users"], status_code=status.HTTP_201_CREATED)
-async def update_user_by_patch(user_id: str, new_user_model: UserIn) -> UserOut:
+# only use patch to update first_name, last_name, instagram, commission_ids, product_ids. DO NOT USE to update email or password, use put
+@router.patch("/{user_id}", tags=["users"], status_code=status.HTTP_201_CREATED)
+async def update_user_by_patch(user_id: str, new_user_model: dict) -> UserOut:
     return await users_util.update_user_patch(user_id, new_user_model)
+
+@router.delete("/{user_id}", tags=["users"])
+async def delete_user(user_id: str) -> UserOut:
+    return await users_util.delete_user(user_id)
