@@ -34,6 +34,7 @@ def convert_to_user_out(user_data: dict) -> dict:
 
 def add_empty_user(user_id: str):
     delete_if_exists(user_id, 'users')
+    # mimics how we're going to receive a body with camelCase from frontend
     empty_user_data = {
         'firstName': "Nixon",
         'lastName': "Puertollano",
