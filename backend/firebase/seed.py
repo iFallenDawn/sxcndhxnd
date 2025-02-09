@@ -1,7 +1,7 @@
 # SEEEEEEEEEEEEEED
 from .firebase import app 
 from .firestore import db
-from models.models import UserIn, UserOut
+from models.models import UserIn
 from firebase_admin import auth
 
 firestore_db = db(app)
@@ -21,6 +21,17 @@ def delete_if_exists(id: str, collection_name: str):
         except Exception:
             pass
 
+def convert_to_user_out(user_data: dict) -> dict:
+    new_user_data = user_data
+    if 'firstName' in user_data.keys():
+        new_user_data['first_name'] = user_data['firstName']
+    if 'lastName' in user_data.keys():
+        new_user_data['last_name'] = user_data['lastName']
+    del new_user_data['firstName']
+    del new_user_data['lastName']
+    del new_user_data['password']
+    return new_user_data
+
 def add_empty_user(user_id: str):
     delete_if_exists(user_id, 'users')
     empty_user_data = {
@@ -36,8 +47,8 @@ def add_empty_user(user_id: str):
     # we use document and set because we're just gonna have set ids for our sample data
     print("...Adding empty user...")
     auth.create_user(uid=user_id, email=empty_user_data['email'], password=empty_user_data['password'])
-    del empty_user_data['password']
-    users_collection.document(user_id).set(empty_user_data)
+    empty_user = convert_to_user_out(empty_user_data)
+    users_collection.document(user_id).set(empty_user)
     
 def seed():
     print('Seeding database')
