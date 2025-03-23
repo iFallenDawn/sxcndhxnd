@@ -1,6 +1,7 @@
 from ..firebase import app, db
 from ..models.models import UserIn, UserOut
-from fastapi import HTTPException
+from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from firebase_admin import auth
 from firebase_admin.auth import UserRecord
 from google.cloud.firestore_v1.base_query import FieldFilter
@@ -20,7 +21,7 @@ async def get_user_by_id(user_id: str) -> UserOut:
     doc_ref = users_collection.document(user_id)
     user = doc_ref.get()
     if not user.exists:
-        raise HTTPException(status_code=404, detail=f'User with id {user_id}not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'User with id {user_id}not found')
     user_data = {'id': doc_ref.id, **user.to_dict()}
     return UserOut(**user_data)
 
@@ -28,7 +29,7 @@ async def get_user_by_id(user_id: str) -> UserOut:
 async def get_user_by_email(user_email: str) -> UserOut:
     users = users_collection.where(filter=FieldFilter("email", "==", user_email)).get()
     if len(users) != 1:
-        raise HTTPException(status_code=404, detail=f'User with email {user_email} not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'User with email {user_email} not found')
     user = users[0]
     user_data = {'id': user.id, **user.to_dict()}
     return UserOut(**user_data)
@@ -39,9 +40,9 @@ async def get_user_by_id_auth(user_id: str) -> UserRecord:
     try:
         user = auth.get_user(user_id)
     except auth.UserNotFoundError:
-        raise HTTPException(status_code=404, detail=f'User with id {user_id}does not exist in Firebase Auth')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'User with id {user_id}does not exist in Firebase Auth')
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f'{e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{e}')
     return user
 
 async def create_user(user_model: UserIn) -> UserOut:
@@ -50,9 +51,9 @@ async def create_user(user_model: UserIn) -> UserOut:
     try:
         user = auth.create_user(email=user_model.email, password=user_model.password)
     except auth.EmailAlreadyExistsError:
-        raise HTTPException(status_code=400, detail=f'User with email {user_model.email} already exists')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'User with email {user_model.email} already exists')
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f'{e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{e}')
     user_id = user.uid
     # update user collection
     users_collection.add(document_data=user_model.model_dump(), document_id=user_id)
@@ -78,9 +79,9 @@ async def update_user_put(user_id: str, new_user_model: UserIn) -> UserOut:
     try:
         auth.update_user(user_id, email=new_user_model.email, password=new_user_model.password)
     except auth.EmailAlreadyExistsError:
-        raise HTTPException(status_code=400, detail=f'User with email {new_user_model.email} already exists')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'User with email {new_user_model.email} already exists')
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f'{e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{e}')
     updated_user_data = await compare_user_models(old_user_model.model_dump(), new_user_model.model_dump())
     users_collection.document(user_id).set(updated_user_data.model_dump())
     return await get_user_by_id(user_id)
@@ -103,7 +104,19 @@ async def delete_user(user_id: str) -> UserOut:
     try:
         auth.delete_user(user_id)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f'{e}')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'{e}')
     users_collection.document(user_id).delete()
     return deleted_user
 
+# https://firebase.google.com/docs/auth/admin/verify-id-tokens#web
+# https://firebase.google.com/docs/auth/admin/verify-id-tokens#python
+
+async def verify_token(token: str) -> dict:
+    try:
+        decoded_token = auth.verify_id_token(token)
+        return {"token": decoded_token}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid credentials: {e}"
+        )
