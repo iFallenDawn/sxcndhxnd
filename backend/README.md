@@ -41,3 +41,9 @@ If you get an error trying to create the virtual environment, install [brew](htt
 ```bash
 brew install python
 ```
+###
+Seeding the database
+```bash
+cd backend
+python3 -m firebase.seed
+```
