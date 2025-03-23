@@ -31,5 +31,8 @@ cd frontend/
 npm run dev
 ```
 
+## Frontend
+Using Tanstack Router! Read [here](https://tanstack.com/router/latest/docs/framework/react/overview) for more information.
+
 
 
