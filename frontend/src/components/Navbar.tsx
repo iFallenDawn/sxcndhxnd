@@ -14,7 +14,11 @@ const Hamburger = () => (
 )
 
 const Account = () => {
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+  return (
+    <a href={'/account'}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+    </a>
+  )
 }
 
 interface NavbarProps {
@@ -60,7 +64,7 @@ const Navbar = ({ currentPage }: NavbarProps) => {
           className={currentPage === path ? `hi` : 'hi2'}
         >
           <span
-            className='text-2xl text-black'
+            className='text-2xl'
           >
             {text}
           </span>
@@ -83,18 +87,23 @@ const Navbar = ({ currentPage }: NavbarProps) => {
           <div className="hidden md:block">
             <ul className="flex space-x-8">
               {links}
+              <Account />
             </ul>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={handleOpen}
-            className="text-black md:hidden"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isOpen}
-          >
-            <MobileNavIcon />
-          </button>
+          <div className="md:hidden flex">
+            <Account />
+            <button
+              onClick={handleOpen}
+              className="md:hidden"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+            >
+              <MobileNavIcon />
+            </button>
+          </div>
+
         </div>
       </nav>
 
