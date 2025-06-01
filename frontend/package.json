@@ -11,15 +11,17 @@
     "start": "vite"
   },
   "devDependencies": {
+    "@tanstack/router-plugin": "^1.97.25",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
-    "@tanstack/router-plugin": "^1.97.25",
     "@vitejs/plugin-react": "^4.3.2",
     "vite": "^6.0.3"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.97.25",
+    "@tanstack/react-store": "^0.7.0",
     "@tanstack/router-devtools": "^1.97.25",
+    "@tanstack/store": "^0.7.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
