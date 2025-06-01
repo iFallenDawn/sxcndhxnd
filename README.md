@@ -7,7 +7,8 @@ Inspired by a talk I had with Nico at Leg Up On Life about adding a shopping car
 # Authors
 - Jordan Wang
 - Nixon Puertollano
-- Jenny Garino
+- Nikky Soriano
+- Jheb
 
 # Notion Board
 For all of our progress and thoughts! [Link](https://www.notion.so/sxcndhxnd-139ea1cbcfb18016b24bed3bea471278?pvs=4)
