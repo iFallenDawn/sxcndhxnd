@@ -1,65 +1,125 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUp } from "lucide-react";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Button,
+  SimpleGrid,
+  Image,
+  Flex,
+  VStack,
+  HStack,
+} from "@chakra-ui/react";
 
 export default function Hero() {
   return (
-    <div className="relative min-h-screen bg-white">
+    <Box position="relative" minH="100vh" bg="white">
       {/* Hero Content */}
-      <div className="relative pt-32 pb-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h1 className="text-6xl sm:text-7xl font-light text-black mb-6 tracking-wide uppercase">
+      <Box position="relative" pt="32" pb="20">
+        <Container maxW="container.xl" px="4">
+          <VStack gap="20" maxW="3xl" mx="auto" mb="20" textAlign="center">
+            <Heading
+              as="h1"
+              fontSize={{ base: "6xl", sm: "7xl" }}
+              fontWeight="light"
+              color="black"
+              mb="6"
+              letterSpacing="wide"
+              textTransform="uppercase"
+            >
               sxcndhxnd
-            </h1>
+            </Heading>
 
-            <p className="text-lg text-gray-600 mb-12 font-light tracking-wide">
+            <Text
+              fontSize="lg"
+              color="gray.600"
+              mb="12"
+              fontWeight="light"
+              letterSpacing="wide"
+            >
               Minimalist streetwear for the modern individual
-            </p>
+            </Text>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <Link
-                href="/store"
-                className="inline-flex items-center px-8 py-3 text-white bg-black hover:bg-gray-800 transition-colors text-sm font-medium tracking-wide uppercase"
-              >
-                Shop Now
-                <ArrowUpRight className="ml-2 w-4 h-4" />
-              </Link>
+            <HStack
+              gap="6"
+              justify="center"
+              align="center"
+              flexDir={{ base: "column", sm: "row" }}
+            >
+              <Button asChild>
+                <Link href="/store">
+                  <ArrowUp size={16} style={{ marginRight: "8px" }} />
+                  Shop Now
+                </Link>
+              </Button>
 
-              <Link
-                href="/gallery"
-                className="inline-flex items-center px-8 py-3 text-black border border-black hover:bg-black hover:text-white transition-colors text-sm font-medium tracking-wide uppercase"
-              >
-                View Gallery
-              </Link>
-            </div>
-          </div>
+              <Button variant="outline" asChild>
+                <Link href="/gallery">View Gallery</Link>
+              </Button>
+            </HStack>
+          </VStack>
 
           {/* Latest Drop Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="aspect-[3/4] bg-gray-100 overflow-hidden group cursor-pointer">
-              <img
+          <SimpleGrid
+            columns={{ base: 1, md: 2, lg: 3 }}
+            gap="8"
+            maxW="6xl"
+            mx="auto"
+          >
+            <Box
+              aspectRatio="3/4"
+              bg="gray.100"
+              overflow="hidden"
+              cursor="pointer"
+              _groupHover={{ transform: "scale(1.05)" }}
+              transition="transform 0.5s"
+            >
+              <Image
                 src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80"
                 alt="Latest Drop - Minimalist Hoodie"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                w="full"
+                h="full"
+                objectFit="cover"
               />
-            </div>
-            <div className="aspect-[3/4] bg-gray-100 overflow-hidden group cursor-pointer">
-              <img
+            </Box>
+            <Box
+              aspectRatio="3/4"
+              bg="gray.100"
+              overflow="hidden"
+              cursor="pointer"
+              _groupHover={{ transform: "scale(1.05)" }}
+              transition="transform 0.5s"
+            >
+              <Image
                 src="https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600&q=80"
                 alt="Latest Drop - Essential Tee"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                w="full"
+                h="full"
+                objectFit="cover"
               />
-            </div>
-            <div className="aspect-[3/4] bg-gray-100 overflow-hidden group cursor-pointer md:col-span-2 lg:col-span-1">
-              <img
+            </Box>
+            <Box
+              aspectRatio="3/4"
+              bg="gray.100"
+              overflow="hidden"
+              cursor="pointer"
+              gridColumn={{ md: "span 2", lg: "span 1" }}
+              _groupHover={{ transform: "scale(1.05)" }}
+              transition="transform 0.5s"
+            >
+              <Image
                 src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80"
                 alt="Latest Drop - Oversized Jacket"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                w="full"
+                h="full"
+                objectFit="cover"
               />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Box>
+          </SimpleGrid>
+        </Container>
+      </Box>
+    </Box>
   );
 }
