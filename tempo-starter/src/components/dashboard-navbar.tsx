@@ -1,47 +1,73 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { createClient } from '../../supabase/client'
+import Link from "next/link";
+import { createClient } from "../../supabase/client";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu'
-import { Button } from './ui/button'
-import { UserCircle, Home } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+  Box,
+  Flex,
+  Container,
+  Button,
+  Text,
+  Popover,
+  Portal,
+} from "@chakra-ui/react";
+import { UserCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardNavbar() {
-  const supabase = createClient()
-  const router = useRouter()
+  const supabase = createClient();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.refresh();
+  };
 
   return (
-    <nav className="w-full border-b border-gray-200 bg-white py-4">
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <Link href="/" prefetch className="text-xl font-bold">
-            Logo
-          </Link>
-        </div>
-        <div className="flex gap-4 items-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <UserCircle className="h-6 w-6" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={async () => {
-                await supabase.auth.signOut()
-                router.refresh()
-              }}>
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-    </nav>
-  )
+    <Box
+      as="nav"
+      w="full"
+      borderBottom="1px"
+      borderColor="gray.200"
+      bg="white"
+      py={4}
+    >
+      <Container maxW="container.xl" px={4}>
+        <Flex justify="space-between" align="center">
+          <Flex align="center" gap={4}>
+            <Link href="/" prefetch>
+              <Text fontSize="xl" fontWeight="bold" cursor="pointer">
+                Logo
+              </Text>
+            </Link>
+          </Flex>
+          <Flex gap={4} align="center">
+            <Popover.Root>
+              <Popover.Trigger>
+                <Button variant="ghost" size="sm" p={2}>
+                  <UserCircle size={24} />
+                </Button>
+              </Popover.Trigger>
+              <Portal>
+                <Popover.Positioner>
+                  <Popover.Content>
+                    <Popover.Body>
+                      <Button
+                        variant="ghost"
+                        onClick={handleSignOut}
+                        w="full"
+                        justifyContent="flex-start"
+                      >
+                        Sign out
+                      </Button>
+                    </Popover.Body>
+                  </Popover.Content>
+                </Popover.Positioner>
+              </Portal>
+            </Popover.Root>
+          </Flex>
+        </Flex>
+      </Container>
+    </Box>
+  );
 }

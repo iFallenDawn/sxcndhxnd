@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import { TempoInit } from "@/components/tempo-init";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ChakraUIProvider } from "@/components/chakra-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,14 +22,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <Script src="https://api.tempolabs.ai/proxy-asset?url=https://storage.googleapis.com/tempo-public-assets/error-handling.js" />
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ChakraUIProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </ChakraUIProvider>
         <TempoInit />
       </body>
     </html>

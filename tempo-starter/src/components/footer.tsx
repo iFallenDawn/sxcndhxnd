@@ -1,152 +1,246 @@
-import Link from "next/link";
 import { Twitter, Linkedin, Github } from "lucide-react";
+import {
+  Box,
+  Container,
+  Grid,
+  GridItem,
+  Heading,
+  Text,
+  Stack,
+  Flex,
+  Link as ChakraLink,
+  VisuallyHidden,
+} from "@chakra-ui/react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-100">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+    <Box as="footer" bg="gray.50" borderTop="1px" borderColor="gray.100">
+      <Container maxW="container.xl" px={4} py={12}>
+        <Grid
+          templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }}
+          gap={8}
+          mb={12}
+        >
           {/* Product Column */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Product</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="#features"
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  Features
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#pricing"
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard"
-                  className="text-gray-600 hover:text-blue-600"
-                >
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  API
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <GridItem>
+            <Heading
+              as="h3"
+              fontSize="md"
+              fontWeight="semibold"
+              color="gray.900"
+              mb={4}
+            >
+              Product
+            </Heading>
+            <Stack gap={2}>
+              <ChakraLink
+                href="#features"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Features
+              </ChakraLink>
+              <ChakraLink
+                href="#pricing"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Pricing
+              </ChakraLink>
+              <ChakraLink
+                href="/dashboard"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Dashboard
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                API
+              </ChakraLink>
+            </Stack>
+          </GridItem>
 
           {/* Company Column */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Company</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Press
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <GridItem>
+            <Heading
+              as="h3"
+              fontSize="md"
+              fontWeight="semibold"
+              color="gray.900"
+              mb={4}
+            >
+              Company
+            </Heading>
+            <Stack gap={2}>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                About
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Blog
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Careers
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Press
+              </ChakraLink>
+            </Stack>
+          </GridItem>
 
           {/* Resources Column */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Resources</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Community
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Status
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <GridItem>
+            <Heading
+              as="h3"
+              fontSize="md"
+              fontWeight="semibold"
+              color="gray.900"
+              mb={4}
+            >
+              Resources
+            </Heading>
+            <Stack gap={2}>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Documentation
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Help Center
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Community
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Status
+              </ChakraLink>
+            </Stack>
+          </GridItem>
 
           {/* Legal Column */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Legal</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Terms
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Security
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-600 hover:text-blue-600">
-                  Cookies
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
+          <GridItem>
+            <Heading
+              as="h3"
+              fontSize="md"
+              fontWeight="semibold"
+              color="gray.900"
+              mb={4}
+            >
+              Legal
+            </Heading>
+            <Stack gap={2}>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Privacy
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Terms
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Security
+              </ChakraLink>
+              <ChakraLink
+                href="#"
+                color="gray.600"
+                _hover={{ color: "blue.600" }}
+              >
+                Cookies
+              </ChakraLink>
+            </Stack>
+          </GridItem>
+        </Grid>
 
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-200">
-          <div className="text-gray-600 mb-4 md:mb-0 font-light tracking-wide">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          justify="space-between"
+          align="center"
+          pt={8}
+          borderTop="1px"
+          borderColor="gray.200"
+        >
+          <Text
+            color="gray.600"
+            mb={{ base: 4, md: 0 }}
+            fontWeight="light"
+            letterSpacing="wide"
+          >
             © {currentYear} sxcndhxnd. All rights reserved.
-          </div>
+          </Text>
 
-          <div className="flex space-x-6">
-            <a href="#" className="text-gray-400 hover:text-gray-500">
-              <span className="sr-only">Twitter</span>
-              <Twitter className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-500">
-              <span className="sr-only">LinkedIn</span>
-              <Linkedin className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-400 hover:text-gray-500">
-              <span className="sr-only">GitHub</span>
-              <Github className="h-6 w-6" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
+          <Flex gap={6}>
+            <ChakraLink
+              href="#"
+              color="gray.400"
+              _hover={{ color: "gray.500" }}
+            >
+              <VisuallyHidden>Twitter</VisuallyHidden>
+              <Twitter size={24} />
+            </ChakraLink>
+            <ChakraLink
+              href="#"
+              color="gray.400"
+              _hover={{ color: "gray.500" }}
+            >
+              <VisuallyHidden>LinkedIn</VisuallyHidden>
+              <Linkedin size={24} />
+            </ChakraLink>
+            <ChakraLink
+              href="#"
+              color="gray.400"
+              _hover={{ color: "gray.500" }}
+            >
+              <VisuallyHidden>GitHub</VisuallyHidden>
+              <Github size={24} />
+            </ChakraLink>
+          </Flex>
+        </Flex>
+      </Container>
+    </Box>
   );
 }
