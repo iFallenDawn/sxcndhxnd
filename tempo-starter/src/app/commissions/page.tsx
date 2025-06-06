@@ -1,207 +1,280 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  FormLabel,
+  Grid,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  Textarea,
+  VStack,
+  Flex,
+  Center,
+} from "@chakra-ui/react";
 
 export default function Commissions() {
   return (
-    <div className="min-h-screen bg-white">
+    <Box minH="100vh" bg="white">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="py-32 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-light mb-8 tracking-wide uppercase">
+      <Box as="section" py={32} bg="white">
+        <Container maxW="container.xl" px={4}>
+          <VStack maxW="4xl" mx="auto" textAlign="center">
+            <Heading
+              as="h1"
+              fontSize="5xl"
+              fontWeight="light"
+              mb={8}
+              letterSpacing="wide"
+              textTransform="uppercase"
+            >
               Custom Commissions
-            </h1>
-            <p className="text-xl text-gray-700 font-light leading-relaxed mb-12">
+            </Heading>
+            <Text
+              fontSize="xl"
+              color="gray.700"
+              fontWeight="light"
+              lineHeight="relaxed"
+              mb={12}
+            >
               Work directly with our designers to create unique pieces tailored
               to your vision. Each commission is a collaborative journey
               resulting in a one-of-a-kind garment.
-            </p>
-          </div>
-        </div>
-      </section>
+            </Text>
+          </VStack>
+        </Container>
+      </Box>
 
       {/* Process Section */}
-      <section className="py-32 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-light mb-6 tracking-wide uppercase">
+      <Box as="section" py={32} bg="gray.50">
+        <Container maxW="container.xl" px={4}>
+          <VStack textAlign="center" mb={20}>
+            <Heading
+              as="h2"
+              fontSize="4xl"
+              fontWeight="light"
+              mb={6}
+              letterSpacing="wide"
+              textTransform="uppercase"
+            >
               Our Process
-            </h2>
-          </div>
+            </Heading>
+          </VStack>
 
-          <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-light">
-                1
-              </div>
-              <h3 className="text-xl font-light mb-4 tracking-wide uppercase">
-                Consultation
-              </h3>
-              <p className="text-gray-600 font-light leading-relaxed">
-                We discuss your vision, preferences, and requirements in detail.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-light">
-                2
-              </div>
-              <h3 className="text-xl font-light mb-4 tracking-wide uppercase">
-                Design
-              </h3>
-              <p className="text-gray-600 font-light leading-relaxed">
-                Our team creates initial sketches and material selections.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-light">
-                3
-              </div>
-              <h3 className="text-xl font-light mb-4 tracking-wide uppercase">
-                Creation
-              </h3>
-              <p className="text-gray-600 font-light leading-relaxed">
-                Skilled artisans bring your custom piece to life with precision.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-light">
-                4
-              </div>
-              <h3 className="text-xl font-light mb-4 tracking-wide uppercase">
-                Delivery
-              </h3>
-              <p className="text-gray-600 font-light leading-relaxed">
-                Your unique garment is carefully packaged and delivered to you.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+            gap={8}
+            maxW="6xl"
+            mx="auto"
+          >
+            {[
+              {
+                step: "1",
+                title: "Consultation",
+                desc: "We discuss your vision, preferences, and requirements in detail.",
+              },
+              {
+                step: "2",
+                title: "Design",
+                desc: "Our team creates initial sketches and material selections.",
+              },
+              {
+                step: "3",
+                title: "Creation",
+                desc: "Skilled artisans bring your custom piece to life with precision.",
+              },
+              {
+                step: "4",
+                title: "Delivery",
+                desc: "Your unique garment is carefully packaged and delivered to you.",
+              },
+            ].map((item) => (
+              <VStack key={item.step} textAlign="center">
+                <Center
+                  w={16}
+                  h={16}
+                  bg="black"
+                  color="white"
+                  borderRadius="full"
+                  mb={6}
+                  fontSize="xl"
+                  fontWeight="light"
+                >
+                  {item.step}
+                </Center>
+                <Heading
+                  as="h3"
+                  fontSize="xl"
+                  fontWeight="light"
+                  mb={4}
+                  letterSpacing="wide"
+                  textTransform="uppercase"
+                >
+                  {item.title}
+                </Heading>
+                <Text color="gray.600" fontWeight="light" lineHeight="relaxed">
+                  {item.desc}
+                </Text>
+              </VStack>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
 
       {/* Commission Form */}
-      <section className="py-32 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-light mb-6 tracking-wide uppercase">
+      <Box as="section" py={32} bg="white">
+        <Container maxW="container.xl" px={4}>
+          <Box maxW="2xl" mx="auto">
+            <VStack textAlign="center" mb={12}>
+              <Heading
+                as="h2"
+                fontSize="4xl"
+                fontWeight="light"
+                mb={6}
+                letterSpacing="wide"
+                textTransform="uppercase"
+              >
                 Start Your Commission
-              </h2>
-              <p className="text-gray-600 font-light">
+              </Heading>
+              <Text color="gray.600" fontWeight="light">
                 Fill out the form below to begin your custom commission journey.
-              </p>
-            </div>
+              </Text>
+            </VStack>
 
-            <form className="space-y-8">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="firstName"
-                    className="text-sm font-light tracking-wide uppercase"
+            <form>
+              <Stack spacing={8}>
+                <Grid
+                  templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                  gap={6}
+                >
+                  <FormControl>
+                    <FormLabel
+                      fontSize="sm"
+                      fontWeight="light"
+                      letterSpacing="wide"
+                      textTransform="uppercase"
+                    >
+                      First Name
+                    </FormLabel>
+                    <Input
+                      placeholder="Enter your first name"
+                      borderColor="gray.300"
+                      _focus={{ borderColor: "black" }}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel
+                      fontSize="sm"
+                      fontWeight="light"
+                      letterSpacing="wide"
+                      textTransform="uppercase"
+                    >
+                      Last Name
+                    </FormLabel>
+                    <Input
+                      placeholder="Enter your last name"
+                      borderColor="gray.300"
+                      _focus={{ borderColor: "black" }}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <FormControl>
+                  <FormLabel
+                    fontSize="sm"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
                   >
-                    First Name
-                  </Label>
+                    Email
+                  </FormLabel>
                   <Input
-                    id="firstName"
-                    placeholder="Enter your first name"
-                    className="border-gray-300 focus:border-black"
+                    type="email"
+                    placeholder="Enter your email address"
+                    borderColor="gray.300"
+                    _focus={{ borderColor: "black" }}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="lastName"
-                    className="text-sm font-light tracking-wide uppercase"
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel
+                    fontSize="sm"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
                   >
-                    Last Name
-                  </Label>
+                    Garment Type
+                  </FormLabel>
                   <Input
-                    id="lastName"
-                    placeholder="Enter your last name"
-                    className="border-gray-300 focus:border-black"
+                    placeholder="e.g., Dress, Shirt, Jacket"
+                    borderColor="gray.300"
+                    _focus={{ borderColor: "black" }}
                   />
-                </div>
-              </div>
+                </FormControl>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-sm font-light tracking-wide uppercase"
-                >
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="border-gray-300 focus:border-black"
-                />
-              </div>
+                <FormControl>
+                  <FormLabel
+                    fontSize="sm"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                  >
+                    Budget Range
+                  </FormLabel>
+                  <Input
+                    placeholder="e.g., $500-$1000"
+                    borderColor="gray.300"
+                    _focus={{ borderColor: "black" }}
+                  />
+                </FormControl>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="garmentType"
-                  className="text-sm font-light tracking-wide uppercase"
-                >
-                  Garment Type
-                </Label>
-                <Input
-                  id="garmentType"
-                  placeholder="e.g., Dress, Shirt, Jacket"
-                  className="border-gray-300 focus:border-black"
-                />
-              </div>
+                <FormControl>
+                  <FormLabel
+                    fontSize="sm"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                  >
+                    Project Description
+                  </FormLabel>
+                  <Textarea
+                    placeholder="Describe your vision, preferred materials, colors, and any specific requirements..."
+                    rows={6}
+                    borderColor="gray.300"
+                    _focus={{ borderColor: "black" }}
+                    resize="none"
+                  />
+                </FormControl>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="budget"
-                  className="text-sm font-light tracking-wide uppercase"
-                >
-                  Budget Range
-                </Label>
-                <Input
-                  id="budget"
-                  placeholder="e.g., $500-$1000"
-                  className="border-gray-300 focus:border-black"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label
-                  htmlFor="description"
-                  className="text-sm font-light tracking-wide uppercase"
-                >
-                  Project Description
-                </Label>
-                <Textarea
-                  id="description"
-                  placeholder="Describe your vision, preferred materials, colors, and any specific requirements..."
-                  rows={6}
-                  className="border-gray-300 focus:border-black resize-none"
-                />
-              </div>
-
-              <div className="text-center">
-                <Button
-                  type="submit"
-                  className="bg-black text-white hover:bg-gray-800 px-8 py-3 text-sm font-medium tracking-wide uppercase"
-                >
-                  Submit Commission Request
-                </Button>
-              </div>
+                <Center>
+                  <Button
+                    type="submit"
+                    bg="black"
+                    color="white"
+                    _hover={{ bg: "gray.800" }}
+                    px={8}
+                    py={6}
+                    fontSize="sm"
+                    fontWeight="medium"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                  >
+                    Submit Commission Request
+                  </Button>
+                </Center>
+              </Stack>
             </form>
-          </div>
-        </div>
-      </section>
+          </Box>
+        </Container>
+      </Box>
 
       <Footer />
-    </div>
+    </Box>
   );
 }

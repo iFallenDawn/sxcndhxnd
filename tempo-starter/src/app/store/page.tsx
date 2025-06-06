@@ -1,7 +1,20 @@
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-import { Button } from "@/components/ui/button";
+import { Button } from "@chakra-ui/react";
 import Link from "next/link";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  SimpleGrid,
+  VStack,
+  Image,
+  Grid,
+  GridItem,
+  Flex,
+  ButtonGroup,
+} from "@chakra-ui/react";
 
 export default function Store() {
   const products = [
@@ -62,124 +75,244 @@ export default function Store() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <Box minH="100vh" bg="white">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="py-32 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <h1 className="text-5xl font-light mb-8 tracking-wide uppercase">
+      <Box as="section" py={32} bg="white">
+        <Container maxW="container.xl">
+          <VStack spacing={8} textAlign="center" mb={20}>
+            <Heading
+              as="h1"
+              fontSize="5xl"
+              fontWeight="light"
+              letterSpacing="wide"
+              textTransform="uppercase"
+            >
               Store
-            </h1>
-            <p className="text-xl text-gray-700 font-light leading-relaxed max-w-2xl mx-auto">
+            </Heading>
+            <Text fontSize="xl" color="gray.700" fontWeight="light" maxW="2xl">
               Discover our carefully curated collection of minimalist pieces
               designed for the modern wardrobe.
-            </p>
-          </div>
-        </div>
-      </section>
+            </Text>
+          </VStack>
+        </Container>
+      </Box>
 
       {/* Filter Section */}
-      <section className="pb-16">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-center space-x-8 mb-16">
-            <button className="text-sm font-light tracking-wide uppercase border-b-2 border-black pb-2">
+      <Box as="section" pb={16}>
+        <Container maxW="container.xl">
+          <Flex justify="center" gap={8} mb={16}>
+            <Button
+              variant="ghost"
+              fontSize="sm"
+              fontWeight="light"
+              letterSpacing="wide"
+              textTransform="uppercase"
+              borderBottom="2px"
+              borderColor="black"
+              borderRadius="0"
+              _hover={{ bg: "transparent" }}
+            >
               All
-            </button>
-            <button className="text-sm font-light tracking-wide uppercase text-gray-500 hover:text-black transition-colors pb-2">
+            </Button>
+            <Button
+              variant="ghost"
+              fontSize="sm"
+              fontWeight="light"
+              letterSpacing="wide"
+              textTransform="uppercase"
+              color="gray.500"
+              _hover={{ color: "black", bg: "transparent" }}
+            >
               Essentials
-            </button>
-            <button className="text-sm font-light tracking-wide uppercase text-gray-500 hover:text-black transition-colors pb-2">
+            </Button>
+            <Button
+              variant="ghost"
+              fontSize="sm"
+              fontWeight="light"
+              letterSpacing="wide"
+              textTransform="uppercase"
+              color="gray.500"
+              _hover={{ color: "black", bg: "transparent" }}
+            >
               Statement
-            </button>
-          </div>
-        </div>
-      </section>
+            </Button>
+          </Flex>
+        </Container>
+      </Box>
 
       {/* Products Grid */}
-      <section className="pb-32">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+      <Box as="section" pb={32}>
+        <Container maxW="container.xl">
+          <SimpleGrid
+            columns={{ base: 1, md: 2, lg: 3 }}
+            spacing={12}
+            maxW="7xl"
+            mx="auto"
+          >
             {products.map((product) => (
-              <div key={product.id} className="group cursor-pointer">
-                <div className="aspect-[4/5] bg-gray-100 overflow-hidden mb-6">
-                  <img
+              <VStack
+                key={product.id}
+                spacing={6}
+                role="group"
+                cursor="pointer"
+              >
+                <Box
+                  position="relative"
+                  aspectRatio={4 / 5}
+                  bg="gray.100"
+                  overflow="hidden"
+                  w="full"
+                >
+                  <Image
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    objectFit="cover"
+                    w="full"
+                    h="full"
+                    transition="transform 0.7s"
+                    _groupHover={{ transform: "scale(1.05)" }}
                   />
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-gray-500 font-light tracking-wide uppercase mb-2">
+                </Box>
+                <VStack spacing={2} textAlign="center">
+                  <Text
+                    fontSize="xs"
+                    color="gray.500"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
+                  >
                     {product.category}
-                  </p>
-                  <h3 className="text-lg font-light tracking-wide mb-2">
+                  </Text>
+                  <Heading
+                    as="h3"
+                    fontSize="lg"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                  >
                     {product.name}
-                  </h3>
-                  <p className="text-lg font-light mb-4">{product.price}</p>
+                  </Heading>
+                  <Text fontSize="lg" fontWeight="light" mb={4}>
+                    {product.price}
+                  </Text>
                   <Button
                     variant="outline"
-                    className="border-black text-black hover:bg-black hover:text-white transition-colors text-sm font-light tracking-wide uppercase"
+                    borderColor="black"
+                    color="black"
+                    _hover={{ bg: "black", color: "white" }}
+                    fontSize="sm"
+                    fontWeight="light"
+                    letterSpacing="wide"
+                    textTransform="uppercase"
                   >
                     Add to Cart
                   </Button>
-                </div>
-              </div>
+                </VStack>
+              </VStack>
             ))}
-          </div>
-        </div>
-      </section>
+          </SimpleGrid>
+        </Container>
+      </Box>
 
       {/* Collections CTA */}
-      <section className="py-32 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-light mb-6 tracking-wide uppercase">
+      <Box as="section" py={32} bg="gray.50">
+        <Container maxW="container.xl">
+          <VStack spacing={6} textAlign="center" mb={16}>
+            <Heading
+              as="h2"
+              fontSize="4xl"
+              fontWeight="light"
+              letterSpacing="wide"
+              textTransform="uppercase"
+            >
               Shop by Collection
-            </h2>
-            <p className="text-gray-600 max-w-xl mx-auto font-light">
+            </Heading>
+            <Text color="gray.600" maxW="xl" fontWeight="light">
               Explore our thoughtfully designed collections
-            </p>
-          </div>
+            </Text>
+          </VStack>
 
-          <div className="grid md:grid-cols-2 gap-16 max-w-4xl mx-auto">
-            <Link href="/store?collection=essentials" className="group">
-              <div className="aspect-[4/5] bg-gray-100 overflow-hidden mb-6">
-                <img
-                  src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80"
-                  alt="Essentials Collection"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-              <h3 className="text-2xl font-light mb-2 tracking-wide uppercase text-center">
-                Essentials
-              </h3>
-              <p className="text-gray-600 font-light text-center">
-                Timeless basics for everyday wear
-              </p>
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+            gap={16}
+            maxW="4xl"
+            mx="auto"
+          >
+            <Link href="/store?collection=essentials">
+              <VStack spacing={6} role="group">
+                <Box
+                  position="relative"
+                  aspectRatio={4 / 5}
+                  bg="gray.100"
+                  overflow="hidden"
+                  w="full"
+                >
+                  <Image
+                    src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80"
+                    alt="Essentials Collection"
+                    objectFit="cover"
+                    w="full"
+                    h="full"
+                    transition="transform 0.7s"
+                    _groupHover={{ transform: "scale(1.05)" }}
+                  />
+                </Box>
+                <Heading
+                  as="h3"
+                  fontSize="2xl"
+                  fontWeight="light"
+                  letterSpacing="wide"
+                  textTransform="uppercase"
+                  textAlign="center"
+                >
+                  Essentials
+                </Heading>
+                <Text color="gray.600" fontWeight="light" textAlign="center">
+                  Timeless basics for everyday wear
+                </Text>
+              </VStack>
             </Link>
 
-            <Link href="/store?collection=statement" className="group">
-              <div className="aspect-[4/5] bg-gray-100 overflow-hidden mb-6">
-                <img
-                  src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80"
-                  alt="Statement Collection"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-              <h3 className="text-2xl font-light mb-2 tracking-wide uppercase text-center">
-                Statement
-              </h3>
-              <p className="text-gray-600 font-light text-center">
-                Bold pieces that make an impact
-              </p>
+            <Link href="/store?collection=statement">
+              <VStack spacing={6} role="group">
+                <Box
+                  position="relative"
+                  aspectRatio={4 / 5}
+                  bg="gray.100"
+                  overflow="hidden"
+                  w="full"
+                >
+                  <Image
+                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80"
+                    alt="Statement Collection"
+                    objectFit="cover"
+                    w="full"
+                    h="full"
+                    transition="transform 0.7s"
+                    _groupHover={{ transform: "scale(1.05)" }}
+                  />
+                </Box>
+                <Heading
+                  as="h3"
+                  fontSize="2xl"
+                  fontWeight="light"
+                  letterSpacing="wide"
+                  textTransform="uppercase"
+                  textAlign="center"
+                >
+                  Statement
+                </Heading>
+                <Text color="gray.600" fontWeight="light" textAlign="center">
+                  Bold pieces that make an impact
+                </Text>
+              </VStack>
             </Link>
-          </div>
-        </div>
-      </section>
+          </Grid>
+        </Container>
+      </Box>
 
       <Footer />
-    </div>
+    </Box>
   );
 }

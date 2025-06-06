@@ -48,15 +48,13 @@ export default function Hero() {
               align="center"
               flexDir={{ base: "column", sm: "row" }}
             >
-              <Button asChild>
-                <Link href="/store">
-                  <ArrowUp size={16} style={{ marginRight: "8px" }} />
-                  Shop Now
-                </Link>
+              <Button as={Link} href="/store">
+                <ArrowUp size={16} style={{ marginRight: "8px" }} />
+                Shop Now
               </Button>
 
-              <Button variant="outline" asChild>
-                <Link href="/gallery">View Gallery</Link>
+              <Button variant="outline" as={Link} href="/gallery">
+                View Gallery
               </Button>
             </HStack>
           </VStack>

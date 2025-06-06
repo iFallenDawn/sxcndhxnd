@@ -9,6 +9,9 @@ import {
   Button,
   Text,
   Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
   Portal,
 } from "@chakra-ui/react";
 import { UserCircle } from "lucide-react";
@@ -42,29 +45,27 @@ export default function DashboardNavbar() {
             </Link>
           </Flex>
           <Flex gap={4} align="center">
-            <Popover.Root>
-              <Popover.Trigger>
+            <Popover>
+              <PopoverTrigger>
                 <Button variant="ghost" size="sm" p={2}>
                   <UserCircle size={24} />
                 </Button>
-              </Popover.Trigger>
+              </PopoverTrigger>
               <Portal>
-                <Popover.Positioner>
-                  <Popover.Content>
-                    <Popover.Body>
-                      <Button
-                        variant="ghost"
-                        onClick={handleSignOut}
-                        w="full"
-                        justifyContent="flex-start"
-                      >
-                        Sign out
-                      </Button>
-                    </Popover.Body>
-                  </Popover.Content>
-                </Popover.Positioner>
+                <PopoverContent>
+                  <PopoverBody>
+                    <Button
+                      variant="ghost"
+                      onClick={handleSignOut}
+                      w="full"
+                      justifyContent="flex-start"
+                    >
+                      Sign out
+                    </Button>
+                  </PopoverBody>
+                </PopoverContent>
               </Portal>
-            </Popover.Root>
+            </Popover>
           </Flex>
         </Flex>
       </Container>

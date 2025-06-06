@@ -2,8 +2,16 @@ import { resetPasswordAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import Navbar from "@/components/navbar";
 import { SubmitButton } from "@/components/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Box,
+  Container,
+  VStack,
+  Heading,
+  Text,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
 
 export default async function ResetPassword(props: {
   searchParams: Promise<Message>;
@@ -11,67 +19,89 @@ export default async function ResetPassword(props: {
   const searchParams = await props.searchParams;
   if ("message" in searchParams) {
     return (
-      <div className="flex h-screen w-full flex-1 items-center justify-center p-4 sm:max-w-md">
+      <Box
+        display="flex"
+        h="100vh"
+        w="full"
+        alignItems="center"
+        justifyContent="center"
+        p={4}
+        maxW={{ sm: "md" }}
+      >
         <FormMessage message={searchParams} />
-      </div>
+      </Box>
     );
   }
 
   return (
     <>
       <Navbar />
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8">
-        <div className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-sm">
-          <form className="flex flex-col space-y-6">
-            <div className="space-y-2 text-center">
-              <h1 className="text-3xl font-semibold tracking-tight">Reset password</h1>
-              <p className="text-sm text-muted-foreground">
-                Please enter your new password below.
-              </p>
-            </div>
+      <Box
+        minH="100vh"
+        display="flex"
+        flexDir="column"
+        alignItems="center"
+        justifyContent="center"
+        bg="white"
+        px={4}
+        py={8}
+      >
+        <Container
+          maxW="md"
+          borderWidth={1}
+          borderRadius="lg"
+          bg="white"
+          p={6}
+          boxShadow="sm"
+        >
+          <form>
+            <VStack spacing={6}>
+              <Box textAlign="center">
+                <Heading size="lg" mb={2}>
+                  Reset Password
+                </Heading>
+                <Text color="gray.600">
+                  Please enter your new password below.
+                </Text>
+              </Box>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">
-                  New password
-                </Label>
+              <FormControl>
+                <FormLabel htmlFor="password">New password</FormLabel>
                 <Input
                   id="password"
                   type="password"
                   name="password"
                   placeholder="New password"
                   required
-                  className="w-full"
                 />
-              </div>
+              </FormControl>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium">
+              <FormControl>
+                <FormLabel htmlFor="confirmPassword">
                   Confirm password
-                </Label>
+                </FormLabel>
                 <Input
                   id="confirmPassword"
                   type="password"
                   name="confirmPassword"
                   placeholder="Confirm password"
                   required
-                  className="w-full"
                 />
-              </div>
-            </div>
+              </FormControl>
 
-            <SubmitButton
-              formAction={resetPasswordAction}
-              pendingText="Resetting password..."
-              className="w-full"
-            >
-              Reset password
-            </SubmitButton>
+              <SubmitButton
+                w="full"
+                formAction={resetPasswordAction}
+                pendingText="Resetting password..."
+              >
+                Reset password
+              </SubmitButton>
 
-            <FormMessage message={searchParams} />
+              <FormMessage message={searchParams} />
+            </VStack>
           </form>
-        </div>
-      </div>
+        </Container>
+      </Box>
     </>
   );
 }
