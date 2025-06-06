@@ -1,8 +1,17 @@
+import {
+  Box,
+  Container,
+  VStack,
+  Heading,
+  Text,
+  FormControl,
+  FormLabel,
+  Input,
+  Link as ChakraLink,
+} from "@chakra-ui/react";
+import Link from "next/link";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
 import { SmtpMessage } from "../smtp-message";
 import { signUpAction } from "@/app/actions";
 import Navbar from "@/components/navbar";
@@ -14,65 +23,88 @@ export default async function Signup(props: {
   const searchParams = await props.searchParams;
   if ("message" in searchParams) {
     return (
-      <div className="flex h-screen w-full flex-1 items-center justify-center p-4 sm:max-w-md">
+      <Box
+        display="flex"
+        h="100vh"
+        w="full"
+        alignItems="center"
+        justifyContent="center"
+        p={4}
+        maxW={{ sm: "md" }}
+      >
         <FormMessage message={searchParams} />
-      </div>
+      </Box>
     );
   }
 
   return (
     <>
       <Navbar />
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8">
-        <div className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-sm">
+      <Box
+        minH="100vh"
+        display="flex"
+        flexDir="column"
+        alignItems="center"
+        justifyContent="center"
+        bg="white"
+        px={4}
+        py={8}
+      >
+        <Container
+          maxW="md"
+          borderWidth={1}
+          borderRadius="lg"
+          bg="white"
+          p={6}
+          boxShadow="sm"
+        >
           <UrlProvider>
-            <form className="flex flex-col space-y-6">
-              <div className="space-y-2 text-center">
-                <h1 className="text-3xl font-semibold tracking-tight">Sign up</h1>
-                <p className="text-sm text-muted-foreground">
-                  Already have an account?{" "}
-                  <Link
-                    className="text-primary font-medium hover:underline transition-all"
-                    href="/sign-in"
-                  >
-                    Sign in
-                  </Link>
-                </p>
-              </div>
+            <form>
+              <VStack spacing={6}>
+                <Box textAlign="center">
+                  <Heading size="lg" mb={2}>
+                    Sign up
+                  </Heading>
+                  <Text color="gray.600">
+                    Already have an account?{" "}
+                    <Link href="/sign-in" passHref>
+                      <ChakraLink
+                        color="blue.500"
+                        fontWeight="medium"
+                        _hover={{
+                          textDecoration: "underline",
+                        }}
+                      >
+                        Sign in
+                      </ChakraLink>
+                    </Link>
+                  </Text>
+                </Box>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="full_name" className="text-sm font-medium">
-                    Full Name
-                  </Label>
+                <FormControl>
+                  <FormLabel htmlFor="full_name">Full Name</FormLabel>
                   <Input
                     id="full_name"
                     name="full_name"
                     type="text"
                     placeholder="John Doe"
                     required
-                    className="w-full"
                   />
-                </div>
+                </FormControl>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </Label>
+                <FormControl>
+                  <FormLabel htmlFor="email">Email</FormLabel>
                   <Input
                     id="email"
                     name="email"
                     type="email"
                     placeholder="you@example.com"
                     required
-                    className="w-full"
                   />
-                </div>
+                </FormControl>
 
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium">
-                    Password
-                  </Label>
+                <FormControl>
+                  <FormLabel htmlFor="password">Password</FormLabel>
                   <Input
                     id="password"
                     type="password"
@@ -80,25 +112,25 @@ export default async function Signup(props: {
                     placeholder="Your password"
                     minLength={6}
                     required
-                    className="w-full"
                   />
-                </div>
-              </div>
+                </FormControl>
 
-              <SubmitButton
-                formAction={signUpAction}
-                pendingText="Signing up..."
-                className="w-full"
-              >
-                Sign up
-              </SubmitButton>
+                <SubmitButton
+                  w="full"
+                  colorScheme="blue"
+                  formAction={signUpAction}
+                  pendingText="Signing up..."
+                >
+                  Sign up
+                </SubmitButton>
 
-              <FormMessage message={searchParams} />
+                <FormMessage message={searchParams} />
+              </VStack>
             </form>
           </UrlProvider>
-        </div>
+        </Container>
         <SmtpMessage />
-      </div>
+      </Box>
     </>
   );
 }
