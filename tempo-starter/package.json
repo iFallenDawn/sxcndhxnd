@@ -2,8 +2,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
+    "start": "next start",
+    "clean": "rm -rf .next/cache && rm -rf .next/static"
   },
   "dependencies": {
     "@chakra-ui/react": "2.8.2",
