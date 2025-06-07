@@ -65,5 +65,24 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  
+  html {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+}
+
+.serif-font {
+  font-family: var(--font-playfair);
+}
+
+/* Force Roboto globally */
+* {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* Exception for serif elements */
+.serif-font, .serif-font * {
+  font-family: var(--font-playfair) !important;
 }

@@ -12,37 +12,37 @@ export default async function Navbar() {
   } = await (await supabase).auth.getUser();
 
   return (
-    <nav className="w-full border-b border-gray-200 bg-white py-2">
+    <nav className="fixed top-0 left-0 right-0 w-full bg-transparent backdrop-blur-sm py-4 z-50">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <Link
           href="/"
           prefetch
-          className="text-xl font-light tracking-wide uppercase"
+          className="text-xl font-light tracking-wide uppercase text-white hover:text-gray-200 transition-colors"
         >
           sxcndhxnd
         </Link>
         <div className="flex gap-8 items-center">
           <Link
             href="/about"
-            className="text-sm font-light tracking-wide uppercase hover:text-gray-600 transition-colors"
+            className="text-sm font-light tracking-wide uppercase text-white hover:text-gray-300 transition-colors"
           >
             About
           </Link>
           <Link
             href="/gallery"
-            className="text-sm font-light tracking-wide uppercase hover:text-gray-600 transition-colors"
+            className="text-sm font-light tracking-wide uppercase text-white hover:text-gray-300 transition-colors"
           >
             Gallery
           </Link>
           <Link
             href="/commissions"
-            className="text-sm font-light tracking-wide uppercase hover:text-gray-600 transition-colors"
+            className="text-sm font-light tracking-wide uppercase text-white hover:text-gray-300 transition-colors"
           >
             Commissions
           </Link>
           <Link
             href="/store"
-            className="text-sm font-light tracking-wide uppercase hover:text-gray-600 transition-colors"
+            className="text-sm font-light tracking-wide uppercase text-white hover:text-gray-300 transition-colors"
           >
             Store
           </Link>
@@ -50,7 +50,7 @@ export default async function Navbar() {
             <>
               <Link
                 href="/dashboard"
-                className="text-sm font-light tracking-wide uppercase hover:text-gray-600 transition-colors"
+                className="text-sm font-light tracking-wide uppercase text-white hover:text-gray-300 transition-colors"
               >
                 Account
               </Link>
@@ -60,13 +60,13 @@ export default async function Navbar() {
             <>
               <Link
                 href="/sign-in"
-                className="text-sm font-light tracking-wide uppercase hover:text-gray-600 transition-colors"
+                className="text-sm font-light tracking-wide uppercase text-white hover:text-gray-300 transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 href="/sign-up"
-                className="text-sm font-light tracking-wide uppercase text-white bg-black px-4 py-2 hover:bg-gray-800 transition-colors"
+                className="text-sm font-light tracking-wide uppercase text-black bg-white px-4 py-2 hover:bg-gray-200 transition-colors"
               >
                 Sign Up
               </Link>
