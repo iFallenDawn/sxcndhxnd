@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Roboto", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["var(--font-playfair)", "ui-serif", "Georgia", "serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
