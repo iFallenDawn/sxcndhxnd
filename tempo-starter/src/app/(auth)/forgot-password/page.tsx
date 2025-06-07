@@ -68,15 +68,15 @@ export default async function ForgotPassword(props: {
                   </Heading>
                   <Text fontSize="sm" color="gray.600">
                     Already have an account?{" "}
-                    <Link href="/sign-in" passHref>
-                      <ChakraLink
-                        color="black"
-                        fontWeight="medium"
-                        _hover={{ textDecoration: "underline" }}
-                      >
-                        Sign in
-                      </ChakraLink>
-                    </Link>
+                    <ChakraLink
+                      as={Link}
+                      href="/sign-in"
+                      color="black"
+                      fontWeight="medium"
+                      _hover={{ textDecoration: "underline" }}
+                    >
+                      Sign in
+                    </ChakraLink>
                   </Text>
                 </Box>
 
@@ -94,6 +94,7 @@ export default async function ForgotPassword(props: {
                       name="email"
                       type="email"
                       placeholder="you@example.com"
+                      autoComplete="email"
                       required
                     />
                   </FormControl>
