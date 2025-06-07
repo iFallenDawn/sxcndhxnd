@@ -59,6 +59,7 @@ export default async function SignIn(props: {
                   name="email"
                   type="email"
                   placeholder="you@example.com"
+                  autoComplete="email"
                   required
                 />
               </FormControl>
@@ -73,24 +74,25 @@ export default async function SignIn(props: {
                   <FormLabel htmlFor="password" mb={0}>
                     Password
                   </FormLabel>
-                  <Link href="/forgot-password" passHref>
-                    <ChakraLink
-                      fontSize="sm"
-                      color="gray.500"
-                      _hover={{
-                        color: "gray.700",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Forgot Password?
-                    </ChakraLink>
-                  </Link>
+                  <ChakraLink
+                    as={Link}
+                    href="/forgot-password"
+                    fontSize="sm"
+                    color="gray.500"
+                    _hover={{
+                      color: "gray.700",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Forgot Password?
+                  </ChakraLink>
                 </Box>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="Your password"
+                  autoComplete="current-password"
                   required
                 />
               </FormControl>
