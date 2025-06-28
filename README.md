@@ -6,34 +6,40 @@ Inspired by a talk I had with Nico at Leg Up On Life about adding a shopping car
 
 # Authors
 - Jordan Wang
-- Nixon Puertollano
 - Nikky Soriano
-- Jheb
 
 # Notion Board
 For all of our progress and thoughts! [Link](https://www.notion.so/sxcndhxnd-139ea1cbcfb18016b24bed3bea471278?pvs=4)
 
 # Technologies
 
-- [SVGR](https://github.com/gregberge/svgr)
+- [Next.js](https://nextjs.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [React](https://docs.astro.build/en/guides/integrations-guide/react/)
 - [Lucide](https://lucide.dev/)
-- [Firebase Firestore](https://firebase.google.com/docs/firestore)
+- [Supabase](https://supabase.com/)
 - [Postman](https://www.postman.com/)
-- [FastAPI](https://fastapi.tiangolo.com/)
+- [Chakra UI](https://chakra-ui.com/)
 
 ## Getting Started
 
-First, run the development server:
+First, install all dependencies:
 
 ```bash
-cd frontend/
-npm run dev
+cd tempo-starter/
+pnpm i
 ```
 
-## Frontend
-Using Tanstack Router! Read [here](https://tanstack.com/router/latest/docs/framework/react/overview) for more information.
+Then run the app with
+```
+pnpm dev
+```
 
-
+## Updating Types
+```
+cd tempo-starter/src
+npm install --save-dev supabase
+npx supabase login
+npx supabase@latest gen types typescript --project-id projectidhere --schema public > types/supabase.ts
+```
 

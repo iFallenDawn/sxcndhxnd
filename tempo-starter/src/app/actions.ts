@@ -4,21 +4,26 @@ import { encodedRedirect } from "@/utils/utils";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "../../supabase/server";
+import usersUtil from '../utils/users'
 
 export const signUpAction = async (formData: FormData) => {
+  const firstName = formData.get("first_name")?.toString() || '';
+  const lastName = formData.get("last_name")?.toString() || '';
+  const instagram = formData.get("instagram")?.toString() || '';
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
-  const fullName = formData.get("full_name")?.toString() || '';
   const supabase = await createClient();
   const origin = headers().get("origin");
 
-  if (!email || !password) {
+  if (!firstName || !lastName || !email || !password || !instagram) {
     return encodedRedirect(
       "error",
       "/sign-up",
-      "Email and password are required",
+      "First name, Last name, Email, password, and Instagram are required",
     );
   }
+
+  const fullName: string = `${firstName} ${lastName}`
 
   const { data: { user }, error } = await supabase.auth.signUp({
     email,
@@ -40,23 +45,23 @@ export const signUpAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-up", error.message);
   }
 
+  console.log(user)
+
   if (user) {
     try {
-      const { error: updateError } = await supabase
-        .from('users')
-        .insert({
-          id: user.id,
-          name: fullName,
-          full_name: fullName,
-          email: email,
-          user_id: user.id,
-          token_identifier: user.id,
-          created_at: new Date().toISOString()
-        });
-
-      if (updateError) {
-        console.error('Error updating user profile:', updateError);
-      }
+      await usersUtil.updateUser({
+        id: user.id,
+        first_name: firstName,
+        last_name: lastName,
+        full_name: fullName,
+        email: email,
+        user_id: user.id,
+        token_identifier: user.id,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        instagram: instagram,
+        avatar_url: null
+      })
     } catch (err) {
       console.error('Error in user profile creation:', err);
     }

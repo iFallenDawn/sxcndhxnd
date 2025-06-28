@@ -14,11 +14,12 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           email: string | null
+          first_name: string | null
           full_name: string | null
           id: string
-          image: string | null
-          name: string | null
-          token_identifier: string
+          instagram: string | null
+          last_name: string | null
+          token_identifier: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -26,11 +27,12 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string | null
+          first_name?: string | null
           full_name?: string | null
           id: string
-          image?: string | null
-          name?: string | null
-          token_identifier: string
+          instagram?: string | null
+          last_name?: string | null
+          token_identifier?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -38,11 +40,12 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string | null
+          first_name?: string | null
           full_name?: string | null
           id?: string
-          image?: string | null
-          name?: string | null
-          token_identifier?: string
+          instagram?: string | null
+          last_name?: string | null
+          token_identifier?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
