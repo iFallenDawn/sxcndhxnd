@@ -2,6 +2,9 @@ import { createClient } from '../../supabase/server'
 import { Database } from '../types/supabase';
 
 type User = Database['public']['Tables']['users']['Row'];
+type UserUpdateRequest = {
+  id: string,
+} & Partial<Pick<User, 'avatar_url' | 'email' | 'first_name' | 'last_name' | 'full_name' | 'instagram'>>
 
 const exportedMethods = {
   async getUserById(
@@ -14,11 +17,13 @@ const exportedMethods = {
     return data[0]
   },
   async updateUser(
-    userInfo: User
+    userInfo: UserUpdateRequest
   ) {
     await this.getUserById(userInfo.id)
     const supabase = await createClient()
-    const { error } = await supabase.from('users').update(userInfo).eq('id', userInfo.id)
+    const { error } = await supabase.from('users').update(
+      { ...userInfo, updated_at: new Date().toISOString() }
+    ).eq('id', userInfo.id)
     if (error) throw `Error: ${error}`
     return userInfo
   }

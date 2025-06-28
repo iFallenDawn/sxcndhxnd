@@ -49,19 +49,23 @@ export const signUpAction = async (formData: FormData) => {
 
   if (user) {
     try {
-      await usersUtil.updateUser({
-        id: user.id,
-        first_name: firstName,
-        last_name: lastName,
-        full_name: fullName,
-        email: email,
-        user_id: user.id,
-        token_identifier: user.id,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        instagram: instagram,
-        avatar_url: null
-      })
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          id: user.id,
+          first_name: firstName,
+          last_name: lastName,
+          full_name: fullName,
+          email: email,
+          user_id: user.id,
+          token_identifier: user.id,
+          created_at: new Date().toISOString(),
+          instagram: instagram
+        }).eq('id', user.id);
+
+      if (updateError) {
+        console.error('Error updating user profile:', updateError);
+      }
     } catch (err) {
       console.error('Error in user profile creation:', err);
     }
