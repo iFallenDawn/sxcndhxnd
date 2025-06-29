@@ -1,31 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { createClient } from "../../supabase/client";
 import {
   Box,
   Flex,
   Container,
-  Button,
   Text,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Portal,
 } from "@chakra-ui/react";
-import { UserCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
+import UserProfile from "./user-profile";
 
 export default function DashboardNavbar() {
-  const supabase = createClient();
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh();
-  };
-
   return (
     <Box
       as="nav"
@@ -44,29 +28,7 @@ export default function DashboardNavbar() {
               </Text>
             </Link>
           </Flex>
-          <Flex gap={4} align="center">
-            <Popover>
-              <PopoverTrigger>
-                <Button variant="ghost" size="sm" p={2}>
-                  <UserCircle size={24} />
-                </Button>
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent>
-                  <PopoverBody>
-                    <Button
-                      variant="ghost"
-                      onClick={handleSignOut}
-                      w="full"
-                      justifyContent="flex-start"
-                    >
-                      Sign out
-                    </Button>
-                  </PopoverBody>
-                </PopoverContent>
-              </Portal>
-            </Popover>
-          </Flex>
+          <UserProfile />
         </Flex>
       </Container>
     </Box>

@@ -23,7 +23,7 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const fullName: string = `${firstName} ${lastName}`
+  const fullName = `${firstName} ${lastName}`
 
   const { data: { user }, error } = await supabase.auth.signUp({
     email,
@@ -89,11 +89,55 @@ export const signInAction = async (formData: FormData) => {
   });
 
   if (error) {
+    console.log(error)
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
   return redirect("/dashboard");
 };
+
+export const updateUserInfoAction = async (formData: FormData) => {
+  const email = formData.get("email")?.toString()
+  const firstName = formData.get("first_name")?.toString()
+  const lastName = formData.get("last_name")?.toString()
+  const instagram = formData.get("instagram")?.toString()
+
+  const fullName = `${firstName} ${lastName}`
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return redirect("/sign-in")
+  }
+
+  const publicUsersData = await usersUtil.getUserById(user.id)
+
+  const { data, error } = await supabase.auth.updateUser({
+    email: email ? email : user?.email,
+    data: {
+      first_name: firstName ? firstName : publicUsersData.first_name,
+      last_name: lastName ? lastName : publicUsersData.last_name,
+      full_name: fullName ? fullName : publicUsersData.full_name
+    }
+  })
+
+  if (error) {
+    console.error(error.message);
+    return encodedRedirect(
+      "error",
+      "/dashboard",
+      error.message,
+    );
+  }
+  return encodedRedirect(
+    "success",
+    "/dashboard",
+    "Profile info successfully updated",
+  );
+}
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();

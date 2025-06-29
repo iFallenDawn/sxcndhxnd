@@ -4,12 +4,12 @@ import { Database } from '../types/supabase';
 type User = Database['public']['Tables']['users']['Row'];
 type UserUpdateRequest = {
   id: string,
-} & Partial<Pick<User, 'avatar_url' | 'email' | 'first_name' | 'last_name' | 'full_name' | 'instagram'>>
+} & Partial<Pick<User, 'email' | 'first_name' | 'last_name' | 'full_name' | 'instagram'>>
 
 const exportedMethods = {
   async getUserById(
     id: string
-  ) {
+  ): Promise<User> {
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('id', id)
     if (data == null || data.length == 0) throw `Error: User with id '${id}' not found`
