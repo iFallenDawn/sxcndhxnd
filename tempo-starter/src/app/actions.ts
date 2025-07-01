@@ -5,7 +5,6 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "../../supabase/server";
 import usersUtil from '../utils/users'
-import { stringFromBase64URL } from "@supabase/ssr";
 
 export const signUpAction = async (formData: FormData) => {
   const firstName = formData.get("first_name")?.toString() || '';
@@ -36,37 +35,16 @@ export const signUpAction = async (formData: FormData) => {
         email: email,
         first_name: firstName,
         last_name: lastName,
+        instagram: instagram
       }
     },
   });
 
   console.log("After signUp", error);
 
-
   if (error) {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
-  }
-
-  console.log(user)
-
-  if (user) {
-    try {
-      const { error: updateError } = await supabase
-        .from('users')
-        .update({
-          id: user.id,
-          user_id: user.id,
-          token_identifier: user.id,
-          instagram: instagram
-        }).eq('id', user.id);
-
-      if (updateError) {
-        console.error('Error updating user profile:', updateError);
-      }
-    } catch (err) {
-      console.error('Error in user profile creation:', err);
-    }
   }
 
   return encodedRedirect(

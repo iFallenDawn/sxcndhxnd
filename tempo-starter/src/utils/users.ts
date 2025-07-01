@@ -16,6 +16,15 @@ const exportedMethods = {
     if (error) throw error
     return data[0]
   },
+  async getUserByEmail(
+    email: string
+  ): Promise<User> {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('users').select().eq('email', email)
+    if (data == null || data.length == 0) throw `Error: User with email '${email}' not found`
+    if (error) throw error
+    return data[0]
+  },
   async updateUser(
     newUserInfo: UserUpdateRequest
   ) {
