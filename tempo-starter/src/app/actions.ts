@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "../../supabase/server";
 import usersUtil from '../utils/users'
+import { stringFromBase64URL } from "@supabase/ssr";
 
 export const signUpAction = async (formData: FormData) => {
   const firstName = formData.get("first_name")?.toString() || '';
@@ -33,6 +34,8 @@ export const signUpAction = async (formData: FormData) => {
       data: {
         full_name: fullName,
         email: email,
+        first_name: firstName,
+        last_name: lastName,
       }
     },
   });
@@ -53,13 +56,8 @@ export const signUpAction = async (formData: FormData) => {
         .from('users')
         .update({
           id: user.id,
-          first_name: firstName,
-          last_name: lastName,
-          full_name: fullName,
-          email: email,
           user_id: user.id,
           token_identifier: user.id,
-          created_at: new Date().toISOString(),
           instagram: instagram
         }).eq('id', user.id);
 
@@ -102,7 +100,6 @@ export const updateUserInfoAction = async (formData: FormData) => {
   const lastName = formData.get("last_name")?.toString()
   const instagram = formData.get("instagram")?.toString()
 
-  const fullName = `${firstName} ${lastName}`
   const supabase = await createClient()
 
   const {
@@ -112,15 +109,33 @@ export const updateUserInfoAction = async (formData: FormData) => {
   if (!user) {
     return redirect("/sign-in")
   }
+  interface updateData {
+    first_name?: string;
+    last_name?: string;
+    full_name?: string;
+    instagram?: string;
+  }
 
   const publicUsersData = await usersUtil.getUserById(user.id)
 
+  const updatedData: updateData = {}
+  if (firstName) updatedData.first_name = firstName
+  if (lastName) updatedData.last_name = lastName
+  if (firstName && lastName) {
+    updatedData.full_name = `${firstName} ${lastName}`
+  }
+  else if (publicUsersData.first_name && lastName) {
+    updatedData.full_name = `${publicUsersData.first_name} ${lastName}`
+  }
+  else if (firstName && publicUsersData.last_name) {
+    updatedData.full_name = `${firstName} ${publicUsersData.last_name}`
+  }
+  if (instagram) updatedData.instagram = instagram
+
   const { data, error } = await supabase.auth.updateUser({
-    email: email ? email : user?.email,
+    email: email ? email : user.email,
     data: {
-      first_name: firstName ? firstName : publicUsersData.first_name,
-      last_name: lastName ? lastName : publicUsersData.last_name,
-      full_name: fullName ? fullName : publicUsersData.full_name
+      ...updatedData
     }
   })
 
@@ -132,6 +147,7 @@ export const updateUserInfoAction = async (formData: FormData) => {
       error.message,
     );
   }
+
   return encodedRedirect(
     "success",
     "/dashboard",
