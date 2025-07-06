@@ -5,9 +5,10 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "../../supabase/server";
 import usersUtil from '../utils/users'
+import validation from '../utils/validation'
 
 export const signUpAction = async (formData: FormData) => {
-  const firstName = formData.get("first_name")?.toString() || '';
+  let firstName = formData.get("first_name")?.toString();
   const lastName = formData.get("last_name")?.toString() || '';
   const instagram = formData.get("instagram")?.toString() || '';
   const email = formData.get("email")?.toString();

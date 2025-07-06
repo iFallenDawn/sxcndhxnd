@@ -38,8 +38,8 @@ pnpm dev
 ## Updating Types
 ```
 cd tempo-starter/src
-npm install --save-dev supabase
-npx supabase login
-npx supabase@latest gen types typescript --project-id projectidhere --schema public > types/supabase.ts
+pnpm install --save-dev supabase
+pnpx supabase login
+pnpx supabase@latest gen types typescript --project-id projectidhere --schema public > types/supabase.ts
 ```
 

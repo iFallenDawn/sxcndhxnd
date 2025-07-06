@@ -1,25 +1,46 @@
-import validator from 'validator'
+import { z } from 'zod/v4'
+import { Database } from '../types/supabase'
+
+type User = Database['public']['Tables']['users']['Row'];
+const zodUserString = z.string().min(1, `cannot be an empty string`).trim()
+
+const PublicUserSchema = z.object({
+  id: z.uuid(),
+  first_name: zodUserString,
+  last_name: zodUserString,
+  full_name: zodUserString,
+  email: z.email().toLowerCase(),
+  instagram: zodUserString,
+  updated_at: z.coerce.date().transform(date => date.toISOString()),
+  created_at: z.coerce.date().transform(date => date.toISOString())
+})
 
 const exportedMethods = {
   checkId(id: string): string {
-    if (!id) throw `Error: You must provide an id to search for`
-    id = id.trim()
-    if (!validator.isUUID(id)) throw `Error: Invalid id`
+    z.uuid(id)
     return id
   },
   checkString(strVal: string, varName: string): string {
-    if (!strVal) throw `Error: ${varName} must be a string`
-    strVal = validator.trim(strVal)
-    if (strVal.length === 0) throw `Error: ${varName} cannot be an empty string`
-    return strVal
+    const schema = z.string()
+      .min(1, `${varName} cannot be an empty string`)
+      .trim()
+    return schema.parse(strVal)
+  },
+  checkPassword(password: string): string {
+    const schema = z.string()
+      .min(6, 'password must be at least 6 characters long')
+    return schema.parse(password)
   },
   checkBoolean(bool: string): boolean {
-    if (!validator.isBoolean(bool)) throw `Error: ${bool} is not a boolean`
-    return JSON.parse(bool)
+    const schema = z.coerce.boolean()
+    return schema.parse(bool)
   },
   checkEmail(email: string): string {
-    if (!validator.isEmail(email)) throw `Error: ${email} is not a valid email`
-    return email.toLowerCase()
+    const schema = z.email().toLowerCase()
+    return schema.parse(email)
+  },
+  checkPublicUser(userData: User): User {
+    return PublicUserSchema.parse(userData)
   }
 }
 
