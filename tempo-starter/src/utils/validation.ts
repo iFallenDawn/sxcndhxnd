@@ -1,5 +1,6 @@
 import { z } from 'zod/v4'
 import { Database } from '../types/supabase'
+import { None } from 'framer-motion';
 
 type User = Database['public']['Tables']['users']['Row'];
 const zodUserString = z.string().min(1, `cannot be an empty string`).trim()
@@ -8,7 +9,6 @@ const PublicUserSchema = z.object({
   id: z.uuid(),
   first_name: zodUserString,
   last_name: zodUserString,
-  full_name: zodUserString,
   email: z.email().toLowerCase(),
   instagram: zodUserString,
   updated_at: z.coerce.date().transform(date => date.toISOString()),
@@ -17,30 +17,41 @@ const PublicUserSchema = z.object({
 
 const exportedMethods = {
   checkId(id: string): string {
-    z.uuid(id)
-    return id
+    const schema = z.uuid()
+    const result = schema.safeParse(id)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
   },
   checkString(strVal: string, varName: string): string {
     const schema = z.string()
       .min(1, `${varName} cannot be an empty string`)
       .trim()
-    return schema.parse(strVal)
+    const result = schema.safeParse(strVal)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
   },
-  checkPassword(password: string): string {
+  checkPassword(password: string): void {
     const schema = z.string()
       .min(6, 'password must be at least 6 characters long')
-    return schema.parse(password)
+    const result = schema.safeParse(password)
+    if (!result.success) throw z.prettifyError(result.error)
   },
   checkBoolean(bool: string): boolean {
     const schema = z.coerce.boolean()
-    return schema.parse(bool)
+    const result = schema.safeParse(bool)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
   },
   checkEmail(email: string): string {
     const schema = z.email().toLowerCase()
-    return schema.parse(email)
+    const result = schema.safeParse(email)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
   },
   checkPublicUser(userData: User): User {
-    return PublicUserSchema.parse(userData)
+    const result = PublicUserSchema.safeParse(userData)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
   }
 }
 

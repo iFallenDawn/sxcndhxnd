@@ -14,7 +14,6 @@ export type Database = {
           created_at: string
           email: string
           first_name: string
-          full_name: string
           id: string
           instagram: string
           last_name: string
@@ -24,7 +23,6 @@ export type Database = {
           created_at?: string
           email: string
           first_name: string
-          full_name: string
           id: string
           instagram: string
           last_name: string
@@ -34,7 +32,6 @@ export type Database = {
           created_at?: string
           email?: string
           first_name?: string
-          full_name?: string
           id?: string
           instagram?: string
           last_name?: string

@@ -1,72 +1,97 @@
+import { datetime } from 'zod/v4/core/regexes';
 import { createClient } from '../../supabase/server'
 import { Database } from '../types/supabase';
+import validation from '../utils/validation'
 
 type User = Database['public']['Tables']['users']['Row'];
-type UserUpdateRequest = {
-  id: string,
-} & Partial<Pick<User, 'email' | 'first_name' | 'last_name' | 'full_name' | 'instagram'>>
 
 const exportedMethods = {
   async getUserById(
     id: string
   ): Promise<User> {
+    validation.checkId(id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('id', id)
-    if (data == null || data.length == 0) throw `Error: User with id '${id}' not found`
+    if (data == null || data.length == 0) throw `User with id '${id}' not found`
     if (error) throw error
     return data[0]
   },
   async getUserByEmail(
     email: string
   ): Promise<User> {
+    validation.checkEmail(email)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('email', email)
-    if (data == null || data.length == 0) throw `Error: User with email '${email}' not found`
+    if (data == null || data.length == 0) throw `User with email '${email}' not found`
     if (error) throw error
     return data[0]
   },
-  async updateUser(
-    newUserInfo: UserUpdateRequest
+  async createUserFromAuth(
+    firstName: string,
+    lastName: string,
+    instagram: string,
+    email: string,
+    password: string
   ) {
+    validation.checkString(firstName, 'First name')
+    validation.checkString(lastName, 'Last name')
+    validation.checkString(instagram, 'Instagram')
+    validation.checkString(email, 'Email')
+    validation.checkString(password, 'Password')
+    const supabase = await createClient()
+    const { data: { user }, error } = await supabase.auth.signUp({
+      email,
+      password
+    });
+    if (error) throw error.message
+    const id = user?.id || ''
+    validation.checkId(id)
+    return await this.createPublicUser(id, firstName, lastName, instagram, email, password)
+  },
+  async createPublicUser(
+    id: string,
+    firstName: string,
+    lastName: string,
+    instagram: string,
+    email: string,
+    password: string
+  ): Promise<User> {
+    validation.checkPassword(password)
+    const newUser: User = {
+      id: id,
+      first_name: firstName,
+      last_name: lastName,
+      instagram: instagram,
+      email: email,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+    validation.checkPublicUser(newUser)
+    const supabase = await createClient()
+    const { error } = await supabase
+      .from('users')
+      .insert({ ...newUser })
+    if (error) throw error.message
+    return await this.getUserById(newUser.id)
+  },
+  async updateUser(
+    newUserInfo: User
+  ) {
+    validation.checkPublicUser(newUserInfo)
     const supabase = await createClient()
     const {
       data: { user },
     } = await supabase.auth.getUser()
     //user must be signed in to update
     if (!user) {
-      throw `Error: User is not signed in!`
+      throw `User is not signed in!`
     }
-    const publicUsersData = await this.getUserById(newUserInfo.id)
-    interface updateData {
-      first_name?: string;
-      last_name?: string;
-      full_name?: string;
-      instagram?: string;
-    }
-    const email = newUserInfo.email
-    const firstName = newUserInfo.first_name
-    const lastName = newUserInfo.last_name
-    const instagram = newUserInfo.instagram
-    const updatedData: updateData = {}
-    if (firstName) updatedData.first_name = firstName
-    if (lastName) updatedData.last_name = lastName
-    if (firstName && lastName) {
-      updatedData.full_name = `${firstName} ${lastName}`
-    }
-    else if (publicUsersData.first_name && lastName) {
-      updatedData.full_name = `${publicUsersData.first_name} ${lastName}`
-    }
-    else if (firstName && publicUsersData.last_name) {
-      updatedData.full_name = `${firstName} ${publicUsersData.last_name}`
-    }
-    if (instagram) updatedData.instagram = instagram
-    const { data, error } = await supabase.auth.updateUser({
-      email: email ? email : user.email,
-      data: {
-        ...updatedData
-      }
-    })
-    if (error) throw `Error: ${error}`
+    // cannot handle email update from here, have to do it in a trigger
+    const { email, ...newUserInfoNoEmail } = newUserInfo
+    const updatePublicUsers = await supabase.from('users')
+      .update(newUserInfoNoEmail)
+      .eq('id', user.id)
+    if (updatePublicUsers.error) throw updatePublicUsers.error.message
     return await this.getUserById(newUserInfo.id)
   }
 }

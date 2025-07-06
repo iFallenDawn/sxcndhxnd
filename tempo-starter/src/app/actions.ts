@@ -8,45 +8,46 @@ import usersUtil from '../utils/users'
 import validation from '../utils/validation'
 
 export const signUpAction = async (formData: FormData) => {
-  let firstName = formData.get("first_name")?.toString();
-  const lastName = formData.get("last_name")?.toString() || '';
-  const instagram = formData.get("instagram")?.toString() || '';
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
+  let firstName = formData.get("first_name")?.toString() || '';
+  let lastName = formData.get("last_name")?.toString() || '';
+  let instagram = formData.get("instagram")?.toString() || '';
+  let email = formData.get("email")?.toString() || '';
+  let password = formData.get("password")?.toString() || '';
   const supabase = await createClient();
   const origin = headers().get("origin");
 
-  if (!firstName || !lastName || !email || !password || !instagram) {
+  try {
+    validation.checkString(firstName, 'First name')
+    validation.checkString(lastName, 'Last name')
+    validation.checkString(instagram, 'Instagram')
+    validation.checkString(email, 'Email')
+    validation.checkString(password, 'Password')
+  } catch (e) {
     return encodedRedirect(
       "error",
       "/sign-up",
-      "First name, Last name, Email, password, and Instagram are required",
-    );
+      e instanceof Error ? e.message : "All fields are required, password must be 6 characters long",
+    )
   }
-
-  const fullName = `${firstName} ${lastName}`
 
   const { data: { user }, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
-      data: {
-        full_name: fullName,
-        email: email,
-        first_name: firstName,
-        last_name: lastName,
-        instagram: instagram
-      }
     },
   });
 
-  console.log("After signUp", error);
+  console.log("After signUp");
 
   if (error) {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   }
+  const id = user?.id || ''
+  validation.checkId(id)
+
+  await usersUtil.createPublicUser(id, firstName, lastName, instagram, email)
 
   return encodedRedirect(
     "success",
