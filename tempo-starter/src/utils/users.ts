@@ -46,17 +46,15 @@ const exportedMethods = {
     if (error) throw error.message
     const id = user?.id || ''
     validation.checkId(id)
-    return await this.createPublicUser(id, firstName, lastName, instagram, email, password)
+    return await this.createPublicUser(id, firstName, lastName, instagram, email)
   },
   async createPublicUser(
     id: string,
     firstName: string,
     lastName: string,
     instagram: string,
-    email: string,
-    password: string
+    email: string
   ): Promise<User> {
-    validation.checkPassword(password)
     const newUser: User = {
       id: id,
       first_name: firstName,
