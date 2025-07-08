@@ -82,10 +82,10 @@ export default async function Signup(props: {
                 </Box>
 
                 <FormControl>
-                  <FormLabel htmlFor="first_name">First Name</FormLabel>
+                  <FormLabel htmlFor="firstName">First Name</FormLabel>
                   <Input
-                    id="first_name"
-                    name="first_name"
+                    id="firstName"
+                    name="firstName"
                     type="text"
                     placeholder="Nico"
                     autoComplete="firstname"
@@ -94,10 +94,10 @@ export default async function Signup(props: {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel htmlFor="last_name">Last Name</FormLabel>
+                  <FormLabel htmlFor="lastName">Last Name</FormLabel>
                   <Input
-                    id="last_name"
-                    name="last_name"
+                    id="lastName"
+                    name="lastName"
                     type="text"
                     placeholder="Monte"
                     autoComplete="lastname"

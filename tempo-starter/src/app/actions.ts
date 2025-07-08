@@ -8,8 +8,8 @@ import usersUtil from '../utils/users'
 import validation from '../utils/validation'
 
 export const signUpAction = async (formData: FormData) => {
-  let firstName = formData.get("first_name")?.toString() || '';
-  let lastName = formData.get("last_name")?.toString() || '';
+  let first_name = formData.get("firstName")?.toString() || '';
+  let last_name = formData.get("lastName")?.toString() || '';
   let instagram = formData.get("instagram")?.toString() || '';
   let email = formData.get("email")?.toString() || '';
   let password = formData.get("password")?.toString() || '';
@@ -17,10 +17,10 @@ export const signUpAction = async (formData: FormData) => {
   const origin = headers().get("origin");
 
   try {
-    validation.checkString(firstName, 'First name')
-    validation.checkString(lastName, 'Last name')
+    validation.checkString(first_name, 'First name')
+    validation.checkString(last_name, 'Last name')
     validation.checkString(instagram, 'Instagram')
-    validation.checkString(email, 'Email')
+    validation.checkEmail(email)
     validation.checkString(password, 'Password')
   } catch (e) {
     return encodedRedirect(
@@ -47,7 +47,7 @@ export const signUpAction = async (formData: FormData) => {
   const id = user?.id || ''
   validation.checkId(id)
 
-  await usersUtil.createPublicUser(id, firstName, lastName, instagram, email)
+  await usersUtil.createPublicUser(id, first_name, last_name, instagram, email)
 
   return encodedRedirect(
     "success",
@@ -75,56 +75,34 @@ export const signInAction = async (formData: FormData) => {
 };
 
 export const updateUserInfoAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString()
-  const firstName = formData.get("first_name")?.toString()
-  const lastName = formData.get("last_name")?.toString()
-  const instagram = formData.get("instagram")?.toString()
+  let first_name = formData.get("firstName")?.toString() || ''
+  let last_name = formData.get("lastName")?.toString() || ''
+  let instagram = formData.get("instagram")?.toString() || ''
 
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await validation.checkUserSignedIn()
 
   if (!user) {
     return redirect("/sign-in")
   }
-  interface updateData {
-    first_name?: string;
-    last_name?: string;
-    full_name?: string;
-    instagram?: string;
-  }
 
   const publicUsersData = await usersUtil.getUserById(user.id)
 
-  const updatedData: updateData = {}
-  if (firstName) updatedData.first_name = firstName
-  if (lastName) updatedData.last_name = lastName
-  if (firstName && lastName) {
-    updatedData.full_name = `${firstName} ${lastName}`
-  }
-  else if (publicUsersData.first_name && lastName) {
-    updatedData.full_name = `${publicUsersData.first_name} ${lastName}`
-  }
-  else if (firstName && publicUsersData.last_name) {
-    updatedData.full_name = `${firstName} ${publicUsersData.last_name}`
-  }
-  if (instagram) updatedData.instagram = instagram
+  first_name = first_name ? first_name : publicUsersData.first_name
+  last_name = last_name ? last_name : publicUsersData.last_name
+  instagram = instagram ? instagram : publicUsersData.instagram
 
-  const { data, error } = await supabase.auth.updateUser({
-    email: email ? email : user.email,
-    data: {
-      ...updatedData
-    }
-  })
+  first_name = validation.checkString(first_name, 'First name')
+  last_name = validation.checkString(last_name, 'Last name')
+  instagram = validation.checkString(instagram, 'Instagram')
 
-  if (error) {
-    console.error(error.message);
+  try {
+    await usersUtil.updateUserNoEmail(user.id, first_name, last_name, instagram)
+  } catch (e) {
+    console.error(e);
     return encodedRedirect(
       "error",
       "/dashboard",
-      error.message,
+      e instanceof Error ? e.message : "Unable to update user",
     );
   }
 

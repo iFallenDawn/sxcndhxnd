@@ -1,4 +1,3 @@
-import { datetime } from 'zod/v4/core/regexes';
 import { createClient } from '../../supabase/server'
 import { Database } from '../types/supabase';
 import validation from '../utils/validation'
@@ -9,7 +8,7 @@ const exportedMethods = {
   async getUserById(
     id: string
   ): Promise<User> {
-    validation.checkId(id)
+    id = validation.checkId(id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('id', id)
     if (data == null || data.length == 0) throw `User with id '${id}' not found`
@@ -19,7 +18,7 @@ const exportedMethods = {
   async getUserByEmail(
     email: string
   ): Promise<User> {
-    validation.checkEmail(email)
+    email = validation.checkEmail(email)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('email', email)
     if (data == null || data.length == 0) throw `User with email '${email}' not found`
@@ -27,17 +26,17 @@ const exportedMethods = {
     return data[0]
   },
   async createUserFromAuth(
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     instagram: string,
     email: string,
     password: string
   ) {
-    validation.checkString(firstName, 'First name')
-    validation.checkString(lastName, 'Last name')
-    validation.checkString(instagram, 'Instagram')
-    validation.checkString(email, 'Email')
-    validation.checkString(password, 'Password')
+    first_name = validation.checkString(first_name, 'First name')
+    last_name = validation.checkString(last_name, 'Last name')
+    instagram = validation.checkString(instagram, 'Instagram')
+    email = validation.checkEmail(email)
+    password = validation.checkString(password, 'Password')
     const supabase = await createClient()
     const { data: { user }, error } = await supabase.auth.signUp({
       email,
@@ -46,19 +45,19 @@ const exportedMethods = {
     if (error) throw error.message
     const id = user?.id || ''
     validation.checkId(id)
-    return await this.createPublicUser(id, firstName, lastName, instagram, email)
+    return await this.createPublicUser(id, first_name, last_name, instagram, email)
   },
   async createPublicUser(
     id: string,
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     instagram: string,
     email: string
   ): Promise<User> {
     const newUser: User = {
       id: id,
-      first_name: firstName,
-      last_name: lastName,
+      first_name: first_name,
+      last_name: last_name,
       instagram: instagram,
       email: email,
       created_at: new Date().toISOString(),
@@ -72,25 +71,31 @@ const exportedMethods = {
     if (error) throw error.message
     return await this.getUserById(newUser.id)
   },
-  async updateUser(
-    newUserInfo: User
+  async updateUserNoEmail(
+    id: string,
+    first_name: string,
+    last_name: string,
+    instagram: string,
   ) {
-    validation.checkPublicUser(newUserInfo)
     const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    //user must be signed in to update
-    if (!user) {
-      throw `User is not signed in!`
+    const user = await validation.checkUserSignedIn()
+    if (user.id !== id) {
+      throw `You are not signed in as this user`
     }
-    // cannot handle email update from here, have to do it in a trigger
-    const { email, ...newUserInfoNoEmail } = newUserInfo
+
+    const updateData = {
+      id: validation.checkId(id),
+      first_name: validation.checkString(first_name, 'First name'),
+      last_name: validation.checkString(last_name, 'Last name'),
+      instagram: validation.checkString(instagram, 'Instagram')
+    }
+
+    // handle email update in a separate method
     const updatePublicUsers = await supabase.from('users')
-      .update(newUserInfoNoEmail)
+      .update(updateData)
       .eq('id', user.id)
     if (updatePublicUsers.error) throw updatePublicUsers.error.message
-    return await this.getUserById(newUserInfo.id)
+    return await this.getUserById(id)
   }
 }
 export default exportedMethods

@@ -43,3 +43,6 @@ pnpx supabase login
 pnpx supabase@latest gen types typescript --project-id projectidhere --schema public > types/supabase.ts
 ```
 
+## Notes
+Using `snake_case` for backend and API related things. `camelCase` for everything else.
+

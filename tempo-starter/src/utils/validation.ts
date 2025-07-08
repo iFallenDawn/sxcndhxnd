@@ -1,6 +1,6 @@
 import { z } from 'zod/v4'
 import { Database } from '../types/supabase'
-import { None } from 'framer-motion';
+import { createClient } from '../../supabase/server'
 
 type User = Database['public']['Tables']['users']['Row'];
 const zodUserString = z.string().min(1, `cannot be an empty string`).trim()
@@ -52,6 +52,17 @@ const exportedMethods = {
     const result = PublicUserSchema.safeParse(userData)
     if (!result.success) throw z.prettifyError(result.error)
     return result.data
+  },
+  async checkUserSignedIn() {
+    const supabase = await createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    //user must be signed in to update
+    if (!user) {
+      throw `User is not signed in!`
+    }
+    return user
   }
 }
 
