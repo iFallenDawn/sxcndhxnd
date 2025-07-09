@@ -1,5 +1,4 @@
 import { NextResponse, NextRequest } from "next/server"
-import { createClient } from '../../../../../supabase/server'
 import usersUtil from '../../../../utils/users'
 import validation from '../../../../utils/validation'
 
