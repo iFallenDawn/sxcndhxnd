@@ -21,12 +21,23 @@ export const signUpAction = async (formData: FormData) => {
     validation.checkString(last_name, 'Last name')
     validation.checkString(instagram, 'Instagram')
     validation.checkEmail(email)
-    validation.checkString(password, 'Password')
+    validation.checkPassword(password)
   } catch (e) {
     return encodedRedirect(
       "error",
       "/sign-up",
       e instanceof Error ? e.message : "All fields are required, password must be 6 characters long",
+    )
+  }
+
+  try {
+    const userExists = await usersUtil.checkUserWithEmailExists(email)
+    if (userExists) throw `User with email ${email} already exists`
+  } catch (e) {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      `User with email ${email} already exists`,
     )
   }
 
@@ -37,8 +48,6 @@ export const signUpAction = async (formData: FormData) => {
       emailRedirectTo: `${origin}/auth/callback`,
     },
   });
-
-  console.log("After signUp");
 
   if (error) {
     console.error(error.code + " " + error.message);
@@ -79,7 +88,7 @@ export const updateUserInfoAction = async (formData: FormData) => {
   let last_name = formData.get("lastName")?.toString() || ''
   let instagram = formData.get("instagram")?.toString() || ''
 
-  const user = await validation.checkUserSignedIn()
+  const user = await validation.checkIsUserSignedIn()
 
   if (!user) {
     return redirect("/sign-in")

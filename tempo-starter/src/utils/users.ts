@@ -25,6 +25,15 @@ const exportedMethods = {
     if (error) throw error
     return data[0]
   },
+  async checkUserWithEmailExists(
+    email: string
+  ): Promise<boolean> {
+    email = validation.checkEmail(email)
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('users').select().eq('email', email)
+    if (data === null || data.length == 0) return false
+    return true
+  },
   async createUserFromAuth(
     first_name: string,
     last_name: string,
@@ -38,6 +47,8 @@ const exportedMethods = {
     email = validation.checkEmail(email)
     password = validation.checkString(password, 'Password')
     const supabase = await createClient()
+    const userExists = await this.checkUserWithEmailExists(email)
+    if (userExists) throw `User with email ${email} already exists`
     const { data: { user }, error } = await supabase.auth.signUp({
       email,
       password
@@ -64,6 +75,8 @@ const exportedMethods = {
       updated_at: new Date().toISOString()
     }
     validation.checkPublicUser(newUser)
+    const userExists = await this.checkUserWithEmailExists(email)
+    if (userExists) throw `User with email ${email} already exists`
     const supabase = await createClient()
     const { error } = await supabase
       .from('users')
@@ -76,9 +89,9 @@ const exportedMethods = {
     first_name: string,
     last_name: string,
     instagram: string,
-  ) {
+  ): Promise<User> {
     const supabase = await createClient()
-    const user = await validation.checkUserSignedIn()
+    const user = await validation.checkIsUserSignedIn()
     if (user.id !== id) {
       throw `You are not signed in as this user`
     }
@@ -96,6 +109,15 @@ const exportedMethods = {
       .eq('id', user.id)
     if (updatePublicUsers.error) throw updatePublicUsers.error.message
     return await this.getUserById(id)
+  },
+  async deleteUser(id: string): Promise<User> {
+    id = validation.checkId(id)
+    const user = await this.getUserById(id)
+    const supabase = await createClient()
+    const { data, error } = await supabase.auth.admin.deleteUser(id)
+    if (error) throw error.message
+    const response = await supabase.from('users').delete().eq('id', id)
+    return user
   }
 }
 export default exportedMethods

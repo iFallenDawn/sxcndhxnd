@@ -1,13 +1,11 @@
 import { createClient } from "../../../../../supabase/server";
+import validation from '../../../../utils/validation'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user }
-    } = await supabase.auth.getUser()
-    if (!user) throw `User is not logged in`
+    await validation.checkIsUserSignedIn()
+    const supabase = await createClient()
     await supabase.auth.signOut();
     return NextResponse.json({ message: 'User logged out' }, { status: 200 })
   } catch (e) {

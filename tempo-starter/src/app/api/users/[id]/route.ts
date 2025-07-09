@@ -2,14 +2,13 @@ import { NextResponse, NextRequest } from "next/server"
 import { createClient } from '../../../../../supabase/server'
 import usersUtil from '../../../../utils/users'
 import validation from '../../../../utils/validation'
-import { create } from "domain"
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    validation.checkId(params.id)
+    params.id = validation.checkId(params.id)
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }
@@ -35,7 +34,7 @@ export async function PUT(
     )
   }
   try {
-    await validation.checkUserSignedIn()
+    await validation.checkIsUserSignedIn()
     params.id = validation.checkId(params.id)
     reqBody.first_name = validation.checkString(reqBody.first_name, 'First name')
     reqBody.last_name = validation.checkString(reqBody.last_name, 'Last name')
@@ -52,12 +51,30 @@ export async function PUT(
   }
 }
 
+// note, NEED TO BE ADMIN FOR THIS ROUTE TO WORK PROPERLY, otherwise it wont delete from auth
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    try {
+      params.id = validation.checkId(params.id)
+    } catch (e) {
+      return NextResponse.json({ error: e }, { status: 400 })
+    }
 
+    try {
+      await usersUtil.getUserById(params.id)
+    } catch (e) {
+      return NextResponse.json({ error: e }, { status: 404 })
+    }
+
+    try {
+      const deletedUser = await usersUtil.deleteUser(params.id)
+      return NextResponse.json(deletedUser, { status: 200 })
+    } catch (e) {
+      return NextResponse.json({ error: e }, { status: 400 })
+    }
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 404 })
   }

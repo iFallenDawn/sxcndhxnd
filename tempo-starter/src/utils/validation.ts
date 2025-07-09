@@ -53,7 +53,7 @@ const exportedMethods = {
     if (!result.success) throw z.prettifyError(result.error)
     return result.data
   },
-  async checkUserSignedIn() {
+  async checkIsUserSignedIn() {
     const supabase = await createClient()
     const {
       data: { user },
