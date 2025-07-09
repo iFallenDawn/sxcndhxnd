@@ -1,4 +1,5 @@
 -- Combined migration file that includes all necessary database setup
+-- This is outdated as of 6.29.25, changed up the users table
 
 -- Users table
 CREATE TABLE IF NOT EXISTS public.users (

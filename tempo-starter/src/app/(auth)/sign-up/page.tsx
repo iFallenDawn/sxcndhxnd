@@ -82,13 +82,37 @@ export default async function Signup(props: {
                 </Box>
 
                 <FormControl>
-                  <FormLabel htmlFor="full_name">Full Name</FormLabel>
+                  <FormLabel htmlFor="firstName">First Name</FormLabel>
                   <Input
-                    id="full_name"
-                    name="full_name"
+                    id="firstName"
+                    name="firstName"
                     type="text"
-                    placeholder="John Doe"
-                    autoComplete="name"
+                    placeholder="Nico"
+                    autoComplete="firstname"
+                    required
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel htmlFor="lastName">Last Name</FormLabel>
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    placeholder="Monte"
+                    autoComplete="lastname"
+                    required
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel htmlFor="instagram">Instagram Handle</FormLabel>
+                  <Input
+                    id="instagram"
+                    name="instagram"
+                    type="text"
+                    placeholder="sxcndhxnd"
+                    autoComplete="instagram"
                     required
                   />
                 </FormControl>

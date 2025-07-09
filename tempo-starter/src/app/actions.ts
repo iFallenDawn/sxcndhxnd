@@ -4,20 +4,41 @@ import { encodedRedirect } from "@/utils/utils";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "../../supabase/server";
+import usersUtil from '../utils/users'
+import validation from '../utils/validation'
 
 export const signUpAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
-  const fullName = formData.get("full_name")?.toString() || '';
+  let first_name = formData.get("firstName")?.toString() || '';
+  let last_name = formData.get("lastName")?.toString() || '';
+  let instagram = formData.get("instagram")?.toString() || '';
+  let email = formData.get("email")?.toString() || '';
+  let password = formData.get("password")?.toString() || '';
   const supabase = await createClient();
   const origin = headers().get("origin");
 
-  if (!email || !password) {
+  try {
+    validation.checkString(first_name, 'First name')
+    validation.checkString(last_name, 'Last name')
+    validation.checkString(instagram, 'Instagram')
+    validation.checkEmail(email)
+    validation.checkPassword(password)
+  } catch (e) {
     return encodedRedirect(
       "error",
       "/sign-up",
-      "Email and password are required",
-    );
+      e instanceof Error ? e.message : "All fields are required, password must be 6 characters long",
+    )
+  }
+
+  try {
+    const userExists = await usersUtil.checkUserWithEmailExists(email)
+    if (userExists) throw `User with email ${email} already exists`
+  } catch (e) {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      `User with email ${email} already exists`,
+    )
   }
 
   const { data: { user }, error } = await supabase.auth.signUp({
@@ -25,42 +46,17 @@ export const signUpAction = async (formData: FormData) => {
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
-      data: {
-        full_name: fullName,
-        email: email,
-      }
     },
   });
-
-  console.log("After signUp", error);
-
 
   if (error) {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   }
+  const id = user?.id || ''
+  validation.checkId(id)
 
-  if (user) {
-    try {
-      const { error: updateError } = await supabase
-        .from('users')
-        .insert({
-          id: user.id,
-          name: fullName,
-          full_name: fullName,
-          email: email,
-          user_id: user.id,
-          token_identifier: user.id,
-          created_at: new Date().toISOString()
-        });
-
-      if (updateError) {
-        console.error('Error updating user profile:', updateError);
-      }
-    } catch (err) {
-      console.error('Error in user profile creation:', err);
-    }
-  }
+  await usersUtil.createPublicUser(id, first_name, last_name, instagram, email)
 
   return encodedRedirect(
     "success",
@@ -80,11 +76,51 @@ export const signInAction = async (formData: FormData) => {
   });
 
   if (error) {
+    console.log(error)
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
   return redirect("/dashboard");
 };
+
+export const updateUserInfoAction = async (formData: FormData) => {
+  let first_name = formData.get("firstName")?.toString() || ''
+  let last_name = formData.get("lastName")?.toString() || ''
+  let instagram = formData.get("instagram")?.toString() || ''
+
+  const user = await validation.checkIsUserSignedIn()
+
+  if (!user) {
+    return redirect("/sign-in")
+  }
+
+  const publicUsersData = await usersUtil.getUserById(user.id)
+
+  first_name = first_name ? first_name : publicUsersData.first_name
+  last_name = last_name ? last_name : publicUsersData.last_name
+  instagram = instagram ? instagram : publicUsersData.instagram
+
+  first_name = validation.checkString(first_name, 'First name')
+  last_name = validation.checkString(last_name, 'Last name')
+  instagram = validation.checkString(instagram, 'Instagram')
+
+  try {
+    await usersUtil.updateUserNoEmail(user.id, first_name, last_name, instagram)
+  } catch (e) {
+    console.error(e);
+    return encodedRedirect(
+      "error",
+      "/dashboard",
+      e instanceof Error ? e.message : "Unable to update user",
+    );
+  }
+
+  return encodedRedirect(
+    "success",
+    "/dashboard",
+    "Profile info successfully updated",
+  );
+}
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
