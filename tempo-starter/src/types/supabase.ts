@@ -22,7 +22,7 @@ export type Database = {
           drop_item: boolean | null
           drop_title: string | null
           id: string
-          image_url: string | null
+          image_url: string
           paid: boolean | null
           price: number
           status: string
@@ -37,7 +37,7 @@ export type Database = {
           drop_item?: boolean | null
           drop_title?: string | null
           id?: string
-          image_url?: string | null
+          image_url: string
           paid?: boolean | null
           price: number
           status: string
@@ -52,7 +52,7 @@ export type Database = {
           drop_item?: boolean | null
           drop_title?: string | null
           id?: string
-          image_url?: string | null
+          image_url?: string
           paid?: boolean | null
           price?: number
           status?: string

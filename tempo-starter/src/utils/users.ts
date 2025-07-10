@@ -100,7 +100,8 @@ const exportedMethods = {
       id: validation.checkId(id),
       first_name: validation.checkString(first_name, 'First name'),
       last_name: validation.checkString(last_name, 'Last name'),
-      instagram: validation.checkString(instagram, 'Instagram')
+      instagram: validation.checkString(instagram, 'Instagram'),
+      updated_at: new Date().toISOString()
     }
 
     // handle email update in a separate method

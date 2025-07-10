@@ -18,11 +18,11 @@ const PublicUserSchema = z.object({
 
 const ProductSchema = z.object({
   id: z.uuid(),
-  user_id: zodNoEmptyString.nullable(),
-  commission_id: zodNoEmptyString.nullable(),
+  user_id: z.uuid().nullable(),
+  commission_id: z.uuid().nullable(),
   title: zodNoEmptyString,
   description: zodNoEmptyString,
-  image_url: zodNoEmptyString.nullable(),
+  image_url: zodNoEmptyString,
   price: z.coerce.number().gt(0),
   status: zodNoEmptyString,
   paid: z.coerce.boolean().nullable(),
@@ -71,11 +71,11 @@ const exportedMethods = {
     if (!result.success) throw z.prettifyError(result.error)
     return result.data
   },
-  checkPrice(price: string): Number {
+  checkPrice(price: string): number {
     // price cannot be less than 0
     const schema = z.coerce.number().gt(0)
     const result = schema.safeParse(price)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw 'Price cannot be less than $0'
     return result.data
   },
   checkPublicUser(userData: User): User {
@@ -93,6 +93,12 @@ const exportedMethods = {
       throw `User is not signed in!`
     }
     return user
+  },
+  checkStatus(status: string): string {
+    const schema = z.enum(['sold', 'reserved', 'display', 'available'])
+    const result = schema.safeParse(status.toLowerCase())
+    if (!result.success) throw 'Status must be one of the following: Sold, Reserved, Display, or Available'
+    return result.data
   },
   checkProduct(productData: Product): Product {
     const result = ProductSchema.safeParse(productData)
