@@ -36,15 +36,29 @@ export async function PUT(
   try {
     await validation.checkIsUserSignedIn()
     params.id = validation.checkId(params.id)
-    reqBody.first_name = validation.checkString(reqBody.first_name, 'First name')
-    reqBody.last_name = validation.checkString(reqBody.last_name, 'Last name')
-    reqBody.instagram = validation.checkString(reqBody.instagram, 'Instagram')
+    if (reqBody.first_name) {
+      reqBody.first_name = validation.checkString(reqBody.first_name, 'First name')
+    }
+
+    if (reqBody.last_name) {
+      reqBody.last_name = validation.checkString(reqBody.last_name, 'Last name')
+    }
+
+    if (reqBody.instagram) {
+      reqBody.instagram = validation.checkString(reqBody.instagram, 'Instagram')
+    }
+
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }
 
   try {
-    const user = await usersUtil.updateUserNoEmail(params.id, reqBody.first_name, reqBody.last_name, reqBody.instagram)
+    const user = await usersUtil.updateUserNoEmail(
+      params.id,
+      reqBody.first_name,
+      reqBody.last_name,
+      reqBody.instagram
+    )
     return NextResponse.json(user, { status: 200 })
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
