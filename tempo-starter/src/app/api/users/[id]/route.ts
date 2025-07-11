@@ -1,5 +1,4 @@
 import { NextResponse, NextRequest } from "next/server"
-import { createClient } from '../../../../../supabase/server'
 import usersUtil from '../../../../utils/users'
 import validation from '../../../../utils/validation'
 
@@ -33,6 +32,7 @@ export async function PUT(
       { status: 400 }
     )
   }
+
   try {
     await validation.checkIsUserSignedIn()
     params.id = validation.checkId(params.id)
@@ -47,7 +47,7 @@ export async function PUT(
     const user = await usersUtil.updateUserNoEmail(params.id, reqBody.first_name, reqBody.last_name, reqBody.instagram)
     return NextResponse.json(user, { status: 200 })
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 404 })
+    return NextResponse.json({ error: e }, { status: 400 })
   }
 }
 

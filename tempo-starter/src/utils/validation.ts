@@ -3,14 +3,31 @@ import { Database } from '../types/supabase'
 import { createClient } from '../../supabase/server'
 
 type User = Database['public']['Tables']['users']['Row'];
-const zodUserString = z.string().min(1, `cannot be an empty string`).trim()
+type Product = Database['public']['Tables']['products']['Row']
+const zodNoEmptyString = z.string().min(1, `cannot be an empty string`).trim()
 
 const PublicUserSchema = z.object({
   id: z.uuid(),
-  first_name: zodUserString,
-  last_name: zodUserString,
+  first_name: zodNoEmptyString,
+  last_name: zodNoEmptyString,
   email: z.email().toLowerCase(),
-  instagram: zodUserString,
+  instagram: zodNoEmptyString,
+  updated_at: z.coerce.date().transform(date => date.toISOString()),
+  created_at: z.coerce.date().transform(date => date.toISOString())
+})
+
+const ProductSchema = z.object({
+  id: z.uuid(),
+  user_id: z.uuid().nullable(),
+  commission_id: z.uuid().nullable(),
+  title: zodNoEmptyString,
+  description: zodNoEmptyString,
+  image_url: zodNoEmptyString,
+  price: z.coerce.number().gt(0),
+  status: zodNoEmptyString,
+  paid: z.coerce.boolean().nullable(),
+  drop_item: z.coerce.boolean().nullable(),
+  drop_title: zodNoEmptyString.nullable(),
   updated_at: z.coerce.date().transform(date => date.toISOString()),
   created_at: z.coerce.date().transform(date => date.toISOString())
 })
@@ -48,6 +65,19 @@ const exportedMethods = {
     if (!result.success) throw z.prettifyError(result.error)
     return result.data
   },
+  checkNumber(number: string): Number {
+    const schema = z.coerce.number()
+    const result = schema.safeParse(number)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
+  },
+  checkPrice(price: string): number {
+    // price cannot be less than 0
+    const schema = z.coerce.number().gt(0)
+    const result = schema.safeParse(price)
+    if (!result.success) throw 'Price cannot be less than $0'
+    return result.data
+  },
   checkPublicUser(userData: User): User {
     const result = PublicUserSchema.safeParse(userData)
     if (!result.success) throw z.prettifyError(result.error)
@@ -63,6 +93,17 @@ const exportedMethods = {
       throw `User is not signed in!`
     }
     return user
+  },
+  checkStatus(status: string): string {
+    const schema = z.enum(['sold', 'reserved', 'display', 'available'])
+    const result = schema.safeParse(status.toLowerCase())
+    if (!result.success) throw 'Status must be one of the following: Sold, Reserved, Display, or Available'
+    return result.data
+  },
+  checkProduct(productData: Product): Product {
+    const result = ProductSchema.safeParse(productData)
+    if (!result.success) throw z.prettifyError(result.error)
+    return result.data
   }
 }
 
