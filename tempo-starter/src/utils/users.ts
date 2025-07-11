@@ -5,6 +5,11 @@ import validation from '../utils/validation'
 type User = Database['public']['Tables']['users']['Row'];
 
 const exportedMethods = {
+  /**
+   * Get user by id
+   * @param id 
+   * @returns The user with the specified id
+   */
   async getUserById(
     id: string
   ): Promise<User> {
@@ -15,6 +20,11 @@ const exportedMethods = {
     if (error) throw error
     return data[0]
   },
+  /**
+   * Get user by email
+   * @param email
+   * @returns The user with the specified email
+   */
   async getUserByEmail(
     email: string
   ): Promise<User> {
@@ -25,6 +35,11 @@ const exportedMethods = {
     if (error) throw error
     return data[0]
   },
+  /**
+   * Check if the email currently exists in database
+   * @param email 
+   * @returns True if email exists, false if not
+   */
   async checkUserWithEmailExists(
     email: string
   ): Promise<boolean> {
@@ -34,13 +49,22 @@ const exportedMethods = {
     if (data === null || data.length == 0) return false
     return true
   },
+  /**
+   * Creates user with supabase auth data. Mainly used with server action
+   * @param first_name 
+   * @param last_name 
+   * @param instagram 
+   * @param email 
+   * @param password 
+   * @returns The created user
+   */
   async createUserFromAuth(
     first_name: string,
     last_name: string,
     instagram: string,
     email: string,
     password: string
-  ) {
+  ): Promise<User> {
     first_name = validation.checkString(first_name, 'First name')
     last_name = validation.checkString(last_name, 'Last name')
     instagram = validation.checkString(instagram, 'Instagram')
@@ -58,6 +82,15 @@ const exportedMethods = {
     validation.checkId(id)
     return await this.createPublicUser(id, first_name, last_name, instagram, email)
   },
+  /**
+   * Creates a user, called with the id created from supabase auth
+   * @param id 
+   * @param first_name 
+   * @param last_name 
+   * @param instagram 
+   * @param email 
+   * @returns The created user
+   */
   async createPublicUser(
     id: string,
     first_name: string,
@@ -84,6 +117,14 @@ const exportedMethods = {
     if (error) throw error.message
     return await this.getUserById(newUser.id)
   },
+  /**
+   * Updates a user's first_name, last_name, and instagram. Does not include email as that needs to be handled elsewhere with auth
+   * @param id 
+   * @param first_name 
+   * @param last_name 
+   * @param instagram 
+   * @returns The updated user
+   */
   async updateUserNoEmail(
     id: string,
     first_name: string,
@@ -95,12 +136,13 @@ const exportedMethods = {
     if (user.id !== id) {
       throw `You are not signed in as this user`
     }
+    const oldUser = await this.getUserById(id)
 
     const updateData = {
       id: validation.checkId(id),
-      first_name: validation.checkString(first_name, 'First name'),
-      last_name: validation.checkString(last_name, 'Last name'),
-      instagram: validation.checkString(instagram, 'Instagram'),
+      first_name: first_name ? validation.checkString(first_name, 'First name') : oldUser.first_name,
+      last_name: last_name ? validation.checkString(last_name, 'Last name') : oldUser.last_name,
+      instagram: instagram ? validation.checkString(instagram, 'Instagram') : oldUser.instagram,
       updated_at: new Date().toISOString()
     }
 
@@ -111,6 +153,11 @@ const exportedMethods = {
     if (updatePublicUsers.error) throw updatePublicUsers.error.message
     return await this.getUserById(id)
   },
+  /**
+   * Deletes a user. Needs admin permissions to delete
+   * @param id 
+   * @returns The deleted user with the specified id
+   */
   async deleteUser(id: string): Promise<User> {
     id = validation.checkId(id)
     const user = await this.getUserById(id)
