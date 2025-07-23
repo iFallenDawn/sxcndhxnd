@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
       const loggedUser = await usersUtil.getUserByEmail(reqBody.email)
       return NextResponse.json(loggedUser, { status: 200 })
     } catch (e) {
+      console.log(e)
       return NextResponse.json({ error: `User with email ${reqBody.email} not found` }, { status: 404 })
     }
   } catch (e) {

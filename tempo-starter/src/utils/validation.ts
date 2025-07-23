@@ -104,6 +104,13 @@ const exportedMethods = {
     const result = ProductSchema.safeParse(productData)
     if (!result.success) throw z.prettifyError(result.error)
     return result.data
+  },
+  checkImageType(image: File): File {
+    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    if (!allowedImageTypes.includes(image.type)) {
+      throw 'Invalid file type. Only jpeg, jpg, png, webp, and gif are allowed'
+    }
+    return image
   }
 }
 

@@ -56,7 +56,12 @@ export const signUpAction = async (formData: FormData) => {
   const id = user?.id || ''
   validation.checkId(id)
 
-  await usersUtil.createPublicUser(id, first_name, last_name, instagram, email)
+  try {
+    await usersUtil.createPublicUser(id, first_name, last_name, instagram, email)
+  } catch (e) {
+    console.log(e)
+    return encodedRedirect("error", "/sign-up", 'An unknown error occurred');
+  }
 
   return encodedRedirect(
     "success",

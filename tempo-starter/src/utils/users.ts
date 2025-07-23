@@ -16,8 +16,8 @@ const exportedMethods = {
     id = validation.checkId(id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('id', id)
+    if (error) throw error.message
     if (data == null || data.length == 0) throw `User with id '${id}' not found`
-    if (error) throw error
     return data[0]
   },
   /**
@@ -31,8 +31,8 @@ const exportedMethods = {
     email = validation.checkEmail(email)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('email', email)
+    if (error) throw error.message
     if (data == null || data.length == 0) throw `User with email '${email}' not found`
-    if (error) throw error
     return data[0]
   },
   /**
@@ -46,6 +46,7 @@ const exportedMethods = {
     email = validation.checkEmail(email)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('email', email)
+    if (error) throw error.message
     if (data === null || data.length == 0) return false
     return true
   },
