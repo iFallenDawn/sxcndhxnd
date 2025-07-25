@@ -3,6 +3,7 @@ import validation from '../../../../utils/validation'
 import productsUtil from '../../../../utils/products'
 
 export async function GET(
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
