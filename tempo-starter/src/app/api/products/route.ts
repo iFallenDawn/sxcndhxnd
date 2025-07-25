@@ -1,12 +1,9 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { createClient } from '../../../../supabase/server'
 import productUtil from '../../../utils/products'
 import validation from '../../../utils/validation'
 
 // returns all products
-export async function GET(
-  request: NextRequest
-) {
+export async function GET() {
   try {
     const allProducts = await productUtil.getAllProducts()
     return NextResponse.json(allProducts, { status: 200 })
@@ -19,8 +16,15 @@ export async function GET(
 export async function POST(
   request: NextRequest
 ) {
+  try {
+    await validation.checkAdminUser()
+  } catch (e) {
+    return NextResponse.json(
+      { error: e },
+      { status: 403 }
+    )
+  }
   let reqBody = null
-  const supabase = await createClient()
   try {
     reqBody = await request.json()
     if (!reqBody || Object.keys(reqBody).length == 0)
@@ -35,9 +39,7 @@ export async function POST(
       }
       reqBody.title = validation.checkString(reqBody.title, 'Title')
       reqBody.description = validation.checkString(reqBody.description, 'Description')
-      if (reqBody.image_url) {
-        reqBody.image_url = validation.checkString(reqBody.image_url, 'Image url')
-      }
+      reqBody.image_url = validation.checkString(reqBody.image_url, 'Image url')
       reqBody.price = validation.checkPrice(reqBody.price)
       reqBody.status = validation.checkStatus(reqBody.status)
       if (reqBody.paid) {
@@ -50,6 +52,7 @@ export async function POST(
         reqBody.drop_title = validation.checkString(reqBody.drop_title, 'Drop Title')
       }
     } catch (e) {
+      console.log(e)
       return NextResponse.json({ error: e }, { status: 400 })
     }
 

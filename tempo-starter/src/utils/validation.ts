@@ -95,7 +95,8 @@ const exportedMethods = {
     return user
   },
   checkStatus(status: string): string {
-    const schema = z.enum(['sold', 'reserved', 'display', 'available'])
+    this.checkString(status, 'status')
+    const schema = z.enum(['sold', 'reserved', 'archive', 'available'])
     const result = schema.safeParse(status.toLowerCase())
     if (!result.success) throw 'Status must be one of the following: Sold, Reserved, Display, or Available'
     return result.data
@@ -104,6 +105,24 @@ const exportedMethods = {
     const result = ProductSchema.safeParse(productData)
     if (!result.success) throw z.prettifyError(result.error)
     return result.data
+  },
+  checkImageType(image: File): File {
+    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+    if (!allowedImageTypes.includes(image.type)) {
+      throw 'Invalid file type. Only jpeg, jpg, png, webp, and gif are allowed'
+    }
+    return image
+  },
+  async checkAdminUser() {
+    const supabase = await createClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (!user || error) {
+      throw 'User is not signed in'
+    }
+    const result = await supabase.from('users_roles').select().eq('id', user.id)
+    if (!result || result?.data?.length == 0) {
+      throw 'Insufficient permissions to upload an image'
+    }
   }
 }
 
