@@ -3,7 +3,6 @@ import validation from '../../../../utils/validation'
 import productsUtil from '../../../../utils/products'
 
 export async function GET(
-  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -24,6 +23,15 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  try {
+    await validation.checkAdminUser()
+  } catch (e) {
+    return NextResponse.json(
+      { error: e },
+      { status: 403 }
+    )
+  }
+
   let reqBody = await request.json()
   if (!reqBody || Object.keys(reqBody).length == 0) {
     return NextResponse.json(

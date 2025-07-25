@@ -6,6 +6,14 @@ export async function POST(
   request: NextRequest
 ) {
   try {
+    try {
+      await validation.checkAdminUser()
+    } catch (e) {
+      return NextResponse.json(
+        { error: e },
+        { status: 403 }
+      )
+    }
     let formData = await request.formData()
     const file = formData.get('image') as File
     if (!file) {
@@ -15,8 +23,15 @@ export async function POST(
       )
     }
     validation.checkImageType(file)
-    const publicImageUrl = await imageUtil.createImage(file)
-    return NextResponse.json(publicImageUrl, { status: 200 })
+    try {
+      const publicImageUrl = await imageUtil.createImage(file)
+      return NextResponse.json(publicImageUrl, { status: 200 })
+    } catch (e) {
+      return NextResponse.json(
+        { error: e },
+        { status: 400 }
+      )
+    }
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }

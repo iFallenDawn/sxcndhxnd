@@ -3,7 +3,6 @@ import usersUtil from '../../../../utils/users'
 import validation from '../../../../utils/validation'
 
 export async function GET(
-  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

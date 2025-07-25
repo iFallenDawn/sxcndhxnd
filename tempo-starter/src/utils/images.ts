@@ -1,7 +1,6 @@
 import { createClient } from '../../supabase/server'
 import { v4 as uuidv4 } from 'uuid'
 import validation from './validation'
-import { file } from 'zod/v4'
 
 const exportedMethods = {
   async getPublicImageUrl(filePath: string): Promise<string> {
@@ -14,6 +13,7 @@ const exportedMethods = {
   },
   async createImage(image: File) {
     validation.checkImageType(image)
+    await validation.checkAdminUser()
 
     const fileExtension = image.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
@@ -25,7 +25,7 @@ const exportedMethods = {
       cacheControl: '3600',
       upsert: false
     })
-    if (error) throw error
+    if (error) throw error.message
     const publicUrl = await this.getPublicImageUrl(filePath)
     return {
       ...data,
