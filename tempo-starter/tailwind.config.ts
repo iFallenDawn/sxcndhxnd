@@ -19,8 +19,17 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["Roboto", "ui-sans-serif", "system-ui", "sans-serif"],
-        serif: ["var(--font-playfair)", "ui-serif", "Georgia", "serif"],
+        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-space-grotesk)", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      letterSpacing: {
+        tightest: '-0.04em',
+        tighter: '-0.02em',
+        tight: '-0.01em',
+        normal: '0',
+        wide: '0.01em',
+        wider: '0.02em',
+        widest: '0.08em',
       },
       colors: {
         border: "hsl(var(--border))",
