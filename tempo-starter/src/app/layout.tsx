@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto, Playfair_Display } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { TempoInit } from "@/components/tempo-init";
@@ -7,13 +7,15 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ChakraUIProvider } from "@/components/chakra-provider";
 import { BodyClassManager } from "@/components/body-class-manager";
 
-const roboto = Roboto({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-inter",
 });
-const playfair = Playfair_Display({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
 });
 
 export const metadata: Metadata = {
@@ -40,10 +42,10 @@ export default function RootLayout({
       {/* Commented out due to SSL protocol error - replace with local script if needed */}
       {/* <Script src="https://api.tempolabs.ai/proxy-asset?url=https://storage.googleapis.com/tempo-public-assets/error-handling.js" /> */}
       <body
-        className={`${roboto.className} ${playfair.variable}`}
+        className={`${inter.className} ${inter.variable} ${spaceGrotesk.variable}`}
         suppressHydrationWarning
       >
-        <BodyClassManager className={roboto.className} />
+        <BodyClassManager className={inter.className} />
         <ChakraUIProvider>
           <ThemeProvider
             attribute="class"

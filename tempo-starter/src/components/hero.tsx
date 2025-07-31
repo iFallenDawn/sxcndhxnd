@@ -124,14 +124,13 @@ export default function Hero() {
               <motion.div variants={itemVariants}>
                 <Heading
                   as="h1"
-                  fontSize={{ base: "4xl", sm: "5xl", md: "6xl", lg: "7xl" }}
-                  fontWeight="normal"
-                  letterSpacing="normal"
-                  textTransform="lowercase"
+                  fontSize={{ base: "5xl", sm: "6xl", md: "7xl", lg: "8xl" }}
+                  fontWeight="300"
+                  letterSpacing="tightest"
+                  textTransform="uppercase"
                   textShadow="2px 2px 4px rgba(0,0,0,0.5)"
                   textAlign={{ base: "center", lg: "left" }}
-                  className="serif-font"
-                  style={{ fontStyle: "italic" }}
+                  className="font-display"
                 >
                   sxcndhxnd
                 </Heading>
@@ -139,12 +138,12 @@ export default function Hero() {
 
               <motion.div variants={itemVariants}>
                 <Text
-                  fontSize={{ base: "lg", md: "xl" }}
-                  fontWeight="normal"
-                  letterSpacing="wide"
+                  fontSize={{ base: "md", md: "lg" }}
+                  fontWeight="300"
+                  letterSpacing="wider"
                   textShadow="1px 1px 2px rgba(0,0,0,0.5)"
                   textAlign={{ base: "center", lg: "left" }}
-                  className="serif-font"
+                  className="font-sans"
                 >
                   Giving second life to forgotten garments
                 </Text>
@@ -170,6 +169,9 @@ export default function Hero() {
                   _hover={{ bg: "whiteAlpha.200" }}
                   leftIcon={<ArrowUp size={16} />}
                   minW="150px"
+                  textTransform="uppercase"
+                  letterSpacing="wider"
+                  fontWeight="500"
                 >
                   Shop Now
                 </Button>
@@ -185,6 +187,9 @@ export default function Hero() {
                   color="white"
                   _hover={{ bg: "whiteAlpha.200" }}
                   minW="150px"
+                  textTransform="uppercase"
+                  letterSpacing="wider"
+                  fontWeight="500"
                 >
                   View Gallery
                 </Button>

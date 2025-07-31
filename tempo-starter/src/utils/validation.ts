@@ -1,4 +1,4 @@
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { Database } from '../types/supabase'
 import { createClient } from '../../supabase/server'
 
@@ -7,19 +7,19 @@ type Product = Database['public']['Tables']['products']['Row']
 const zodNoEmptyString = z.string().min(1, `cannot be an empty string`).trim()
 
 const PublicUserSchema = z.object({
-  id: z.uuid(),
+  id: z.string().uuid(),
   first_name: zodNoEmptyString,
   last_name: zodNoEmptyString,
-  email: z.email().toLowerCase(),
+  email: z.string().email().toLowerCase(),
   instagram: zodNoEmptyString,
   updated_at: z.coerce.date().transform(date => date.toISOString()),
   created_at: z.coerce.date().transform(date => date.toISOString())
 })
 
 const ProductSchema = z.object({
-  id: z.uuid(),
-  user_id: z.uuid().nullable(),
-  commission_id: z.uuid().nullable(),
+  id: z.string().uuid(),
+  user_id: z.string().uuid().nullable(),
+  commission_id: z.string().uuid().nullable(),
   title: zodNoEmptyString,
   description: zodNoEmptyString,
   image_url: zodNoEmptyString,
@@ -34,9 +34,9 @@ const ProductSchema = z.object({
 
 const exportedMethods = {
   checkId(id: string): string {
-    const schema = z.uuid()
+    const schema = z.string().uuid()
     const result = schema.safeParse(id)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   checkString(strVal: string, varName: string): string {
@@ -44,31 +44,31 @@ const exportedMethods = {
       .min(1, `${varName} cannot be an empty string`)
       .trim()
     const result = schema.safeParse(strVal)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   checkPassword(password: string): void {
     const schema = z.string()
       .min(6, 'password must be at least 6 characters long')
     const result = schema.safeParse(password)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
   },
   checkBoolean(bool: string): boolean {
     const schema = z.coerce.boolean()
     const result = schema.safeParse(bool)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   checkEmail(email: string): string {
-    const schema = z.email().toLowerCase()
+    const schema = z.string().email().toLowerCase()
     const result = schema.safeParse(email)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   checkNumber(number: string): Number {
     const schema = z.coerce.number()
     const result = schema.safeParse(number)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   checkPrice(price: string): number {
@@ -80,7 +80,7 @@ const exportedMethods = {
   },
   checkPublicUser(userData: User): User {
     const result = PublicUserSchema.safeParse(userData)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   async checkIsUserSignedIn() {
@@ -103,7 +103,7 @@ const exportedMethods = {
   },
   checkProduct(productData: Product): Product {
     const result = ProductSchema.safeParse(productData)
-    if (!result.success) throw z.prettifyError(result.error)
+    if (!result.success) throw new Error(result.error.message)
     return result.data
   },
   checkImageType(image: File): File {

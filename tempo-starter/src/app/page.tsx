@@ -20,10 +20,10 @@ export default async function Home() {
       <section className="py-32 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-light mb-6 tracking-wide uppercase">
+            <h2 className="font-display text-5xl md:text-6xl font-light tracking-tightest uppercase mb-6">
               Collections
             </h2>
-            <p className="text-gray-600 max-w-xl mx-auto font-light">
+            <p className="text-base font-light leading-relaxed tracking-wide text-gray-600 max-w-xl mx-auto">
               Curated pieces that define modern minimalism
             </p>
           </div>
@@ -37,15 +37,15 @@ export default async function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
-              <h3 className="text-2xl font-light mb-2 tracking-wide uppercase">
+              <h3 className="text-xl md:text-2xl font-medium tracking-normal uppercase mb-2">
                 Essentials
               </h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-sm font-light leading-relaxed tracking-wide text-gray-600 mb-4">
                 Timeless basics for everyday wear
               </p>
               <Link
                 href="/store?collection=essentials"
-                className="text-sm tracking-wide uppercase border-b border-black hover:border-gray-400 transition-colors"
+                className="text-xs font-medium tracking-widest uppercase border-b border-black hover:border-gray-400 transition-colors"
               >
                 Shop Collection
               </Link>
@@ -59,15 +59,15 @@ export default async function Home() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
-              <h3 className="text-2xl font-light mb-2 tracking-wide uppercase">
+              <h3 className="text-xl md:text-2xl font-medium tracking-normal uppercase mb-2">
                 Statement
               </h3>
-              <p className="text-gray-600 font-light mb-4">
+              <p className="text-sm font-light leading-relaxed tracking-wide text-gray-600 mb-4">
                 Bold pieces that make an impact
               </p>
               <Link
                 href="/store?collection=statement"
-                className="text-sm tracking-wide uppercase border-b border-black hover:border-gray-400 transition-colors"
+                className="text-xs font-medium tracking-widest uppercase border-b border-black hover:border-gray-400 transition-colors"
               >
                 Shop Collection
               </Link>
@@ -80,17 +80,17 @@ export default async function Home() {
       <section className="py-32 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-light mb-8 tracking-wide uppercase">
+            <h2 className="font-display text-5xl md:text-6xl font-light tracking-tightest uppercase mb-8">
               Philosophy
             </h2>
-            <p className="text-xl text-gray-700 font-light leading-relaxed mb-12">
+            <p className="text-lg font-light leading-relaxed tracking-wide text-gray-700 mb-12">
               We believe in the power of simplicity. Each piece is carefully
               crafted to embody minimalist design principles while maintaining
               the highest quality standards.
             </p>
             <Link
               href="/about"
-              className="inline-flex items-center text-sm tracking-wide uppercase border-b border-black hover:border-gray-400 transition-colors"
+              className="inline-flex items-center text-xs font-medium tracking-widest uppercase border-b border-black hover:border-gray-400 transition-colors"
             >
               Learn More
               <ArrowUpRight className="ml-2 w-4 h-4" />
@@ -102,16 +102,16 @@ export default async function Home() {
       {/* Custom Commissions CTA */}
       <section className="py-32 bg-black text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-light mb-6 tracking-wide uppercase">
+          <h2 className="font-display text-5xl md:text-6xl font-light tracking-tightest uppercase mb-6">
             Custom Commissions
           </h2>
-          <p className="text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-base font-light leading-relaxed tracking-wide text-gray-300 mb-12 max-w-2xl mx-auto">
             Work directly with our designers to create unique pieces tailored to
             your vision.
           </p>
           <Link
             href="/commissions"
-            className="inline-flex items-center px-8 py-3 text-black bg-white hover:bg-gray-100 transition-colors text-sm font-medium tracking-wide uppercase"
+            className="inline-flex items-center px-8 py-3 text-black bg-white hover:bg-gray-100 transition-colors text-sm font-medium tracking-wider uppercase"
           >
             Start Commission
             <ArrowUpRight className="ml-2 w-4 h-4" />
