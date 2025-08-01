@@ -1,10 +1,10 @@
-import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
-import GalleryContent from "@/components/gallery-content";
+import Footer from '@/components/footer';
+import GalleryContent from '@/components/gallery-content';
+import Navbar from '@/components/navbar';
 
 export default function Gallery() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className='min-h-screen bg-white'>
       <Navbar />
       <GalleryContent />
       <Footer />
