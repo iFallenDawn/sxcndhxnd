@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { string, z } from 'zod'
 import { Database } from '../types/supabase'
 import { createClient } from '../../supabase/server'
 
@@ -22,14 +22,17 @@ const ProductSchema = z.object({
   commission_id: z.string().uuid().nullable(),
   title: zodNoEmptyString,
   description: zodNoEmptyString,
-  image_url: zodNoEmptyString,
+  image_urls: z.array(z.string().min(1, `cannot be an empty string`)),
   price: z.coerce.number().gt(0),
   status: zodNoEmptyString,
   paid: z.coerce.boolean().nullable(),
   drop_item: z.coerce.boolean().nullable(),
   drop_title: zodNoEmptyString.nullable(),
   updated_at: z.coerce.date().transform(date => date.toISOString()),
-  created_at: z.coerce.date().transform(date => date.toISOString())
+  created_at: z.coerce.date().transform(date => date.toISOString()),
+  created_by: z.string().uuid(),
+  category: zodNoEmptyString,
+  size: z.string().nullable()
 })
 
 const exportedMethods = {
@@ -46,6 +49,11 @@ const exportedMethods = {
     const result = schema.safeParse(strVal)
     if (!result.success) throw new Error(result.error.message)
     return result.data
+  },
+  checkArrayOfStrings(stringArray: string[], varName: string) {
+    for (let item in stringArray) {
+      this.checkString(item, varName)
+    }
   },
   checkPassword(password: string): void {
     const schema = z.string()
@@ -123,6 +131,7 @@ const exportedMethods = {
     if (!result || result?.data?.length == 0) {
       throw 'Insufficient permissions to upload an image'
     }
+    return user.id
   }
 }
 

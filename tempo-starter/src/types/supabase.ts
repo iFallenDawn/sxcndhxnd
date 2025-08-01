@@ -14,47 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
+      gallery_items: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          image_urls: string[]
+          original_brand: string | null
+          price: string
+          size: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_urls: string[]
+          original_brand?: string | null
+          price: string
+          size?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          original_brand?: string | null
+          price?: string
+          size?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
+          category: string | null
           commission_id: string | null
           created_at: string
+          created_by: string | null
           description: string
           drop_item: boolean | null
           drop_title: string | null
           id: string
-          image_url: string
+          image_urls: string[]
           paid: boolean | null
           price: number
+          size: string | null
           status: string
           title: string
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          category?: string | null
           commission_id?: string | null
           created_at?: string
+          created_by?: string | null
           description: string
           drop_item?: boolean | null
           drop_title?: string | null
           id?: string
-          image_url: string
+          image_urls: string[]
           paid?: boolean | null
           price: number
+          size?: string | null
           status: string
           title: string
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          category?: string | null
           commission_id?: string | null
           created_at?: string
+          created_by?: string | null
           description?: string
           drop_item?: boolean | null
           drop_title?: string | null
           id?: string
-          image_url?: string
+          image_urls?: string[]
           paid?: boolean | null
           price?: number
+          size?: string | null
           status?: string
           title?: string
           updated_at?: string
@@ -89,6 +143,21 @@ export type Database = {
           instagram?: string
           last_name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      users_roles: {
+        Row: {
+          id: string
+          role: string
+        }
+        Insert: {
+          id: string
+          role: string
+        }
+        Update: {
+          id?: string
+          role?: string
         }
         Relationships: []
       }
