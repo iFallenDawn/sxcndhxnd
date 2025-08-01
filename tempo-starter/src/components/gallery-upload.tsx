@@ -26,9 +26,11 @@ import {
   AspectRatio,
   Spinner,
   CloseButton,
+  NumberInput,
+  NumberInputField,
 } from "@chakra-ui/react";
 import { Upload, X, Plus } from "lucide-react";
-import { createClient } from "../../supabase/client";
+import { v4 as uuidv4 } from 'uuid'
 
 interface GalleryUploadProps {
   isOpen: boolean;
@@ -50,22 +52,26 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
 
   // Form state
   const [formData, setFormData] = useState({
+    user_id: null,
+    commission_id: null,
     title: "",
     description: "",
-    category: "",
     price: "",
-    size: "",
     status: "available",
-    originalBrand: "",
+    paid: "",
+    drop_item: "",
+    drop_title: "",
+    category: "",
+    size: ""
   });
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    
+
     const newImages = files.map(file => ({
       file,
       preview: URL.createObjectURL(file),
-      id: Math.random().toString(36).substr(2, 9),
+      id: uuidv4(),
     }));
 
     setUploadedImages(prev => [...prev, ...newImages]);
@@ -93,7 +99,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
       return;
     }
 
-    if (!formData.title || !formData.category || !formData.price) {
+    if (!formData.title || !formData.category || !formData.price! || !formData.description || !formData.status) {
       toast({
         title: "Missing information",
         description: "Please fill in all required fields",
@@ -105,52 +111,43 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
     }
 
     setUploading(true);
-    const supabase = createClient();
 
     try {
       // Upload images to storage
       const uploadPromises = uploadedImages.map(async (image) => {
-        const fileExt = image.file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-        const filePath = `gallery/${fileName}`;
+        const imageFormData = new FormData()
+        imageFormData.append('image', image.file)
+        imageFormData.append('id', image.id)
 
-        const { error: uploadError } = await supabase.storage
-          .from('gallery-images')
-          .upload(filePath, image.file);
+        const uploadToBucketResponse = await fetch('/api/images', {
+          method: 'POST',
+          body: imageFormData
+        })
+        const result = await uploadToBucketResponse.json()
+        if (!uploadToBucketResponse.ok) {
+          console.log(uploadToBucketResponse)
+          throw new Error(result.error)
+        }
 
-        if (uploadError) throw uploadError;
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('gallery-images')
-          .getPublicUrl(filePath);
-
-        return publicUrl;
+        return result.publicUrl;
       });
 
       const imageUrls = await Promise.all(uploadPromises);
 
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const productData = {
+        ...formData,
+        image_urls: imageUrls
+      }
 
-      // Save gallery item data to database
-      const { data: galleryItem, error: dbError } = await supabase
-        .from('gallery_items')
-        .insert({
-          title: formData.title,
-          description: formData.description || null,
-          category: formData.category,
-          price: formData.price,
-          size: formData.size || null,
-          status: formData.status,
-          original_brand: formData.originalBrand || null,
-          image_urls: imageUrls,
-          created_by: user?.id || null,
-        })
-        .select()
-        .single();
+      const saveToDatabaseResponse = await fetch('/api/products', {
+        method: 'POST',
+        body: JSON.stringify(productData)
+      })
 
-      if (dbError) throw dbError;
+      const result = await saveToDatabaseResponse.json()
+      if (!saveToDatabaseResponse.ok) {
+        throw new Error(result.error)
+      }
 
       toast({
         title: "Item added successfully",
@@ -163,22 +160,27 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
       // Reset form
       setUploadedImages([]);
       setFormData({
+        user_id: null,
+        commission_id: null,
         title: "",
         description: "",
-        category: "",
         price: "",
-        size: "",
         status: "available",
-        originalBrand: "",
+        paid: "",
+        drop_item: "",
+        drop_title: "",
+        category: "",
+        size: ""
       });
-      
+
       onUploadSuccess();
       onClose();
-    } catch (error) {
-      console.error("Upload error:", error);
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      console.error(errorMessage)
       toast({
         title: "Upload failed",
-        description: "There was an error uploading your images",
+        description: errorMessage,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -194,23 +196,27 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
     });
     setUploadedImages([]);
     setFormData({
+      user_id: null,
+      commission_id: null,
       title: "",
       description: "",
-      category: "",
       price: "",
-      size: "",
       status: "available",
-      originalBrand: "",
+      paid: "",
+      drop_item: "",
+      drop_title: "",
+      category: "",
+      size: ""
     });
   };
 
   return (
-    <Modal 
-      isOpen={isOpen} 
+    <Modal
+      isOpen={isOpen}
       onClose={() => {
         cleanup();
         onClose();
-      }} 
+      }}
       size="2xl"
     >
       <ModalOverlay />
@@ -220,12 +226,13 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
         <ModalBody pb={6}>
           <VStack spacing={6} align="stretch">
             {/* Image Upload Section */}
+            {/* Max size is 50mb */}
             <Box>
               <FormLabel>Images</FormLabel>
               <SimpleGrid columns={3} spacing={4}>
                 {uploadedImages.map((image) => (
                   <Box key={image.id} position="relative">
-                    <AspectRatio ratio={3/4}>
+                    <AspectRatio ratio={3 / 4}>
                       <Image
                         src={image.preview}
                         alt="Upload preview"
@@ -244,9 +251,9 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
                     />
                   </Box>
                 ))}
-                
+
                 {uploadedImages.length < 6 && (
-                  <AspectRatio ratio={3/4}>
+                  <AspectRatio ratio={3 / 4}>
                     <Button
                       variant="outline"
                       onClick={() => fileInputRef.current?.click()}
@@ -283,6 +290,16 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
             </FormControl>
 
             <FormControl isRequired>
+              <FormLabel>Description</FormLabel>
+              <Textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Describe the item, its condition, and any unique features..."
+                rows={3}
+              />
+            </FormControl>
+
+            <FormControl isRequired>
               <FormLabel>Category</FormLabel>
               <Select
                 value={formData.category}
@@ -301,11 +318,14 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
             <HStack spacing={4}>
               <FormControl isRequired>
                 <FormLabel>Price</FormLabel>
-                <Input
+                <NumberInput
                   value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="e.g., $180"
-                />
+                  onChange={(e) => setFormData({ ...formData, price: e })}
+                  min={0}
+                  defaultValue={60.45}
+                >
+                  <NumberInputField />
+                </NumberInput>
               </FormControl>
 
               <FormControl>
@@ -318,24 +338,28 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
               </FormControl>
             </HStack>
 
-            <FormControl>
-              <FormLabel>Original Brand</FormLabel>
-              <Input
-                value={formData.originalBrand}
-                onChange={(e) => setFormData({ ...formData, originalBrand: e.target.value })}
-                placeholder="e.g., Levi's, Vintage Army Surplus"
-              />
-            </FormControl>
+            <HStack spacing={4}>
+              <FormControl>
+                <FormLabel>Drop Item</FormLabel>
+                <Select
+                  value={formData.drop_item}
+                  onChange={(e) => setFormData({ ...formData, drop_item: e.target.value })}
+                  placeholder="Select..."
+                >
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </Select>
+              </FormControl>
 
-            <FormControl>
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Describe the item, its condition, and any unique features..."
-                rows={3}
-              />
-            </FormControl>
+              <FormControl>
+                <FormLabel>Drop Title</FormLabel>
+                <Input
+                  value={formData.drop_title}
+                  onChange={(e) => setFormData({ ...formData, size: e.target.value })}
+                  placeholder="e.g., NicoLand March 2025"
+                />
+              </FormControl>
+            </HStack>
 
             <FormControl>
               <FormLabel>Status</FormLabel>
@@ -346,8 +370,12 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
                 <option value="available">Available</option>
                 <option value="reserved">Reserved</option>
                 <option value="sold">Sold</option>
+                <option value="sold">Archived</option>
               </Select>
             </FormControl>
+
+            {/* at some point can add something to attach it to specific users or commissions */}
+
           </VStack>
         </ModalBody>
 

@@ -9,30 +9,28 @@ export async function POST(
     try {
       await validation.checkAdminUser()
     } catch (e) {
-      return NextResponse.json(
-        { error: e },
-        { status: 403 }
-      )
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 403 })
     }
+
     let formData = await request.formData()
     const file = formData.get('image') as File
     if (!file) {
-      return NextResponse.json(
-        { error: 'No image was uploaded' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No image was uploaded' }, { status: 400 })
     }
     validation.checkImageType(file)
+
+    const id = formData.get('id') as string | null
+
     try {
-      const publicImageUrl = await imageUtil.createImage(file)
+      const publicImageUrl = await imageUtil.createImage(file, id)
       return NextResponse.json(publicImageUrl, { status: 200 })
     } catch (e) {
-      return NextResponse.json(
-        { error: e },
-        { status: 400 }
-      )
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 400 })
     }
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 400 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 400 })
   }
 }

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     reqBody = await request.json()
     if (!reqBody || Object.keys(reqBody).length == 0)
-      throw `There are no fields in the request body`
+      throw new Error(`There are no fields in the request body`)
 
     try {
       reqBody.first_name = validation.checkString(reqBody.first_name, 'First name')
@@ -18,9 +18,10 @@ export async function POST(request: NextRequest) {
       reqBody.email = validation.checkEmail(reqBody.email)
       validation.checkPassword(reqBody.password)
       const userExists = await usersUtil.checkUserWithEmailExists(reqBody.email)
-      if (userExists) throw `User with email ${reqBody.email} already exists`
+      if (userExists) throw new Error(`User with email ${reqBody.email} already exists`)
     } catch (e) {
-      return NextResponse.json({ error: e }, { status: 400 })
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 400 })
     }
 
     const { data: { user }, error } = await supabase.auth.signUp({
@@ -29,8 +30,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
-      console.log(error)
-      throw error.message
+      throw new Error(error.message)
     }
 
     const id = user?.id || ''
@@ -45,9 +45,7 @@ export async function POST(request: NextRequest) {
     )
     return NextResponse.json(newUser, { status: 200 })
   } catch (e) {
-    return NextResponse.json(
-      { error: e },
-      { status: 400 }
-    )
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 400 })
   }
 }

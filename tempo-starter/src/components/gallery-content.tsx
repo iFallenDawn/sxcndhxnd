@@ -35,7 +35,6 @@ import {
 import { Filter as FilterIcon } from "lucide-react";
 import { useAdmin } from "@/hooks/useAdmin";
 import GalleryUpload from "./gallery-upload";
-import { createClient } from "../../supabase/client";
 
 type ItemStatus = "available" | "sold" | "reserved";
 type SortOption = "newest" | "price-low" | "price-high" | "name-az" | "name-za";
@@ -99,15 +98,16 @@ export default function GalleryContent() {
 
   const fetchGalleryItems = async () => {
     try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('gallery_items')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const response = await fetch('/api/products', {
+        method: 'GET'
+      })
 
-      if (error) throw error;
+      const result = await response.json()
+      if (!response.ok) {
+        throw new Error(result.error);
+      }
 
-      setGalleryItems(data || []);
+      setGalleryItems(result || []);
     } catch (error) {
       console.error('Error fetching gallery items:', error);
     } finally {
@@ -123,9 +123,9 @@ export default function GalleryContent() {
       case "newest":
         return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       case "price-low":
-        return sorted.sort((a, b) => parseInt(a.price.replace("$", "")) - parseInt(b.price.replace("$", "")));
+        return sorted.sort((a, b) => parseInt(a.price) - parseInt(b.price));
       case "price-high":
-        return sorted.sort((a, b) => parseInt(b.price.replace("$", "")) - parseInt(a.price.replace("$", "")));
+        return sorted.sort((a, b) => parseInt(b.price) - parseInt(a.price));
       case "name-az":
         return sorted.sort((a, b) => a.title.localeCompare(b.title));
       case "name-za":
@@ -148,7 +148,6 @@ export default function GalleryContent() {
       filtered = filtered.filter(
         (item) =>
           item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.original_brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
@@ -177,9 +176,9 @@ export default function GalleryContent() {
     setSortOption("newest");
   };
 
-  const activeFiltersCount = 
-    (statusFilter !== "all" ? 1 : 0) + 
-    selectedCategories.length + 
+  const activeFiltersCount =
+    (statusFilter !== "all" ? 1 : 0) +
+    selectedCategories.length +
     (searchQuery ? 1 : 0) +
     (sortOption !== "newest" ? 1 : 0);
 
@@ -474,128 +473,128 @@ export default function GalleryContent() {
               >
                 <AnimatePresence>
                   {filteredItems.map((item) => (
-                  <motion.div
-                    key={item.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ 
-                      duration: 0.4,
-                      ease: [0.25, 0.1, 0.25, 1],
-                      layout: {
-                        duration: 0.3
-                      }
-                    }}
-                  >
-                    <VStack
-                      spacing={4}
-                      role="group"
-                      cursor="pointer"
-                      alignItems="stretch"
+                    <motion.div
+                      key={item.id}
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.25, 0.1, 0.25, 1],
+                        layout: {
+                          duration: 0.3
+                        }
+                      }}
                     >
-                      <Box
-                        position="relative"
-                        aspectRatio={3/4}
-                        bg="gray.50"
-                        overflow="hidden"
+                      <VStack
+                        spacing={4}
+                        role="group"
+                        cursor="pointer"
+                        alignItems="stretch"
                       >
-                        <StatusBadge status={item.status} />
-                        <Image
-                          src={item.image_urls[0]}
-                          alt={item.title}
-                          objectFit="cover"
-                          w="full"
-                          h="full"
-                          transition="transform 0.7s"
-                          _groupHover={{ transform: "scale(1.05)" }}
-                          opacity={item.status === "sold" ? 0.5 : 1}
-                          filter={item.status === "sold" ? "grayscale(100%)" : "none"}
-                        />
-                        {/* Hover Overlay */}
-                        {item.status === "available" && (
-                          <Box
-                            position="absolute"
-                            inset={0}
-                            bg="blackAlpha.0"
-                            _groupHover={{ bg: "blackAlpha.300" }}
-                            transition="all 0.3s"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                          >
+                        <Box
+                          position="relative"
+                          aspectRatio={3 / 4}
+                          bg="gray.50"
+                          overflow="hidden"
+                        >
+                          <StatusBadge status={item.status} />
+                          <Image
+                            src={item.image_urls[0]}
+                            alt={item.title}
+                            objectFit="cover"
+                            w="full"
+                            h="full"
+                            transition="transform 0.7s"
+                            _groupHover={{ transform: "scale(1.05)" }}
+                            opacity={item.status === "sold" ? 0.5 : 1}
+                            filter={item.status === "sold" ? "grayscale(100%)" : "none"}
+                          />
+                          {/* Hover Overlay */}
+                          {item.status === "available" && (
+                            <Box
+                              position="absolute"
+                              inset={0}
+                              bg="blackAlpha.0"
+                              _groupHover={{ bg: "blackAlpha.300" }}
+                              transition="all 0.3s"
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              <Text
+                                color="white"
+                                fontSize="sm"
+                                fontWeight="medium"
+                                letterSpacing="wider"
+                                textTransform="uppercase"
+                                opacity={0}
+                                _groupHover={{ opacity: 1 }}
+                                transition="opacity 0.3s"
+                              >
+                                View Details
+                              </Text>
+                            </Box>
+                          )}
+                        </Box>
+
+                        <VStack spacing={2} align="stretch">
+                          <Flex justify="space-between" align="start">
+                            <Box>
+                              <Text
+                                fontSize="sm"
+                                fontWeight="medium"
+                                letterSpacing="wide"
+                              >
+                                {item.title}
+                              </Text>
+                              <Text
+                                fontSize="xs"
+                                fontWeight="light"
+                                color="gray.500"
+                                letterSpacing="wide"
+                                mt={1}
+                              >
+                                {item.original_brand}
+                              </Text>
+                            </Box>
                             <Text
-                              color="white"
                               fontSize="sm"
                               fontWeight="medium"
+                              letterSpacing="wide"
+                              textDecoration={item.status === "sold" ? "line-through" : "none"}
+                              color={item.status === "sold" ? "gray.400" : "black"}
+                            >
+                              ${item.price}
+                            </Text>
+                          </Flex>
+
+                          <Flex justify="space-between" align="center" pt={2}>
+                            <Text
+                              fontSize="xs"
+                              fontWeight="normal"
                               letterSpacing="wider"
                               textTransform="uppercase"
-                              opacity={0}
-                              _groupHover={{ opacity: 1 }}
-                              transition="opacity 0.3s"
+                              color="gray.600"
                             >
-                              View Details
+                              {item.category}
                             </Text>
-                          </Box>
-                        )}
-                      </Box>
-                      
-                      <VStack spacing={2} align="stretch">
-                        <Flex justify="space-between" align="start">
-                          <Box>
-                            <Text
-                              fontSize="sm"
-                              fontWeight="medium"
-                              letterSpacing="wide"
-                            >
-                              {item.title}
-                            </Text>
-                            <Text
-                              fontSize="xs"
-                              fontWeight="light"
-                              color="gray.500"
-                              letterSpacing="wide"
-                              mt={1}
-                            >
-                              {item.original_brand}
-                            </Text>
-                          </Box>
-                          <Text
-                            fontSize="sm"
-                            fontWeight="medium"
-                            letterSpacing="wide"
-                            textDecoration={item.status === "sold" ? "line-through" : "none"}
-                            color={item.status === "sold" ? "gray.400" : "black"}
-                          >
-                            {item.price}
-                          </Text>
-                        </Flex>
-                        
-                        <Flex justify="space-between" align="center" pt={2}>
-                          <Text
-                            fontSize="xs"
-                            fontWeight="normal"
-                            letterSpacing="wider"
-                            textTransform="uppercase"
-                            color="gray.600"
-                          >
-                            {item.category}
-                          </Text>
-                          {item.size && (
-                            <Text
-                              fontSize="xs"
-                              fontWeight="light"
-                              letterSpacing="wide"
-                              color="gray.500"
-                            >
-                              Size {item.size}
-                            </Text>
-                          )}
-                        </Flex>
+                            {item.size && (
+                              <Text
+                                fontSize="xs"
+                                fontWeight="light"
+                                letterSpacing="wide"
+                                color="gray.500"
+                              >
+                                Size {item.size}
+                              </Text>
+                            )}
+                          </Flex>
+                        </VStack>
                       </VStack>
-                    </VStack>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
                 </AnimatePresence>
               </SimpleGrid>
             </motion.div>
@@ -617,7 +616,7 @@ export default function GalleryContent() {
             >
               Our Process
             </Heading>
-            
+
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={12} textAlign="center">
               <VStack spacing={4}>
                 <Heading
@@ -639,7 +638,7 @@ export default function GalleryContent() {
                   Carefully selected vintage pieces from premium brands and unique finds
                 </Text>
               </VStack>
-              
+
               <VStack spacing={4}>
                 <Heading
                   as="h3"
@@ -660,7 +659,7 @@ export default function GalleryContent() {
                   Deconstructed and redesigned with modern silhouettes in mind
                 </Text>
               </VStack>
-              
+
               <VStack spacing={4}>
                 <Heading
                   as="h3"
@@ -687,8 +686,8 @@ export default function GalleryContent() {
       </Box>
 
       {/* Gallery Upload Modal */}
-      <GalleryUpload 
-        isOpen={isUploadOpen} 
+      <GalleryUpload
+        isOpen={isUploadOpen}
         onClose={onUploadClose}
         onUploadSuccess={() => {
           fetchGalleryItems();

@@ -88,44 +88,44 @@ export const signInAction = async (formData: FormData) => {
   return redirect("/dashboard");
 };
 
-export const updateUserInfoAction = async (formData: FormData) => {
-  let first_name = formData.get("firstName")?.toString() || ''
-  let last_name = formData.get("lastName")?.toString() || ''
-  let instagram = formData.get("instagram")?.toString() || ''
+// export const updateUserInfoAction = async (formData: FormData) => {
+//   let first_name = formData.get("firstName")?.toString() || ''
+//   let last_name = formData.get("lastName")?.toString() || ''
+//   let instagram = formData.get("instagram")?.toString() || ''
 
-  const user = await validation.checkIsUserSignedIn()
+//   const user = await validation.checkIsUserSignedIn()
 
-  if (!user) {
-    return redirect("/sign-in")
-  }
+//   if (!user) {
+//     return redirect("/sign-in")
+//   }
 
-  const publicUsersData = await usersUtil.getUserById(user.id)
+//   const publicUsersData = await usersUtil.getUserById(user.id)
 
-  first_name = first_name ? first_name : publicUsersData.first_name
-  last_name = last_name ? last_name : publicUsersData.last_name
-  instagram = instagram ? instagram : publicUsersData.instagram
+//   first_name = first_name ? first_name : publicUsersData.first_name
+//   last_name = last_name ? last_name : publicUsersData.last_name
+//   instagram = instagram ? instagram : publicUsersData.instagram
 
-  first_name = validation.checkString(first_name, 'First name')
-  last_name = validation.checkString(last_name, 'Last name')
-  instagram = validation.checkString(instagram, 'Instagram')
+//   first_name = validation.checkString(first_name, 'First name')
+//   last_name = validation.checkString(last_name, 'Last name')
+//   instagram = validation.checkString(instagram, 'Instagram')
 
-  try {
-    await usersUtil.updateUserNoEmail(user.id, first_name, last_name, instagram)
-  } catch (e) {
-    console.error(e);
-    return encodedRedirect(
-      "error",
-      "/dashboard",
-      e instanceof Error ? e.message : "Unable to update user",
-    );
-  }
+//   try {
+//     await usersUtil.updateUserNoEmail(user.id, first_name, last_name, instagram)
+//   } catch (e) {
+//     console.error(e);
+//     return encodedRedirect(
+//       "error",
+//       "/dashboard",
+//       e instanceof Error ? e.message : "Unable to update user",
+//     );
+//   }
 
-  return encodedRedirect(
-    "success",
-    "/dashboard",
-    "Profile info successfully updated",
-  );
-}
+//   return encodedRedirect(
+//     "success",
+//     "/dashboard",
+//     "Profile info successfully updated",
+//   );
+// }
 
 export const forgotPasswordAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();

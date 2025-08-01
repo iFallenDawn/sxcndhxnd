@@ -59,8 +59,8 @@ export async function PUT(
     if (reqBody.description) {
       reqBody.description = validation.checkString(reqBody.description, 'Description')
     }
-    if (reqBody.image_url) {
-      reqBody.image_url = validation.checkString(reqBody.image_url, 'Image url')
+    if (reqBody.image_urls) {
+      reqBody.image_urls = validation.checkArrayOfStrings(reqBody.image_urls, 'Image urls')
     }
 
     if (reqBody.price) {
@@ -82,6 +82,14 @@ export async function PUT(
     if (reqBody.drop_title) {
       reqBody.drop_title = validation.checkString(reqBody.drop_title, 'Drop Title')
     }
+
+    if (reqBody.category) {
+      reqBody.category = validation.checkString(reqBody.category, 'Category')
+    }
+
+    if (reqBody.size) {
+      reqBody.size = validation.checkString(reqBody.size, 'Size')
+    }
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }
@@ -93,12 +101,14 @@ export async function PUT(
       reqBody.commission_id,
       reqBody.title,
       reqBody.description,
-      reqBody.image_url,
+      reqBody.image_urls,
       reqBody.price,
       reqBody.status,
       reqBody.paid,
       reqBody.drop_item,
-      reqBody.drop_title
+      reqBody.drop_title,
+      reqBody.category,
+      reqBody.size
     )
     return NextResponse.json(updatedProduct, { status: 200 })
   } catch (e) {

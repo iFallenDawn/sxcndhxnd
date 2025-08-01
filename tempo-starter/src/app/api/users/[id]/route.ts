@@ -9,14 +9,16 @@ export async function GET(
   try {
     params.id = validation.checkId(params.id)
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 400 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 400 })
   }
 
   try {
     const user = await usersUtil.getUserById(params.id)
     return NextResponse.json(user, { status: 200 })
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 404 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 404 })
   }
 }
 
@@ -49,7 +51,8 @@ export async function PUT(
     }
 
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 400 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 400 })
   }
 
   try {
@@ -61,7 +64,8 @@ export async function PUT(
     )
     return NextResponse.json(user, { status: 200 })
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 400 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 400 })
   }
 }
 
@@ -74,23 +78,27 @@ export async function DELETE(
     try {
       params.id = validation.checkId(params.id)
     } catch (e) {
-      return NextResponse.json({ error: e }, { status: 400 })
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 400 })
     }
 
     try {
       await usersUtil.getUserById(params.id)
     } catch (e) {
-      return NextResponse.json({ error: e }, { status: 404 })
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 404 })
     }
 
     try {
       const deletedUser = await usersUtil.deleteUser(params.id)
       return NextResponse.json(deletedUser, { status: 200 })
     } catch (e) {
-      return NextResponse.json({ error: e }, { status: 400 })
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 400 })
     }
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 404 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 404 })
   }
 }
 
