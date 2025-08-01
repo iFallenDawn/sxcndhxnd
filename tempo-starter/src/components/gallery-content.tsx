@@ -1,43 +1,43 @@
-"use client";
+'use client';
 
-import { useState, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, ChevronDown, Plus } from "lucide-react";
+import { useAdmin } from '@/hooks/useAdmin';
 import {
+  Badge,
   Box,
+  Button,
+  Center,
+  Checkbox,
   Container,
+  Flex,
   Heading,
-  Text,
+  HStack,
+  IconButton,
+  Image,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Button,
-  IconButton,
-  Badge,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  Checkbox,
+  MenuList,
   SimpleGrid,
-  VStack,
-  HStack,
-  Flex,
-  Image,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  useDisclosure,
   Spinner,
-  Center,
-} from "@chakra-ui/react";
-import { Filter as FilterIcon } from "lucide-react";
-import { useAdmin } from "@/hooks/useAdmin";
-import GalleryUpload from "./gallery-upload";
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  Text,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ChevronDown, Filter as FilterIcon, Plus, Search, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { createClient } from '../../supabase/client';
+import GalleryUpload from './gallery-upload';
 
-type ItemStatus = "available" | "sold" | "reserved";
-type SortOption = "newest" | "price-low" | "price-high" | "name-az" | "name-za";
+type ItemStatus = 'available' | 'sold' | 'reserved';
+type SortOption = 'newest' | 'price-low' | 'price-high' | 'name-az' | 'name-za';
 
 interface GalleryItem {
   id: string;
@@ -54,37 +54,37 @@ interface GalleryItem {
 }
 
 const StatusBadge = ({ status }: { status: ItemStatus }) => {
+  if (status === 'available') return null;
+
   const colorScheme = {
-    available: "green",
-    sold: "gray",
-    reserved: "orange",
+    sold: 'gray',
+    reserved: 'orange',
   };
 
   return (
     <Badge
-      position="absolute"
-      top={4}
-      left={4}
-      px={3}
-      py={1}
-      fontSize="xs"
-      fontWeight="medium"
-      letterSpacing="wider"
-      textTransform="uppercase"
+      position='absolute'
+      top={2}
+      left={2}
+      px={2}
+      py={0.5}
+      fontSize='xx-small'
+      fontWeight='medium'
+      letterSpacing='wider'
+      textTransform='uppercase'
       colorScheme={colorScheme[status]}
-      backdropFilter="blur(4px)"
-      zIndex={10}
-    >
+      backdropFilter='blur(4px)'
+      zIndex={10}>
       {status}
     </Badge>
   );
 };
 
 export default function GalleryContent() {
-  const [statusFilter, setStatusFilter] = useState<"all" | ItemStatus>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<'all' | ItemStatus>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const [sortOption, setSortOption] = useState<SortOption>('newest');
   const { isOpen: showFilters, onToggle: toggleFilters } = useDisclosure();
   const { isOpen: isUploadOpen, onOpen: onUploadOpen, onClose: onUploadClose } = useDisclosure();
   const { isAdmin, loading: adminLoading } = useAdmin();
@@ -98,16 +98,14 @@ export default function GalleryContent() {
 
   const fetchGalleryItems = async () => {
     try {
-      const response = await fetch('/api/products', {
-        method: 'GET'
-      })
+      const supabase = createClient();
+      const { data, error } = await supabase.from('gallery_items').select('*').order('created_at', { ascending: false });
 
-      const result = await response.json()
-      if (!response.ok) {
-        throw new Error(result.error);
+      if (error) {
+        throw error;
       }
 
-      setGalleryItems(result || []);
+      setGalleryItems(data || []);
     } catch (error) {
       console.error('Error fetching gallery items:', error);
     } finally {
@@ -115,20 +113,20 @@ export default function GalleryContent() {
     }
   };
 
-  const categories = Array.from(new Set(galleryItems.map(item => item.category)));
+  const categories = Array.from(new Set(galleryItems.map((item) => item.category)));
 
   const sortItems = (items: GalleryItem[]) => {
     const sorted = [...items];
     switch (sortOption) {
-      case "newest":
+      case 'newest':
         return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      case "price-low":
-        return sorted.sort((a, b) => parseInt(a.price) - parseInt(b.price));
-      case "price-high":
-        return sorted.sort((a, b) => parseInt(b.price) - parseInt(a.price));
-      case "name-az":
+      case 'price-low':
+        return sorted.sort((a, b) => parseInt(a.price.replace('$', '')) - parseInt(b.price.replace('$', '')));
+      case 'price-high':
+        return sorted.sort((a, b) => parseInt(b.price.replace('$', '')) - parseInt(a.price.replace('$', '')));
+      case 'name-az':
         return sorted.sort((a, b) => a.title.localeCompare(b.title));
-      case "name-za":
+      case 'name-za':
         return sorted.sort((a, b) => b.title.localeCompare(a.title));
       default:
         return sorted;
@@ -139,16 +137,14 @@ export default function GalleryContent() {
     let filtered = galleryItems;
 
     // Status filter
-    if (statusFilter !== "all") {
+    if (statusFilter !== 'all') {
       filtered = filtered.filter((item) => item.status === statusFilter);
     }
 
     // Search filter
     if (searchQuery) {
       filtered = filtered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+        (item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -162,128 +158,127 @@ export default function GalleryContent() {
   }, [galleryItems, statusFilter, searchQuery, selectedCategories, sortOption]);
 
   const toggleCategory = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
+    setSelectedCategories((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
   };
 
   const clearFilters = () => {
-    setStatusFilter("all");
-    setSearchQuery("");
+    setStatusFilter('all');
+    setSearchQuery('');
     setSelectedCategories([]);
-    setSortOption("newest");
+    setSortOption('newest');
   };
 
-  const activeFiltersCount =
-    (statusFilter !== "all" ? 1 : 0) +
-    selectedCategories.length +
-    (searchQuery ? 1 : 0) +
-    (sortOption !== "newest" ? 1 : 0);
+  const activeFiltersCount = (statusFilter !== 'all' ? 1 : 0) + selectedCategories.length + (searchQuery ? 1 : 0) + (sortOption !== 'newest' ? 1 : 0);
 
   return (
     <>
-      {/* Compact Hero Section */}
-      <Box as="section" pt={32} pb={8} bg="white">
-        <Container maxW="container.xl">
-          <VStack spacing={3} textAlign="center">
+      {/* Minimal Header */}
+      <Box
+        as='section'
+        pt={24}
+        pb={6}
+        bg='white'>
+        <Container maxW='container.xl'>
+          <VStack spacing={2}>
             <Heading
-              as="h1"
-              fontSize={{ base: "4xl", md: "5xl" }}
-              fontWeight="light"
-              letterSpacing="tighter"
-              textTransform="uppercase"
-            >
-              Gallery
+              as='h1'
+              fontSize={{ base: 'lg', md: 'xl' }}
+              fontWeight='light'
+              letterSpacing='wider'
+              textTransform='uppercase'
+              textAlign='center'>
+              Hand Crafted Inventory
             </Heading>
             <Text
-              fontSize="sm"
-              fontWeight="light"
-              letterSpacing="wide"
-              color="gray.600"
-              maxW="xl"
-            >
-              Vintage pieces reimagined for the contemporary wardrobe
+              fontSize='xs'
+              fontWeight='light'
+              letterSpacing='wide'
+              color='gray.600'
+              textAlign='center'>
+              Our current selection of items highlighted by all-new denim, the return of classic silhouettes and statement pieces
             </Text>
           </VStack>
         </Container>
       </Box>
 
-      {/* Minimal Sticky Filter Bar */}
+      {/* Minimal Filter Bar */}
       <Box
-        position="sticky"
-        top={0}
-        bg="rgba(255, 255, 255, 0.95)"
-        backdropFilter="blur(8px)"
-        zIndex={40}
-        borderBottom="1px"
-        borderColor="gray.100"
-      >
-        <Container maxW="container.xl" py={3}>
-          <Flex align="center" gap={3}>
+        bg='white'
+        borderBottom='1px'
+        borderColor='gray.100'>
+        <Container
+          maxW='container.xl'
+          py={2}>
+          <Flex
+            align='center'
+            gap={3}>
             {/* Search Bar - Compact */}
-            <InputGroup maxW={{ base: "full", lg: "md" }} size="sm">
-              <InputLeftElement pointerEvents="none">
-                <Search size={16} color="gray" />
+            <InputGroup
+              maxW={{ base: 'full', lg: 'md' }}
+              size='sm'>
+              <InputLeftElement pointerEvents='none'>
+                <Search
+                  size={16}
+                  color='gray'
+                />
               </InputLeftElement>
               <Input
-                placeholder="Search..."
+                placeholder='Search...'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                bg="gray.50"
-                border="none"
-                borderRadius="full"
+                bg='gray.50'
+                border='none'
+                borderRadius='full'
                 _focus={{
-                  bg: "white",
-                  borderColor: "gray.300",
-                  boxShadow: "sm",
+                  bg: 'white',
+                  borderColor: 'gray.300',
+                  boxShadow: 'sm',
                 }}
-                _placeholder={{ color: "gray.500" }}
-                fontSize="sm"
+                _placeholder={{ color: 'gray.500' }}
+                fontSize='sm'
               />
               {searchQuery && (
                 <InputRightElement>
                   <IconButton
-                    aria-label="Clear search"
+                    aria-label='Clear search'
                     icon={<X size={14} />}
-                    size="xs"
-                    variant="ghost"
-                    onClick={() => setSearchQuery("")}
+                    size='xs'
+                    variant='ghost'
+                    onClick={() => setSearchQuery('')}
                   />
                 </InputRightElement>
               )}
             </InputGroup>
 
             {/* Filter Buttons - Compact */}
-            <HStack spacing={2} flexShrink={0}>
+            <HStack
+              spacing={2}
+              flexShrink={0}>
               {/* Status Filter Dropdown */}
               <Menu>
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDown size={14} />}
-                  size="sm"
-                  borderRadius="full"
-                  fontSize="xs"
-                  fontWeight="medium"
-                  letterSpacing="wide"
-                  bg={statusFilter !== "all" ? "black" : "gray.100"}
-                  color={statusFilter !== "all" ? "white" : "gray.700"}
+                  size='sm'
+                  borderRadius='full'
+                  fontSize='xs'
+                  fontWeight='medium'
+                  letterSpacing='wide'
+                  bg={statusFilter !== 'all' ? 'black' : 'gray.100'}
+                  color={statusFilter !== 'all' ? 'white' : 'gray.700'}
                   _hover={{
-                    bg: statusFilter !== "all" ? "gray.800" : "gray.200",
-                  }}
-                >
-                  {statusFilter === "all" ? "All Items" : statusFilter}
+                    bg: statusFilter !== 'all' ? 'gray.800' : 'gray.200',
+                  }}>
+                  {statusFilter === 'all' ? 'All Items' : statusFilter}
                 </MenuButton>
-                <MenuList minW="140px">
-                  {["all", "available", "sold", "reserved"].map((status) => (
+                <MenuList minW='140px'>
+                  {['all', 'available', 'sold', 'reserved'].map((status) => (
                     <MenuItem
                       key={status}
                       onClick={() => setStatusFilter(status as typeof statusFilter)}
-                      fontSize="sm"
-                      textTransform="capitalize"
-                    >
-                      {status === "all" ? "All Items" : status}
+                      fontSize='sm'
+                      textTransform='capitalize'>
+                      {status === 'all' ? 'All Items' : status}
                     </MenuItem>
                   ))}
                 </MenuList>
@@ -294,46 +289,44 @@ export default function GalleryContent() {
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDown size={14} />}
-                  size="sm"
-                  borderRadius="full"
-                  fontSize="xs"
-                  fontWeight="medium"
-                  letterSpacing="wide"
-                  bg={selectedCategories.length > 0 ? "black" : "gray.100"}
-                  color={selectedCategories.length > 0 ? "white" : "gray.700"}
+                  size='sm'
+                  borderRadius='full'
+                  fontSize='xs'
+                  fontWeight='medium'
+                  letterSpacing='wide'
+                  bg={selectedCategories.length > 0 ? 'black' : 'gray.100'}
+                  color={selectedCategories.length > 0 ? 'white' : 'gray.700'}
                   _hover={{
-                    bg: selectedCategories.length > 0 ? "gray.800" : "gray.200",
-                  }}
-                >
+                    bg: selectedCategories.length > 0 ? 'gray.800' : 'gray.200',
+                  }}>
                   <HStack spacing={1}>
                     <FilterIcon size={14} />
                     <Text>Categories</Text>
                     {selectedCategories.length > 0 && (
                       <Badge
-                        bg="white"
-                        color="black"
-                        size="xs"
-                        borderRadius="full"
-                      >
+                        bg='white'
+                        color='black'
+                        size='xs'
+                        borderRadius='full'>
                         {selectedCategories.length}
                       </Badge>
                     )}
                   </HStack>
                 </MenuButton>
-                <MenuList minW="160px" p={2}>
+                <MenuList
+                  minW='160px'
+                  p={2}>
                   {categories.map((category) => (
                     <MenuItem
                       key={category}
                       closeOnSelect={false}
                       p={2}
-                      borderRadius="md"
-                    >
+                      borderRadius='md'>
                       <Checkbox
                         isChecked={selectedCategories.includes(category)}
                         onChange={() => toggleCategory(category)}
-                        size="sm"
-                      >
-                        <Text fontSize="sm">{category}</Text>
+                        size='sm'>
+                        <Text fontSize='sm'>{category}</Text>
                       </Checkbox>
                     </MenuItem>
                   ))}
@@ -345,30 +338,28 @@ export default function GalleryContent() {
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDown size={14} />}
-                  size="sm"
-                  borderRadius="full"
-                  fontSize="xs"
-                  fontWeight="medium"
-                  letterSpacing="wide"
-                  bg="gray.100"
-                  color="gray.700"
-                  _hover={{ bg: "gray.200" }}
-                >
+                  size='sm'
+                  borderRadius='full'
+                  fontSize='xs'
+                  fontWeight='medium'
+                  letterSpacing='wide'
+                  bg='gray.100'
+                  color='gray.700'
+                  _hover={{ bg: 'gray.200' }}>
                   Sort
                 </MenuButton>
-                <MenuList minW="160px">
+                <MenuList minW='160px'>
                   {[
-                    { value: "newest", label: "Newest" },
-                    { value: "price-low", label: "Price ↑" },
-                    { value: "price-high", label: "Price ↓" },
-                    { value: "name-az", label: "A-Z" },
-                    { value: "name-za", label: "Z-A" },
+                    { value: 'newest', label: 'Newest' },
+                    { value: 'price-low', label: 'Price ↑' },
+                    { value: 'price-high', label: 'Price ↓' },
+                    { value: 'name-az', label: 'A-Z' },
+                    { value: 'name-za', label: 'Z-A' },
                   ].map((option) => (
                     <MenuItem
                       key={option.value}
                       onClick={() => setSortOption(option.value as SortOption)}
-                      fontSize="sm"
-                    >
+                      fontSize='sm'>
                       {option.label}
                     </MenuItem>
                   ))}
@@ -377,29 +368,27 @@ export default function GalleryContent() {
 
               {/* Results Count */}
               <Text
-                fontSize="xs"
-                color="gray.500"
+                fontSize='xs'
+                color='gray.500'
                 ml={2}
-                display={{ base: "none", sm: "inline" }}
-              >
+                display={{ base: 'none', sm: 'inline' }}>
                 {filteredItems.length} items
               </Text>
 
               {/* Admin Upload Button */}
               {isAdmin && !adminLoading && (
                 <Button
-                  size="sm"
-                  borderRadius="full"
-                  fontSize="xs"
-                  fontWeight="medium"
-                  letterSpacing="wide"
-                  bg="black"
-                  color="white"
-                  _hover={{ bg: "gray.800" }}
+                  size='sm'
+                  borderRadius='full'
+                  fontSize='xs'
+                  fontWeight='medium'
+                  letterSpacing='wide'
+                  bg='black'
+                  color='white'
+                  _hover={{ bg: 'gray.800' }}
                   leftIcon={<Plus size={14} />}
                   onClick={onUploadOpen}
-                  ml={2}
-                >
+                  ml={2}>
                   Add Item
                 </Button>
               )}
@@ -408,32 +397,44 @@ export default function GalleryContent() {
 
           {/* Active Filters Tags */}
           {activeFiltersCount > 0 && (
-            <HStack spacing={2} mt={2} flexWrap="wrap">
+            <HStack
+              spacing={2}
+              mt={2}
+              flexWrap='wrap'>
               {searchQuery && (
-                <Tag size="sm" borderRadius="full" bg="gray.100">
+                <Tag
+                  size='sm'
+                  borderRadius='full'
+                  bg='gray.100'>
                   <TagLabel>"{searchQuery}"</TagLabel>
-                  <TagCloseButton onClick={() => setSearchQuery("")} />
+                  <TagCloseButton onClick={() => setSearchQuery('')} />
                 </Tag>
               )}
-              {statusFilter !== "all" && (
-                <Tag size="sm" borderRadius="full" bg="gray.100">
-                  <TagLabel textTransform="capitalize">{statusFilter}</TagLabel>
-                  <TagCloseButton onClick={() => setStatusFilter("all")} />
+              {statusFilter !== 'all' && (
+                <Tag
+                  size='sm'
+                  borderRadius='full'
+                  bg='gray.100'>
+                  <TagLabel textTransform='capitalize'>{statusFilter}</TagLabel>
+                  <TagCloseButton onClick={() => setStatusFilter('all')} />
                 </Tag>
               )}
-              {selectedCategories.map(cat => (
-                <Tag key={cat} size="sm" borderRadius="full" bg="gray.100">
+              {selectedCategories.map((cat) => (
+                <Tag
+                  key={cat}
+                  size='sm'
+                  borderRadius='full'
+                  bg='gray.100'>
                   <TagLabel>{cat}</TagLabel>
                   <TagCloseButton onClick={() => toggleCategory(cat)} />
                 </Tag>
               ))}
               <Button
-                size="xs"
-                variant="link"
-                color="gray.500"
+                size='xs'
+                variant='link'
+                color='gray.500'
                 onClick={clearFilters}
-                ml={2}
-              >
+                ml={2}>
                 Clear all
               </Button>
             </HStack>
@@ -442,22 +443,34 @@ export default function GalleryContent() {
       </Box>
 
       {/* Gallery Grid */}
-      <Box as="section" pt={8} pb={32}>
-        <Container maxW="container.xl">
+      <Box
+        as='section'
+        pt={4}
+        pb={16}>
+        <Container
+          maxW='100%'
+          px={{ base: 4, md: 6, lg: 8 }}>
           {loading ? (
             <Center py={20}>
-              <Spinner size="xl" thickness="3px" color="gray.400" />
+              <Spinner
+                size='xl'
+                thickness='3px'
+                color='gray.400'
+              />
             </Center>
           ) : filteredItems.length === 0 ? (
             <Center py={20}>
               <VStack spacing={4}>
-                <Text fontSize="lg" color="gray.600">No items found</Text>
+                <Text
+                  fontSize='lg'
+                  color='gray.600'>
+                  No items found
+                </Text>
                 {activeFiltersCount > 0 && (
                   <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={clearFilters}
-                  >
+                    size='sm'
+                    variant='outline'
+                    onClick={clearFilters}>
                     Clear filters
                   </Button>
                 )}
@@ -466,11 +479,10 @@ export default function GalleryContent() {
           ) : (
             <motion.div layout>
               <SimpleGrid
-                columns={{ base: 1, md: 2, lg: 3 }}
-                spacing={{ base: 8, lg: 10 }}
-                maxW="7xl"
-                mx="auto"
-              >
+                columns={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
+                spacing={{ base: 3, md: 4 }}
+                maxW='100%'
+                mx='auto'>
                 <AnimatePresence>
                   {filteredItems.map((item) => (
                     <motion.div
@@ -483,114 +495,75 @@ export default function GalleryContent() {
                         duration: 0.4,
                         ease: [0.25, 0.1, 0.25, 1],
                         layout: {
-                          duration: 0.3
-                        }
-                      }}
-                    >
+                          duration: 0.3,
+                        },
+                      }}>
                       <VStack
-                        spacing={4}
-                        role="group"
-                        cursor="pointer"
-                        alignItems="stretch"
-                      >
+                        spacing={2}
+                        role='group'
+                        cursor='pointer'
+                        alignItems='stretch'>
                         <Box
-                          position="relative"
-                          aspectRatio={3 / 4}
-                          bg="gray.50"
-                          overflow="hidden"
-                        >
+                          position='relative'
+                          aspectRatio={1}
+                          bg='gray.50'
+                          overflow='hidden'>
                           <StatusBadge status={item.status} />
                           <Image
                             src={item.image_urls[0]}
                             alt={item.title}
-                            objectFit="cover"
-                            w="full"
-                            h="full"
-                            transition="transform 0.7s"
-                            _groupHover={{ transform: "scale(1.05)" }}
-                            opacity={item.status === "sold" ? 0.5 : 1}
-                            filter={item.status === "sold" ? "grayscale(100%)" : "none"}
+                            objectFit='cover'
+                            w='full'
+                            h='full'
+                            transition='transform 0.7s'
+                            _groupHover={{ transform: 'scale(1.05)' }}
+                            opacity={item.status === 'sold' ? 0.5 : 1}
+                            filter={item.status === 'sold' ? 'grayscale(100%)' : 'none'}
                           />
                           {/* Hover Overlay */}
-                          {item.status === "available" && (
+                          {item.status === 'available' && (
                             <Box
-                              position="absolute"
+                              position='absolute'
                               inset={0}
-                              bg="blackAlpha.0"
-                              _groupHover={{ bg: "blackAlpha.300" }}
-                              transition="all 0.3s"
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                            >
+                              bg='blackAlpha.0'
+                              _groupHover={{ bg: 'blackAlpha.300' }}
+                              transition='all 0.3s'
+                              display='flex'
+                              alignItems='center'
+                              justifyContent='center'>
                               <Text
-                                color="white"
-                                fontSize="sm"
-                                fontWeight="medium"
-                                letterSpacing="wider"
-                                textTransform="uppercase"
+                                color='white'
+                                fontSize='sm'
+                                fontWeight='medium'
+                                letterSpacing='wider'
+                                textTransform='uppercase'
                                 opacity={0}
                                 _groupHover={{ opacity: 1 }}
-                                transition="opacity 0.3s"
-                              >
+                                transition='opacity 0.3s'>
                                 View Details
                               </Text>
                             </Box>
                           )}
                         </Box>
 
-                        <VStack spacing={2} align="stretch">
-                          <Flex justify="space-between" align="start">
-                            <Box>
-                              <Text
-                                fontSize="sm"
-                                fontWeight="medium"
-                                letterSpacing="wide"
-                              >
-                                {item.title}
-                              </Text>
-                              <Text
-                                fontSize="xs"
-                                fontWeight="light"
-                                color="gray.500"
-                                letterSpacing="wide"
-                                mt={1}
-                              >
-                                {item.original_brand}
-                              </Text>
-                            </Box>
-                            <Text
-                              fontSize="sm"
-                              fontWeight="medium"
-                              letterSpacing="wide"
-                              textDecoration={item.status === "sold" ? "line-through" : "none"}
-                              color={item.status === "sold" ? "gray.400" : "black"}
-                            >
-                              ${item.price}
-                            </Text>
-                          </Flex>
-
-                          <Flex justify="space-between" align="center" pt={2}>
-                            <Text
-                              fontSize="xs"
-                              fontWeight="normal"
-                              letterSpacing="wider"
-                              textTransform="uppercase"
-                              color="gray.600"
-                            >
-                              {item.category}
-                            </Text>
-                            {item.size && (
-                              <Text
-                                fontSize="xs"
-                                fontWeight="light"
-                                letterSpacing="wide"
-                                color="gray.500"
-                              >
-                                Size {item.size}
-                              </Text>
-                            )}
-                          </Flex>
+                        <VStack
+                          spacing={0.5}
+                          align='stretch'>
+                          <Text
+                            fontSize='xs'
+                            fontWeight='normal'
+                            letterSpacing='wide'
+                            noOfLines={1}>
+                            {item.title}
+                          </Text>
+                          <Text
+                            fontSize='xs'
+                            fontWeight='normal'
+                            letterSpacing='wide'
+                            textDecoration={item.status === 'sold' ? 'line-through' : 'none'}
+                            color={item.status === 'sold' ? 'gray.400' : 'black'}>
+                            {item.price}
+                          </Text>
                         </VStack>
                       </VStack>
                     </motion.div>
@@ -599,89 +572,6 @@ export default function GalleryContent() {
               </SimpleGrid>
             </motion.div>
           )}
-        </Container>
-      </Box>
-
-      {/* About Upcycling Section */}
-      <Box as="section" py={32} bg="gray.50">
-        <Container maxW="container.lg">
-          <VStack spacing={8}>
-            <Heading
-              as="h2"
-              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
-              fontWeight="light"
-              letterSpacing="tighter"
-              textTransform="uppercase"
-              textAlign="center"
-            >
-              Our Process
-            </Heading>
-
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={12} textAlign="center">
-              <VStack spacing={4}>
-                <Heading
-                  as="h3"
-                  fontSize="lg"
-                  fontWeight="medium"
-                  letterSpacing="normal"
-                  textTransform="uppercase"
-                >
-                  Source
-                </Heading>
-                <Text
-                  fontSize="sm"
-                  fontWeight="light"
-                  lineHeight="relaxed"
-                  letterSpacing="wide"
-                  color="gray.600"
-                >
-                  Carefully selected vintage pieces from premium brands and unique finds
-                </Text>
-              </VStack>
-
-              <VStack spacing={4}>
-                <Heading
-                  as="h3"
-                  fontSize="lg"
-                  fontWeight="medium"
-                  letterSpacing="normal"
-                  textTransform="uppercase"
-                >
-                  Reimagine
-                </Heading>
-                <Text
-                  fontSize="sm"
-                  fontWeight="light"
-                  lineHeight="relaxed"
-                  letterSpacing="wide"
-                  color="gray.600"
-                >
-                  Deconstructed and redesigned with modern silhouettes in mind
-                </Text>
-              </VStack>
-
-              <VStack spacing={4}>
-                <Heading
-                  as="h3"
-                  fontSize="lg"
-                  fontWeight="medium"
-                  letterSpacing="normal"
-                  textTransform="uppercase"
-                >
-                  Craft
-                </Heading>
-                <Text
-                  fontSize="sm"
-                  fontWeight="light"
-                  lineHeight="relaxed"
-                  letterSpacing="wide"
-                  color="gray.600"
-                >
-                  Hand-finished with attention to detail and sustainable practices
-                </Text>
-              </VStack>
-            </SimpleGrid>
-          </VStack>
         </Container>
       </Box>
 
