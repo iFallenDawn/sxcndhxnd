@@ -1,37 +1,83 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, X, ChevronDown } from "lucide-react";
+import { Search, X, ChevronDown, Plus } from "lucide-react";
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Button,
+  IconButton,
+  Badge,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Checkbox,
+  SimpleGrid,
+  VStack,
+  HStack,
+  Flex,
+  Image,
+  Tag,
+  TagLabel,
+  TagCloseButton,
+  useDisclosure,
+  Spinner,
+  Center,
+} from "@chakra-ui/react";
+import { Filter as FilterIcon } from "lucide-react";
+import { useAdmin } from "@/hooks/useAdmin";
+import GalleryUpload from "./gallery-upload";
+import { createClient } from "../../supabase/client";
 
 type ItemStatus = "available" | "sold" | "reserved";
 type SortOption = "newest" | "price-low" | "price-high" | "name-az" | "name-za";
 
 interface GalleryItem {
-  id: number;
-  src: string;
-  alt: string;
+  id: string;
+  title: string;
+  description?: string;
   category: string;
   price: string;
   size?: string;
   status: ItemStatus;
-  originalBrand?: string;
-  dateAdded?: Date;
+  original_brand?: string;
+  image_urls: string[];
+  created_at: string;
+  updated_at: string;
 }
 
 const StatusBadge = ({ status }: { status: ItemStatus }) => {
-  const statusStyles = {
-    available: "bg-green-100 text-green-800 border-green-200",
-    sold: "bg-gray-100 text-gray-800 border-gray-200",
-    reserved: "bg-amber-100 text-amber-800 border-amber-200",
+  const colorScheme = {
+    available: "green",
+    sold: "gray",
+    reserved: "orange",
   };
 
   return (
-    <span
-      className={`absolute top-4 left-4 px-3 py-1 text-xs font-medium tracking-wider uppercase border ${statusStyles[status]} backdrop-blur-sm bg-opacity-90 z-10`}
+    <Badge
+      position="absolute"
+      top={4}
+      left={4}
+      px={3}
+      py={1}
+      fontSize="xs"
+      fontWeight="medium"
+      letterSpacing="wider"
+      textTransform="uppercase"
+      colorScheme={colorScheme[status]}
+      backdropFilter="blur(4px)"
+      zIndex={10}
     >
       {status}
-    </span>
+    </Badge>
   );
 };
 
@@ -40,109 +86,34 @@ export default function GalleryContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>("newest");
-  const [showFilters, setShowFilters] = useState(false);
-  const [showSortDropdown, setShowSortDropdown] = useState(false);
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const { isOpen: showFilters, onToggle: toggleFilters } = useDisclosure();
+  const { isOpen: isUploadOpen, onOpen: onUploadOpen, onClose: onUploadClose } = useDisclosure();
+  const { isAdmin, loading: adminLoading } = useAdmin();
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const galleryItems: GalleryItem[] = [
-    {
-      id: 1,
-      src: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80",
-      alt: "Reworked Vintage Denim",
-      category: "Bottoms",
-      price: "$180",
-      size: "32",
-      status: "available",
-      originalBrand: "Levi's",
-      dateAdded: new Date("2024-01-15"),
-    },
-    {
-      id: 2,
-      src: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80",
-      alt: "Deconstructed Military Jacket",
-      category: "Outerwear",
-      price: "$320",
-      size: "M",
-      status: "sold",
-      originalBrand: "Vintage Army Surplus",
-      dateAdded: new Date("2024-01-10"),
-    },
-    {
-      id: 3,
-      src: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&q=80",
-      alt: "Upcycled Canvas Tote",
-      category: "Bags",
-      price: "$95",
-      status: "available",
-      originalBrand: "Repurposed Materials",
-      dateAdded: new Date("2024-01-20"),
-    },
-    {
-      id: 4,
-      src: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
-      alt: "Reconstructed Blazer",
-      category: "Outerwear",
-      price: "$280",
-      size: "L",
-      status: "reserved",
-      originalBrand: "Giorgio Armani",
-      dateAdded: new Date("2024-01-18"),
-    },
-    {
-      id: 5,
-      src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80",
-      alt: "Patchwork Denim Jacket",
-      category: "Outerwear",
-      price: "$245",
-      size: "S",
-      status: "available",
-      originalBrand: "Mixed Vintage",
-      dateAdded: new Date("2024-01-22"),
-    },
-    {
-      id: 6,
-      src: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80",
-      alt: "Reworked Silk Dress",
-      category: "Dresses",
-      price: "$380",
-      size: "M",
-      status: "sold",
-      originalBrand: "Vintage Dior",
-      dateAdded: new Date("2024-01-12"),
-    },
-    {
-      id: 7,
-      src: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80",
-      alt: "Minimalist Crossbody Bag",
-      category: "Bags",
-      price: "$120",
-      status: "available",
-      originalBrand: "Upcycled Leather",
-      dateAdded: new Date("2024-01-25"),
-    },
-    {
-      id: 8,
-      src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80",
-      alt: "Layered Vintage Tee",
-      category: "Tops",
-      price: "$85",
-      size: "M",
-      status: "available",
-      originalBrand: "Band Merch Collection",
-      dateAdded: new Date("2024-01-28"),
-    },
-    {
-      id: 9,
-      src: "https://images.unsplash.com/photo-1479064555552-3ef4979f8908?w=800&q=80",
-      alt: "Reconstructed Wool Pants",
-      category: "Bottoms",
-      price: "$220",
-      size: "30",
-      status: "reserved",
-      originalBrand: "Vintage YSL",
-      dateAdded: new Date("2024-01-24"),
-    },
-  ];
+  // Fetch gallery items from database
+  useEffect(() => {
+    fetchGalleryItems();
+  }, []);
+
+  const fetchGalleryItems = async () => {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('gallery_items')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setGalleryItems(data || []);
+    } catch (error) {
+      console.error('Error fetching gallery items:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const categories = Array.from(new Set(galleryItems.map(item => item.category)));
 
@@ -150,15 +121,15 @@ export default function GalleryContent() {
     const sorted = [...items];
     switch (sortOption) {
       case "newest":
-        return sorted.sort((a, b) => (b.dateAdded?.getTime() || 0) - (a.dateAdded?.getTime() || 0));
+        return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       case "price-low":
         return sorted.sort((a, b) => parseInt(a.price.replace("$", "")) - parseInt(b.price.replace("$", "")));
       case "price-high":
         return sorted.sort((a, b) => parseInt(b.price.replace("$", "")) - parseInt(a.price.replace("$", "")));
       case "name-az":
-        return sorted.sort((a, b) => a.alt.localeCompare(b.alt));
+        return sorted.sort((a, b) => a.title.localeCompare(b.title));
       case "name-za":
-        return sorted.sort((a, b) => b.alt.localeCompare(a.alt));
+        return sorted.sort((a, b) => b.title.localeCompare(a.title));
       default:
         return sorted;
     }
@@ -176,8 +147,9 @@ export default function GalleryContent() {
     if (searchQuery) {
       filtered = filtered.filter(
         (item) =>
-          item.alt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.originalBrand?.toLowerCase().includes(searchQuery.toLowerCase())
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.original_brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -188,7 +160,7 @@ export default function GalleryContent() {
 
     // Sort
     return sortItems(filtered);
-  }, [statusFilter, searchQuery, selectedCategories, sortOption]);
+  }, [galleryItems, statusFilter, searchQuery, selectedCategories, sortOption]);
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -214,317 +186,514 @@ export default function GalleryContent() {
   return (
     <>
       {/* Compact Hero Section */}
-      <section className="pt-32 pb-8 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <h1 className="font-display text-4xl md:text-5xl font-light tracking-tightest uppercase mb-3">
+      <Box as="section" pt={32} pb={8} bg="white">
+        <Container maxW="container.xl">
+          <VStack spacing={3} textAlign="center">
+            <Heading
+              as="h1"
+              fontSize={{ base: "4xl", md: "5xl" }}
+              fontWeight="light"
+              letterSpacing="tighter"
+              textTransform="uppercase"
+            >
               Gallery
-            </h1>
-            <p className="text-sm font-light tracking-wide text-gray-600 max-w-xl mx-auto">
+            </Heading>
+            <Text
+              fontSize="sm"
+              fontWeight="light"
+              letterSpacing="wide"
+              color="gray.600"
+              maxW="xl"
+            >
               Vintage pieces reimagined for the contemporary wardrobe
-            </p>
-          </div>
-        </div>
-      </section>
+            </Text>
+          </VStack>
+        </Container>
+      </Box>
 
       {/* Minimal Sticky Filter Bar */}
-      <div className="sticky top-0 bg-white/95 backdrop-blur-sm z-40 border-b border-gray-100">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center gap-3">
+      <Box
+        position="sticky"
+        top={0}
+        bg="rgba(255, 255, 255, 0.95)"
+        backdropFilter="blur(8px)"
+        zIndex={40}
+        borderBottom="1px"
+        borderColor="gray.100"
+      >
+        <Container maxW="container.xl" py={3}>
+          <Flex align="center" gap={3}>
             {/* Search Bar - Compact */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
+            <InputGroup maxW={{ base: "full", lg: "md" }} size="sm">
+              <InputLeftElement pointerEvents="none">
+                <Search size={16} color="gray" />
+              </InputLeftElement>
+              <Input
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-sm bg-gray-50 border border-transparent focus:border-gray-300 focus:bg-white rounded-full focus:outline-none transition-all"
+                bg="gray.50"
+                border="none"
+                borderRadius="full"
+                _focus={{
+                  bg: "white",
+                  borderColor: "gray.300",
+                  boxShadow: "sm",
+                }}
+                _placeholder={{ color: "gray.500" }}
+                fontSize="sm"
               />
               {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black p-1"
-                >
-                  <X className="w-3 h-3" />
-                </button>
+                <InputRightElement>
+                  <IconButton
+                    aria-label="Clear search"
+                    icon={<X size={14} />}
+                    size="xs"
+                    variant="ghost"
+                    onClick={() => setSearchQuery("")}
+                  />
+                </InputRightElement>
               )}
-            </div>
+            </InputGroup>
 
             {/* Filter Buttons - Compact */}
-            <div className="flex items-center gap-2">
+            <HStack spacing={2} flexShrink={0}>
               {/* Status Filter Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide rounded-full transition-all ${
-                    statusFilter !== "all" 
-                      ? "bg-black text-white" 
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDown size={14} />}
+                  size="sm"
+                  borderRadius="full"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  letterSpacing="wide"
+                  bg={statusFilter !== "all" ? "black" : "gray.100"}
+                  color={statusFilter !== "all" ? "white" : "gray.700"}
+                  _hover={{
+                    bg: statusFilter !== "all" ? "gray.800" : "gray.200",
+                  }}
                 >
                   {statusFilter === "all" ? "All Items" : statusFilter}
-                  <ChevronDown className="w-3 h-3" />
-                </button>
-                {showStatusDropdown && (
-                  <div className="absolute left-0 top-full mt-1 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden min-w-[140px] z-50">
-                    {["all", "available", "sold", "reserved"].map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => {
-                          setStatusFilter(status as typeof statusFilter);
-                          setShowStatusDropdown(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 text-xs capitalize hover:bg-gray-50 ${
-                          statusFilter === status ? "bg-gray-100 font-medium" : ""
-                        }`}
-                      >
-                        {status === "all" ? "All Items" : status}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </MenuButton>
+                <MenuList minW="140px">
+                  {["all", "available", "sold", "reserved"].map((status) => (
+                    <MenuItem
+                      key={status}
+                      onClick={() => setStatusFilter(status as typeof statusFilter)}
+                      fontSize="sm"
+                      textTransform="capitalize"
+                    >
+                      {status === "all" ? "All Items" : status}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
 
               {/* Categories Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide rounded-full transition-all ${
-                    selectedCategories.length > 0 
-                      ? "bg-black text-white" 
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+              <Menu closeOnSelect={false}>
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDown size={14} />}
+                  size="sm"
+                  borderRadius="full"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  letterSpacing="wide"
+                  bg={selectedCategories.length > 0 ? "black" : "gray.100"}
+                  color={selectedCategories.length > 0 ? "white" : "gray.700"}
+                  _hover={{
+                    bg: selectedCategories.length > 0 ? "gray.800" : "gray.200",
+                  }}
                 >
-                  <Filter className="w-3 h-3" />
-                  Categories
-                  {selectedCategories.length > 0 && (
-                    <span className="bg-white text-black text-xs w-4 h-4 rounded-full inline-flex items-center justify-center">
-                      {selectedCategories.length}
-                    </span>
-                  )}
-                </button>
-                {showFilters && (
-                  <div className="absolute left-0 top-full mt-1 bg-white border border-gray-200 shadow-lg rounded-lg p-2 min-w-[160px] z-50">
-                    {categories.map((category) => (
-                      <label
-                        key={category}
-                        className="flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-gray-50 rounded cursor-pointer"
+                  <HStack spacing={1}>
+                    <FilterIcon size={14} />
+                    <Text>Categories</Text>
+                    {selectedCategories.length > 0 && (
+                      <Badge
+                        bg="white"
+                        color="black"
+                        size="xs"
+                        borderRadius="full"
                       >
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(category)}
-                          onChange={() => toggleCategory(category)}
-                          className="w-3 h-3 rounded border-gray-300 text-black focus:ring-black"
-                        />
-                        <span>{category}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
+                        {selectedCategories.length}
+                      </Badge>
+                    )}
+                  </HStack>
+                </MenuButton>
+                <MenuList minW="160px" p={2}>
+                  {categories.map((category) => (
+                    <MenuItem
+                      key={category}
+                      closeOnSelect={false}
+                      p={2}
+                      borderRadius="md"
+                    >
+                      <Checkbox
+                        isChecked={selectedCategories.includes(category)}
+                        onChange={() => toggleCategory(category)}
+                        size="sm"
+                      >
+                        <Text fontSize="sm">{category}</Text>
+                      </Checkbox>
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
 
               {/* Sort Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowSortDropdown(!showSortDropdown)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full transition-all"
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDown size={14} />}
+                  size="sm"
+                  borderRadius="full"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  letterSpacing="wide"
+                  bg="gray.100"
+                  color="gray.700"
+                  _hover={{ bg: "gray.200" }}
                 >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4 4m0 0l4-4m-4 4V4" />
-                  </svg>
                   Sort
-                </button>
-                {showSortDropdown && (
-                  <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden min-w-[160px] z-50">
-                    {[
-                      { value: "newest", label: "Newest" },
-                      { value: "price-low", label: "Price ↑" },
-                      { value: "price-high", label: "Price ↓" },
-                      { value: "name-az", label: "A-Z" },
-                      { value: "name-za", label: "Z-A" },
-                    ].map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          setSortOption(option.value as SortOption);
-                          setShowSortDropdown(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 text-xs hover:bg-gray-50 ${
-                          sortOption === option.value ? "bg-gray-100 font-medium" : ""
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </MenuButton>
+                <MenuList minW="160px">
+                  {[
+                    { value: "newest", label: "Newest" },
+                    { value: "price-low", label: "Price ↑" },
+                    { value: "price-high", label: "Price ↓" },
+                    { value: "name-az", label: "A-Z" },
+                    { value: "name-za", label: "Z-A" },
+                  ].map((option) => (
+                    <MenuItem
+                      key={option.value}
+                      onClick={() => setSortOption(option.value as SortOption)}
+                      fontSize="sm"
+                    >
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
 
               {/* Results Count */}
-              <span className="text-xs text-gray-500 ml-2 hidden sm:inline">
+              <Text
+                fontSize="xs"
+                color="gray.500"
+                ml={2}
+                display={{ base: "none", sm: "inline" }}
+              >
                 {filteredItems.length} items
-              </span>
-            </div>
-          </div>
+              </Text>
+
+              {/* Admin Upload Button */}
+              {isAdmin && !adminLoading && (
+                <Button
+                  size="sm"
+                  borderRadius="full"
+                  fontSize="xs"
+                  fontWeight="medium"
+                  letterSpacing="wide"
+                  bg="black"
+                  color="white"
+                  _hover={{ bg: "gray.800" }}
+                  leftIcon={<Plus size={14} />}
+                  onClick={onUploadOpen}
+                  ml={2}
+                >
+                  Add Item
+                </Button>
+              )}
+            </HStack>
+          </Flex>
 
           {/* Active Filters Tags */}
-          {(activeFiltersCount > 0) && (
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
+          {activeFiltersCount > 0 && (
+            <HStack spacing={2} mt={2} flexWrap="wrap">
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-xs rounded-full">
-                  "{searchQuery}"
-                  <button onClick={() => setSearchQuery("")} className="hover:text-black">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
+                <Tag size="sm" borderRadius="full" bg="gray.100">
+                  <TagLabel>"{searchQuery}"</TagLabel>
+                  <TagCloseButton onClick={() => setSearchQuery("")} />
+                </Tag>
               )}
               {statusFilter !== "all" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-xs rounded-full capitalize">
-                  {statusFilter}
-                  <button onClick={() => setStatusFilter("all")} className="hover:text-black">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
+                <Tag size="sm" borderRadius="full" bg="gray.100">
+                  <TagLabel textTransform="capitalize">{statusFilter}</TagLabel>
+                  <TagCloseButton onClick={() => setStatusFilter("all")} />
+                </Tag>
               )}
               {selectedCategories.map(cat => (
-                <span key={cat} className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-xs rounded-full">
-                  {cat}
-                  <button onClick={() => toggleCategory(cat)} className="hover:text-black">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
+                <Tag key={cat} size="sm" borderRadius="full" bg="gray.100">
+                  <TagLabel>{cat}</TagLabel>
+                  <TagCloseButton onClick={() => toggleCategory(cat)} />
+                </Tag>
               ))}
-              <button
+              <Button
+                size="xs"
+                variant="link"
+                color="gray.500"
                 onClick={clearFilters}
-                className="text-xs text-gray-500 hover:text-black ml-2"
+                ml={2}
               >
                 Clear all
-              </button>
-            </div>
+              </Button>
+            </HStack>
           )}
-        </div>
-      </div>
+        </Container>
+      </Box>
 
       {/* Gallery Grid */}
-      <section className="pt-8 pb-32">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 max-w-7xl mx-auto"
-          >
-            <AnimatePresence>
-              {filteredItems.map((item) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ 
-                    duration: 0.4,
-                    ease: [0.25, 0.1, 0.25, 1],
-                    layout: {
-                      duration: 0.3
-                    }
-                  }}
-                  className="group cursor-pointer"
-                >
-                  <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden mb-4">
-                    <StatusBadge status={item.status} />
-                    <img
-                      src={item.src}
-                      alt={item.alt}
-                      className={`w-full h-full object-cover transition-all duration-700 ${
-                        item.status === "sold"
-                          ? "opacity-50 grayscale"
-                          : "group-hover:scale-105"
-                      }`}
-                    />
-                    {/* Hover Overlay */}
-                    {item.status === "available" && (
-                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                        <span className="text-white text-sm font-medium tracking-wider uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          View Details
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-sm font-medium tracking-wide">
-                          {item.alt}
-                        </h3>
-                        <p className="text-xs font-light text-gray-500 tracking-wide mt-1">
-                          {item.originalBrand}
-                        </p>
-                      </div>
-                      <p className={`text-sm font-medium tracking-wide ${
-                        item.status === "sold" ? "text-gray-400 line-through" : ""
-                      }`}>
-                        {item.price}
-                      </p>
-                    </div>
-                    
-                    <div className="flex justify-between items-center pt-2">
-                      <p className="text-xs font-normal tracking-wider uppercase text-gray-600">
-                        {item.category}
-                      </p>
-                      {item.size && (
-                        <p className="text-xs font-light tracking-wide text-gray-500">
-                          Size {item.size}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-      </section>
+      <Box as="section" pt={8} pb={32}>
+        <Container maxW="container.xl">
+          {loading ? (
+            <Center py={20}>
+              <Spinner size="xl" thickness="3px" color="gray.400" />
+            </Center>
+          ) : filteredItems.length === 0 ? (
+            <Center py={20}>
+              <VStack spacing={4}>
+                <Text fontSize="lg" color="gray.600">No items found</Text>
+                {activeFiltersCount > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={clearFilters}
+                  >
+                    Clear filters
+                  </Button>
+                )}
+              </VStack>
+            </Center>
+          ) : (
+            <motion.div layout>
+              <SimpleGrid
+                columns={{ base: 1, md: 2, lg: 3 }}
+                spacing={{ base: 8, lg: 10 }}
+                maxW="7xl"
+                mx="auto"
+              >
+                <AnimatePresence>
+                  {filteredItems.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ 
+                      duration: 0.4,
+                      ease: [0.25, 0.1, 0.25, 1],
+                      layout: {
+                        duration: 0.3
+                      }
+                    }}
+                  >
+                    <VStack
+                      spacing={4}
+                      role="group"
+                      cursor="pointer"
+                      alignItems="stretch"
+                    >
+                      <Box
+                        position="relative"
+                        aspectRatio={3/4}
+                        bg="gray.50"
+                        overflow="hidden"
+                      >
+                        <StatusBadge status={item.status} />
+                        <Image
+                          src={item.image_urls[0]}
+                          alt={item.title}
+                          objectFit="cover"
+                          w="full"
+                          h="full"
+                          transition="transform 0.7s"
+                          _groupHover={{ transform: "scale(1.05)" }}
+                          opacity={item.status === "sold" ? 0.5 : 1}
+                          filter={item.status === "sold" ? "grayscale(100%)" : "none"}
+                        />
+                        {/* Hover Overlay */}
+                        {item.status === "available" && (
+                          <Box
+                            position="absolute"
+                            inset={0}
+                            bg="blackAlpha.0"
+                            _groupHover={{ bg: "blackAlpha.300" }}
+                            transition="all 0.3s"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Text
+                              color="white"
+                              fontSize="sm"
+                              fontWeight="medium"
+                              letterSpacing="wider"
+                              textTransform="uppercase"
+                              opacity={0}
+                              _groupHover={{ opacity: 1 }}
+                              transition="opacity 0.3s"
+                            >
+                              View Details
+                            </Text>
+                          </Box>
+                        )}
+                      </Box>
+                      
+                      <VStack spacing={2} align="stretch">
+                        <Flex justify="space-between" align="start">
+                          <Box>
+                            <Text
+                              fontSize="sm"
+                              fontWeight="medium"
+                              letterSpacing="wide"
+                            >
+                              {item.title}
+                            </Text>
+                            <Text
+                              fontSize="xs"
+                              fontWeight="light"
+                              color="gray.500"
+                              letterSpacing="wide"
+                              mt={1}
+                            >
+                              {item.original_brand}
+                            </Text>
+                          </Box>
+                          <Text
+                            fontSize="sm"
+                            fontWeight="medium"
+                            letterSpacing="wide"
+                            textDecoration={item.status === "sold" ? "line-through" : "none"}
+                            color={item.status === "sold" ? "gray.400" : "black"}
+                          >
+                            {item.price}
+                          </Text>
+                        </Flex>
+                        
+                        <Flex justify="space-between" align="center" pt={2}>
+                          <Text
+                            fontSize="xs"
+                            fontWeight="normal"
+                            letterSpacing="wider"
+                            textTransform="uppercase"
+                            color="gray.600"
+                          >
+                            {item.category}
+                          </Text>
+                          {item.size && (
+                            <Text
+                              fontSize="xs"
+                              fontWeight="light"
+                              letterSpacing="wide"
+                              color="gray.500"
+                            >
+                              Size {item.size}
+                            </Text>
+                          )}
+                        </Flex>
+                      </VStack>
+                    </VStack>
+                  </motion.div>
+                ))}
+                </AnimatePresence>
+              </SimpleGrid>
+            </motion.div>
+          )}
+        </Container>
+      </Box>
 
       {/* About Upcycling Section */}
-      <section className="py-32 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-light tracking-tighter uppercase mb-8 text-center">
+      <Box as="section" py={32} bg="gray.50">
+        <Container maxW="container.lg">
+          <VStack spacing={8}>
+            <Heading
+              as="h2"
+              fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}
+              fontWeight="light"
+              letterSpacing="tighter"
+              textTransform="uppercase"
+              textAlign="center"
+            >
               Our Process
-            </h2>
+            </Heading>
             
-            <div className="grid md:grid-cols-3 gap-12 text-center">
-              <div>
-                <h3 className="text-lg font-medium tracking-normal uppercase mb-4">
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={12} textAlign="center">
+              <VStack spacing={4}>
+                <Heading
+                  as="h3"
+                  fontSize="lg"
+                  fontWeight="medium"
+                  letterSpacing="normal"
+                  textTransform="uppercase"
+                >
                   Source
-                </h3>
-                <p className="text-sm font-light leading-relaxed tracking-wide text-gray-600">
+                </Heading>
+                <Text
+                  fontSize="sm"
+                  fontWeight="light"
+                  lineHeight="relaxed"
+                  letterSpacing="wide"
+                  color="gray.600"
+                >
                   Carefully selected vintage pieces from premium brands and unique finds
-                </p>
-              </div>
+                </Text>
+              </VStack>
               
-              <div>
-                <h3 className="text-lg font-medium tracking-normal uppercase mb-4">
+              <VStack spacing={4}>
+                <Heading
+                  as="h3"
+                  fontSize="lg"
+                  fontWeight="medium"
+                  letterSpacing="normal"
+                  textTransform="uppercase"
+                >
                   Reimagine
-                </h3>
-                <p className="text-sm font-light leading-relaxed tracking-wide text-gray-600">
+                </Heading>
+                <Text
+                  fontSize="sm"
+                  fontWeight="light"
+                  lineHeight="relaxed"
+                  letterSpacing="wide"
+                  color="gray.600"
+                >
                   Deconstructed and redesigned with modern silhouettes in mind
-                </p>
-              </div>
+                </Text>
+              </VStack>
               
-              <div>
-                <h3 className="text-lg font-medium tracking-normal uppercase mb-4">
+              <VStack spacing={4}>
+                <Heading
+                  as="h3"
+                  fontSize="lg"
+                  fontWeight="medium"
+                  letterSpacing="normal"
+                  textTransform="uppercase"
+                >
                   Craft
-                </h3>
-                <p className="text-sm font-light leading-relaxed tracking-wide text-gray-600">
+                </Heading>
+                <Text
+                  fontSize="sm"
+                  fontWeight="light"
+                  lineHeight="relaxed"
+                  letterSpacing="wide"
+                  color="gray.600"
+                >
                   Hand-finished with attention to detail and sustainable practices
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                </Text>
+              </VStack>
+            </SimpleGrid>
+          </VStack>
+        </Container>
+      </Box>
+
+      {/* Gallery Upload Modal */}
+      <GalleryUpload 
+        isOpen={isUploadOpen} 
+        onClose={onUploadClose}
+        onUploadSuccess={() => {
+          fetchGalleryItems();
+        }}
+      />
     </>
   );
 }
