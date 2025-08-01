@@ -27,7 +27,7 @@ const ProductSchema = z.object({
   status: zodNoEmptyString,
   paid: z.coerce.boolean().nullable(),
   drop_item: z.coerce.boolean().nullable(),
-  drop_title: zodNoEmptyString.nullable(),
+  drop_title: z.string().nullable(),
   updated_at: z.coerce.date().transform(date => date.toISOString()),
   created_at: z.coerce.date().transform(date => date.toISOString()),
   created_by: z.string().uuid(),
