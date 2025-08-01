@@ -35,7 +35,6 @@ import {
 import { Filter as FilterIcon } from "lucide-react";
 import { useAdmin } from "@/hooks/useAdmin";
 import GalleryUpload from "./gallery-upload";
-import { createClient } from "../../supabase/client";
 
 type ItemStatus = "available" | "sold" | "reserved";
 type SortOption = "newest" | "price-low" | "price-high" | "name-az" | "name-za";
@@ -99,15 +98,16 @@ export default function GalleryContent() {
 
   const fetchGalleryItems = async () => {
     try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const response = await fetch('/api/products', {
+        method: 'GET'
+      })
 
-      if (error) throw error;
+      const result = await response.json()
+      if (!response.ok) {
+        throw new Error(result.error);
+      }
 
-      setGalleryItems(data || []);
+      setGalleryItems(result || []);
     } catch (error) {
       console.error('Error fetching gallery items:', error);
     } finally {
@@ -123,9 +123,9 @@ export default function GalleryContent() {
       case "newest":
         return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       case "price-low":
-        return sorted.sort((a, b) => parseInt(a.price.replace("$", "")) - parseInt(b.price.replace("$", "")));
+        return sorted.sort((a, b) => parseInt(a.price) - parseInt(b.price));
       case "price-high":
-        return sorted.sort((a, b) => parseInt(b.price.replace("$", "")) - parseInt(a.price.replace("$", "")));
+        return sorted.sort((a, b) => parseInt(b.price) - parseInt(a.price));
       case "name-az":
         return sorted.sort((a, b) => a.title.localeCompare(b.title));
       case "name-za":
@@ -148,7 +148,6 @@ export default function GalleryContent() {
       filtered = filtered.filter(
         (item) =>
           item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.original_brand?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }

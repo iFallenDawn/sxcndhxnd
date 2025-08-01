@@ -30,7 +30,6 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 import { Upload, X, Plus } from "lucide-react";
-import { createClient } from "../../supabase/client";
 import { v4 as uuidv4 } from 'uuid'
 
 interface GalleryUploadProps {
@@ -126,6 +125,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
         })
         const result = await uploadToBucketResponse.json()
         if (!uploadToBucketResponse.ok) {
+          console.log(uploadToBucketResponse)
           throw new Error(result.error)
         }
 
@@ -226,6 +226,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
         <ModalBody pb={6}>
           <VStack spacing={6} align="stretch">
             {/* Image Upload Section */}
+            {/* Max size is 50mb */}
             <Box>
               <FormLabel>Images</FormLabel>
               <SimpleGrid columns={3} spacing={4}>

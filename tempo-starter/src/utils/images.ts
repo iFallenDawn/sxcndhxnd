@@ -27,7 +27,7 @@ const exportedMethods = {
       cacheControl: '3600',
       upsert: false
     })
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     const publicUrl = await this.getPublicImageUrl(filePath)
     return {
       ...data,

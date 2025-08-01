@@ -12,7 +12,7 @@ const exportedMethods = {
   async getAllProducts() {
     const supabase = await createClient()
     const { data, error } = await supabase.from('products').select()
-    if (data == null || data.length == 0) throw `No products found`
+    if (data == null || data.length == 0) throw new Error(`No products found`)
     if (error) throw error
     return data
   },
@@ -27,7 +27,7 @@ const exportedMethods = {
     id = validation.checkId(id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('products').select().eq('id', id)
-    if (data == null || data.length == 0) throw `Product with id '${id}' not found`
+    if (data == null || data.length == 0) throw new Error(`Product with id '${id}' not found`)
     if (error) throw error
     return data[0]
   },
@@ -85,7 +85,7 @@ const exportedMethods = {
     const result = await supabase
       .from('products')
       .insert({ ...newProduct })
-    if (result.error) throw result.error.message
+    if (result.error) throw new Error(result.error.message)
     return await this.getProductById(id)
   },
   /**
@@ -146,7 +146,7 @@ const exportedMethods = {
     const { data, error } = await supabase.from('products')
       .update(updatedProduct)
       .eq('id', id)
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     return await this.getProductById(id)
   },
   /**

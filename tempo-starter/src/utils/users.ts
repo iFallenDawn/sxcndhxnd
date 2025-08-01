@@ -16,7 +16,7 @@ const exportedMethods = {
     id = validation.checkId(id)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('id', id)
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     if (data == null || data.length == 0) throw `User with id '${id}' not found`
     return data[0]
   },
@@ -31,7 +31,7 @@ const exportedMethods = {
     email = validation.checkEmail(email)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('email', email)
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     if (data == null || data.length == 0) throw `User with email '${email}' not found`
     return data[0]
   },
@@ -46,7 +46,7 @@ const exportedMethods = {
     email = validation.checkEmail(email)
     const supabase = await createClient()
     const { data, error } = await supabase.from('users').select().eq('email', email)
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     if (data === null || data.length == 0) return false
     return true
   },
@@ -73,7 +73,7 @@ const exportedMethods = {
     password = validation.checkString(password, 'Password')
     const supabase = await createClient()
     const userExists = await this.checkUserWithEmailExists(email)
-    if (userExists) throw `User with email ${email} already exists`
+    if (userExists) throw new Error(`User with email ${email} already exists`)
     const { data: { user }, error } = await supabase.auth.signUp({
       email,
       password
@@ -110,12 +110,12 @@ const exportedMethods = {
     }
     validation.checkPublicUser(newUser)
     const userExists = await this.checkUserWithEmailExists(email)
-    if (userExists) throw `User with email ${email} already exists`
+    if (userExists) throw new Error(`User with email ${email} already exists`)
     const supabase = await createClient()
     const { error } = await supabase
       .from('users')
       .insert({ ...newUser })
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     return await this.getUserById(newUser.id)
   },
   /**
@@ -135,7 +135,7 @@ const exportedMethods = {
     const supabase = await createClient()
     const user = await validation.checkIsUserSignedIn()
     if (user.id !== id) {
-      throw `You are not signed in as this user`
+      throw new Error(`You are not signed in as this user`)
     }
     const oldUser = await this.getUserById(id)
 
@@ -151,7 +151,7 @@ const exportedMethods = {
     const updatePublicUsers = await supabase.from('users')
       .update(updateData)
       .eq('id', user.id)
-    if (updatePublicUsers.error) throw updatePublicUsers.error.message
+    if (updatePublicUsers.error) throw new Error(updatePublicUsers.error.message)
     return await this.getUserById(id)
   },
   /**
@@ -164,7 +164,7 @@ const exportedMethods = {
     const user = await this.getUserById(id)
     const supabase = await createClient()
     const { data, error } = await supabase.auth.admin.deleteUser(id)
-    if (error) throw error.message
+    if (error) throw new Error(error.message)
     const response = await supabase.from('users').delete().eq('id', id)
     return user
   }
