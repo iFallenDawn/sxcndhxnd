@@ -1,4 +1,4 @@
-import { string, z } from 'zod'
+import { z } from 'zod'
 import { Database } from '../types/supabase'
 import { createClient } from '../../supabase/server'
 
@@ -51,9 +51,11 @@ const exportedMethods = {
     return result.data
   },
   checkArrayOfStrings(stringArray: string[], varName: string) {
-    for (let item in stringArray) {
-      this.checkString(item, varName)
-    }
+    const schema = z.array(z.string().min(1, "String cannot be empty"))
+      .min(1, "Array cannot be empty");
+    const result = schema.safeParse(stringArray)
+    if (!result.success) throw new Error(`Invalid array of ${varName}`)
+    return result.data
   },
   checkPassword(password: string): void {
     const schema = z.string()
@@ -83,7 +85,7 @@ const exportedMethods = {
     // price cannot be less than 0
     const schema = z.coerce.number().gt(0)
     const result = schema.safeParse(price)
-    if (!result.success) throw 'Price cannot be less than $0'
+    if (!result.success) throw new Error('Price cannot be less than $0')
     return result.data
   },
   checkPublicUser(userData: User): User {
@@ -98,7 +100,7 @@ const exportedMethods = {
     } = await supabase.auth.getUser()
     //user must be signed in to update
     if (!user) {
-      throw `User is not signed in!`
+      throw new Error(`User is not signed in!`)
     }
     return user
   },
@@ -106,7 +108,7 @@ const exportedMethods = {
     this.checkString(status, 'status')
     const schema = z.enum(['sold', 'reserved', 'archive', 'available'])
     const result = schema.safeParse(status.toLowerCase())
-    if (!result.success) throw 'Status must be one of the following: Sold, Reserved, Display, or Available'
+    if (!result.success) throw new Error('Status must be one of the following: Sold, Reserved, Display, or Available')
     return result.data
   },
   checkProduct(productData: Product): Product {
@@ -117,7 +119,7 @@ const exportedMethods = {
   checkImageType(image: File): File {
     const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
     if (!allowedImageTypes.includes(image.type)) {
-      throw 'Invalid file type. Only jpeg, jpg, png, webp, and gif are allowed'
+      throw new Error('Invalid file type. Only jpeg, jpg, png, webp, and gif are allowed')
     }
     return image
   },
@@ -125,11 +127,11 @@ const exportedMethods = {
     const supabase = await createClient()
     const { data: { user }, error } = await supabase.auth.getUser()
     if (!user || error) {
-      throw 'User is not signed in'
+      throw new Error('User is not signed in')
     }
     const result = await supabase.from('users_roles').select().eq('id', user.id)
     if (!result || result?.data?.length == 0) {
-      throw 'Insufficient permissions to upload an image'
+      throw new Error('Insufficient permissions to upload an image')
     }
     return user.id
   }

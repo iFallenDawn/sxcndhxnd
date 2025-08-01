@@ -9,9 +9,9 @@ export async function GET() {
     await supabase.auth.signOut();
     return NextResponse.json({ message: 'User logged out' }, { status: 200 })
   } catch (e) {
-    console.log(e)
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
     return NextResponse.json(
-      { error: e },
+      { error: errorMessage },
       { status: 400 }
     )
   }

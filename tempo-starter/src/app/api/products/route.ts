@@ -8,7 +8,8 @@ export async function GET() {
     const allProducts = await productUtil.getAllProducts()
     return NextResponse.json(allProducts, { status: 200 })
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 404 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 404 })
   }
 }
 
@@ -19,16 +20,14 @@ export async function POST(
   try {
     await validation.checkAdminUser()
   } catch (e) {
-    return NextResponse.json(
-      { error: e },
-      { status: 403 }
-    )
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 403 })
   }
   let reqBody = null
   try {
     reqBody = await request.json()
     if (!reqBody || Object.keys(reqBody).length == 0)
-      throw `There are no fields in the request body`
+      throw new Error(`There are no fields in the request body`)
     try {
       if (reqBody.user_id) {
         reqBody.user_id = validation.checkId(reqBody.user_id)
@@ -62,8 +61,8 @@ export async function POST(
         reqBody.size = validation.checkString(reqBody.size, 'Size')
       }
     } catch (e) {
-      console.log(e)
-      return NextResponse.json({ error: e }, { status: 400 })
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+      return NextResponse.json({ error: errorMessage }, { status: 400 })
     }
 
     let newProduct = await productUtil.createProduct(
@@ -82,6 +81,7 @@ export async function POST(
     )
     return NextResponse.json(newProduct, { status: 200 })
   } catch (e) {
-    return NextResponse.json({ error: e }, { status: 400 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 400 })
   }
 }
