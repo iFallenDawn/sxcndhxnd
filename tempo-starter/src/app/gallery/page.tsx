@@ -1,13 +1,13 @@
-import Footer from '@/components/footer';
+import SimpleFooter from '@/components/simple-footer';
 import GalleryContent from '@/components/gallery-content';
-import Navbar from '@/components/navbar';
+import NavbarWrapper from '@/components/navbar-wrapper';
 
 export default function Gallery() {
   return (
     <div className='min-h-screen bg-white'>
-      <Navbar />
+      <NavbarWrapper />
       <GalleryContent />
-      <Footer />
+      <SimpleFooter />
     </div>
   );
 }

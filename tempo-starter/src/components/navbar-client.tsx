@@ -68,13 +68,6 @@ export default function NavbarClient({ user, children }: NavbarClientProps) {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-10">
               <Link
-                href="/store"
-                className={`text-sm font-light tracking-wide transition-all duration-300 ${navColorClasses.textHover} relative group`}
-              >
-                Shop
-                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-              <Link
                 href="/about"
                 className={`text-sm font-light tracking-wide transition-all duration-300 ${navColorClasses.textHover} relative group`}
               >
@@ -148,13 +141,6 @@ export default function NavbarClient({ user, children }: NavbarClientProps) {
       >
         <div className="p-8 pt-24">
           <div className="flex flex-col gap-8">
-            <Link
-              href="/store"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-2xl font-light tracking-wide text-gray-900 hover:text-black transition-colors"
-            >
-              Shop
-            </Link>
             <Link
               href="/about"
               onClick={() => setIsMenuOpen(false)}
