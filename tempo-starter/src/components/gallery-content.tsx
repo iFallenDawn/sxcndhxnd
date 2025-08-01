@@ -29,12 +29,20 @@ import {
   Text,
   useDisclosure,
   VStack,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useToast,
 } from '@chakra-ui/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Filter as FilterIcon, Plus, Search, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { ChevronDown, Filter as FilterIcon, Plus, Search, X, Edit2, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { createClient } from '../../supabase/client';
 import GalleryUpload from './gallery-upload';
+import GalleryEdit from './gallery-edit';
 
 type ItemStatus = 'available' | 'sold' | 'reserved';
 type SortOption = 'newest' | 'price-low' | 'price-high' | 'name-az' | 'name-za';
@@ -87,9 +95,15 @@ export default function GalleryContent() {
   const [sortOption, setSortOption] = useState<SortOption>('newest');
   const { isOpen: showFilters, onToggle: toggleFilters } = useDisclosure();
   const { isOpen: isUploadOpen, onOpen: onUploadOpen, onClose: onUploadClose } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
   const { isAdmin, loading: adminLoading } = useAdmin();
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const toast = useToast();
 
   // Fetch gallery items from database
   useEffect(() => {
@@ -110,6 +124,56 @@ export default function GalleryContent() {
       console.error('Error fetching gallery items:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleEdit = (item: GalleryItem) => {
+    setSelectedItem(item);
+    onEditOpen();
+  };
+
+  const handleDelete = (item: GalleryItem) => {
+    setSelectedItem(item);
+    onDeleteOpen();
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedItem) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/gallery/${selectedItem.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete item');
+      }
+
+      toast({
+        title: 'Item deleted',
+        description: `"${selectedItem.title}" has been removed from the gallery`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      // Refresh gallery items
+      fetchGalleryItems();
+      onDeleteClose();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to delete item',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsDeleting(false);
+      setSelectedItem(null);
     }
   };
 
@@ -521,16 +585,18 @@ export default function GalleryContent() {
                             filter={item.status === 'sold' ? 'grayscale(100%)' : 'none'}
                           />
                           {/* Hover Overlay */}
-                          {item.status === 'available' && (
-                            <Box
-                              position='absolute'
-                              inset={0}
-                              bg='blackAlpha.0'
-                              _groupHover={{ bg: 'blackAlpha.300' }}
-                              transition='all 0.3s'
-                              display='flex'
-                              alignItems='center'
-                              justifyContent='center'>
+                          <Box
+                            position='absolute'
+                            inset={0}
+                            bg='blackAlpha.0'
+                            _groupHover={{ bg: 'blackAlpha.300' }}
+                            transition='all 0.3s'
+                            display='flex'
+                            alignItems='center'
+                            justifyContent='center'
+                            flexDirection='column'
+                            gap={2}>
+                            {item.status === 'available' && (
                               <Text
                                 color='white'
                                 fontSize='sm'
@@ -542,8 +608,37 @@ export default function GalleryContent() {
                                 transition='opacity 0.3s'>
                                 View Details
                               </Text>
-                            </Box>
-                          )}
+                            )}
+                            {isAdmin && (
+                              <HStack
+                                spacing={2}
+                                opacity={0}
+                                _groupHover={{ opacity: 1 }}
+                                transition='opacity 0.3s'>
+                                <IconButton
+                                  aria-label='Edit item'
+                                  icon={<Edit2 size={16} />}
+                                  size='sm'
+                                  colorScheme='whiteAlpha'
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEdit(item);
+                                  }}
+                                />
+                                <IconButton
+                                  aria-label='Delete item'
+                                  icon={<Trash2 size={16} />}
+                                  size='sm'
+                                  colorScheme='red'
+                                  variant='solid'
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete(item);
+                                  }}
+                                />
+                              </HStack>
+                            )}
+                          </Box>
                         </Box>
 
                         <VStack
@@ -583,6 +678,52 @@ export default function GalleryContent() {
           fetchGalleryItems();
         }}
       />
+
+      {/* Gallery Edit Modal */}
+      <GalleryEdit
+        isOpen={isEditOpen}
+        onClose={onEditClose}
+        item={selectedItem}
+        onEditSuccess={() => {
+          fetchGalleryItems();
+          setSelectedItem(null);
+        }}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        isOpen={isDeleteOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onDeleteClose}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete Gallery Item
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to delete "{selectedItem?.title}"? This action cannot be undone.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onDeleteClose}>
+                Cancel
+              </Button>
+              <Button 
+                colorScheme='red' 
+                onClick={confirmDelete} 
+                ml={3}
+                isLoading={isDeleting}
+                loadingText='Deleting...'
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }

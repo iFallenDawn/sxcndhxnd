@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Box,
   Button,
@@ -21,7 +21,6 @@ import {
   Input,
   Select,
   Textarea,
-  IconButton,
   SimpleGrid,
   AspectRatio,
   Spinner,
@@ -29,24 +28,40 @@ import {
   NumberInput,
   NumberInputField,
 } from "@chakra-ui/react";
-import { Upload, X, Plus } from "lucide-react";
+import { Save, Plus } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid'
 
-interface GalleryUploadProps {
+interface GalleryItem {
+  id: string;
+  title: string;
+  description?: string;
+  category: string;
+  price: string;
+  size?: string;
+  status: 'available' | 'sold' | 'reserved';
+  original_brand?: string;
+  image_urls: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+interface GalleryEditProps {
   isOpen: boolean;
   onClose: () => void;
-  onUploadSuccess: () => void;
+  onEditSuccess: () => void;
+  item: GalleryItem | null;
 }
 
 interface UploadedImage {
-  file: File;
+  file?: File;
   preview: string;
   id: string;
+  isExisting?: boolean;
 }
 
-export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: GalleryUploadProps) {
+export default function GalleryEdit({ isOpen, onClose, onEditSuccess, item }: GalleryEditProps) {
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
-  const [uploading, setUploading] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
@@ -55,11 +70,34 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
     title: "",
     description: "",
     price: "",
-    status: "available",
+    status: "available" as 'available' | 'sold' | 'reserved',
     category: "",
     size: "",
     original_brand: ""
   });
+
+  // Load item data when modal opens
+  useEffect(() => {
+    if (item && isOpen) {
+      setFormData({
+        title: item.title,
+        description: item.description || "",
+        price: item.price,
+        status: item.status,
+        category: item.category,
+        size: item.size || "",
+        original_brand: item.original_brand || ""
+      });
+
+      // Load existing images
+      const existingImages = item.image_urls.map(url => ({
+        preview: url,
+        id: uuidv4(),
+        isExisting: true
+      }));
+      setUploadedImages(existingImages);
+    }
+  }, [item, isOpen]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -68,6 +106,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
       file,
       preview: URL.createObjectURL(file),
       id: uuidv4(),
+      isExisting: false
     }));
 
     setUploadedImages(prev => [...prev, ...newImages]);
@@ -76,7 +115,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
   const removeImage = (id: string) => {
     setUploadedImages(prev => {
       const image = prev.find(img => img.id === id);
-      if (image) {
+      if (image && !image.isExisting && image.file) {
         URL.revokeObjectURL(image.preview);
       }
       return prev.filter(img => img.id !== id);
@@ -84,10 +123,12 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
   };
 
   const handleSubmit = async () => {
+    if (!item) return;
+
     if (uploadedImages.length === 0) {
       toast({
-        title: "No images selected",
-        description: "Please select at least one image to upload",
+        title: "No images",
+        description: "Please keep at least one image",
         status: "warning",
         duration: 3000,
         isClosable: true,
@@ -95,7 +136,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
       return;
     }
 
-    if (!formData.title || !formData.category || !formData.price! || !formData.description || !formData.status) {
+    if (!formData.title || !formData.category || !formData.price || !formData.description) {
       toast({
         title: "Missing information",
         description: "Please fill in all required fields",
@@ -106,94 +147,95 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
       return;
     }
 
-    setUploading(true);
+    setUpdating(true);
 
     try {
-      // Upload images to storage
-      const uploadPromises = uploadedImages.map(async (image) => {
-        const imageFormData = new FormData()
-        imageFormData.append('image', image.file)
-        imageFormData.append('id', image.id)
+      // Upload new images
+      const newImageUrls = await Promise.all(
+        uploadedImages
+          .filter(img => !img.isExisting && img.file)
+          .map(async (image) => {
+            const imageFormData = new FormData()
+            imageFormData.append('image', image.file!)
+            imageFormData.append('id', image.id)
 
-        const uploadToBucketResponse = await fetch('/api/images', {
-          method: 'POST',
-          body: imageFormData
-        })
-        const result = await uploadToBucketResponse.json()
-        if (!uploadToBucketResponse.ok) {
-          console.log(uploadToBucketResponse)
-          throw new Error(result.error)
-        }
+            const uploadResponse = await fetch('/api/images', {
+              method: 'POST',
+              body: imageFormData
+            })
+            
+            if (!uploadResponse.ok) {
+              const error = await uploadResponse.json()
+              throw new Error(error.error || 'Failed to upload image')
+            }
+            
+            const result = await uploadResponse.json()
+            return result.publicUrl;
+          })
+      );
 
-        return result.publicUrl;
-      });
+      // Combine existing and new image URLs
+      const existingUrls = uploadedImages
+        .filter(img => img.isExisting)
+        .map(img => img.preview);
+      
+      const allImageUrls = [...existingUrls, ...newImageUrls];
 
-      const imageUrls = await Promise.all(uploadPromises);
-
-      const galleryData = {
+      // Update gallery item
+      const updateData = {
         title: formData.title,
         description: formData.description,
         category: formData.category,
         price: formData.price,
-        size: formData.size,
+        size: formData.size || null,
         status: formData.status,
-        original_brand: formData.original_brand,
-        image_urls: imageUrls
-      }
+        original_brand: formData.original_brand || null,
+        image_urls: allImageUrls
+      };
 
-      const saveToDatabaseResponse = await fetch('/api/gallery', {
-        method: 'POST',
+      const response = await fetch(`/api/gallery/${item.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(galleryData)
-      })
+        body: JSON.stringify(updateData)
+      });
 
-      const result = await saveToDatabaseResponse.json()
-      if (!saveToDatabaseResponse.ok) {
-        throw new Error(result.error)
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update item');
       }
 
       toast({
-        title: "Item added successfully",
-        description: `"${formData.title}" has been added to the gallery`,
+        title: "Item updated successfully",
+        description: `"${formData.title}" has been updated`,
         status: "success",
         duration: 5000,
         isClosable: true,
       });
 
-      // Reset form
-      setUploadedImages([]);
-      setFormData({
-        title: "",
-        description: "",
-        price: "",
-        status: "available",
-        category: "",
-        size: "",
-        original_brand: ""
-      });
-
-      onUploadSuccess();
+      onEditSuccess();
       onClose();
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
       console.error(errorMessage)
       toast({
-        title: "Upload failed",
+        title: "Update failed",
         description: errorMessage,
         status: "error",
         duration: 5000,
         isClosable: true,
       });
     } finally {
-      setUploading(false);
+      setUpdating(false);
     }
   };
 
   const cleanup = () => {
     uploadedImages.forEach(image => {
-      URL.revokeObjectURL(image.preview);
+      if (!image.isExisting && image.file) {
+        URL.revokeObjectURL(image.preview);
+      }
     });
     setUploadedImages([]);
     setFormData({
@@ -218,12 +260,11 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add to Gallery</ModalHeader>
+        <ModalHeader>Edit Gallery Item</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <VStack spacing={6} align="stretch">
             {/* Image Upload Section */}
-            {/* Max size is 50mb */}
             <Box>
               <FormLabel>Images</FormLabel>
               <SimpleGrid columns={3} spacing={4}>
@@ -232,7 +273,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
                     <AspectRatio ratio={3 / 4}>
                       <Image
                         src={image.preview}
-                        alt="Upload preview"
+                        alt="Item image"
                         objectFit="cover"
                         borderRadius="md"
                       />
@@ -319,7 +360,6 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e })}
                   min={0}
-                  defaultValue={60.45}
                 >
                   <NumberInputField />
                 </NumberInput>
@@ -348,16 +388,13 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
               <FormLabel>Status</FormLabel>
               <Select
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'available' | 'sold' | 'reserved' })}
               >
                 <option value="available">Available</option>
                 <option value="reserved">Reserved</option>
                 <option value="sold">Sold</option>
               </Select>
             </FormControl>
-
-            {/* at some point can add something to attach it to specific users or commissions */}
-
           </VStack>
         </ModalBody>
 
@@ -374,11 +411,11 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
             color="white"
             _hover={{ bg: "gray.800" }}
             onClick={handleSubmit}
-            isLoading={uploading}
-            loadingText="Uploading..."
-            leftIcon={<Upload size={16} />}
+            isLoading={updating}
+            loadingText="Updating..."
+            leftIcon={<Save size={16} />}
           >
-            Upload to Gallery
+            Save Changes
           </Button>
         </ModalFooter>
       </ModalContent>
