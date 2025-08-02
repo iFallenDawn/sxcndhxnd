@@ -50,7 +50,7 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
-  // Form state
+  // Form state - using products table fields
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -58,7 +58,12 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
     status: "available",
     category: "",
     size: "",
-    original_brand: ""
+    // Additional fields for products table
+    user_id: null as string | null,
+    commission_id: null as string | null,
+    paid: false,
+    drop_item: false,
+    drop_title: ""
   });
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,23 +135,17 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
 
       const imageUrls = await Promise.all(uploadPromises);
 
-      const galleryData = {
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        price: formData.price,
-        size: formData.size,
-        status: formData.status,
-        original_brand: formData.original_brand,
+      const productData = {
+        ...formData,
         image_urls: imageUrls
       }
 
-      const saveToDatabaseResponse = await fetch('/api/gallery', {
+      const saveToDatabaseResponse = await fetch('/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(galleryData)
+        body: JSON.stringify(productData)
       })
 
       const result = await saveToDatabaseResponse.json()
@@ -171,7 +170,11 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
         status: "available",
         category: "",
         size: "",
-        original_brand: ""
+        user_id: null,
+        commission_id: null,
+        paid: false,
+        drop_item: false,
+        drop_title: ""
       });
 
       onUploadSuccess();
@@ -203,7 +206,11 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
       status: "available",
       category: "",
       size: "",
-      original_brand: ""
+      user_id: null,
+      commission_id: null,
+      paid: false,
+      drop_item: false,
+      drop_title: ""
     });
   };
 
@@ -335,14 +342,6 @@ export default function GalleryUpload({ isOpen, onClose, onUploadSuccess }: Gall
               </FormControl>
             </HStack>
 
-            <FormControl>
-              <FormLabel>Original Brand</FormLabel>
-              <Input
-                value={formData.original_brand}
-                onChange={(e) => setFormData({ ...formData, original_brand: e.target.value })}
-                placeholder="e.g., Levi's, Carhartt"
-              />
-            </FormControl>
 
             <FormControl>
               <FormLabel>Status</FormLabel>
