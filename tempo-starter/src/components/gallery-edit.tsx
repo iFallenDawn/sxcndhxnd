@@ -39,10 +39,16 @@ interface GalleryItem {
   price: string;
   size?: string;
   status: 'available' | 'sold' | 'reserved';
-  original_brand?: string;
   image_urls: string[];
   created_at: string;
   updated_at: string;
+  // Products table fields
+  user_id?: string | null;
+  commission_id?: string | null;
+  paid?: boolean | null;
+  drop_item?: boolean | null;
+  drop_title?: string | null;
+  created_by?: string | null;
 }
 
 interface GalleryEditProps {
@@ -73,7 +79,12 @@ export default function GalleryEdit({ isOpen, onClose, onEditSuccess, item }: Ga
     status: "available" as 'available' | 'sold' | 'reserved',
     category: "",
     size: "",
-    original_brand: ""
+    // Additional products fields
+    user_id: null as string | null,
+    commission_id: null as string | null,
+    paid: false,
+    drop_item: false,
+    drop_title: ""
   });
 
   // Load item data when modal opens
@@ -86,7 +97,11 @@ export default function GalleryEdit({ isOpen, onClose, onEditSuccess, item }: Ga
         status: item.status,
         category: item.category,
         size: item.size || "",
-        original_brand: item.original_brand || ""
+        user_id: item.user_id || null,
+        commission_id: item.commission_id || null,
+        paid: item.paid || false,
+        drop_item: item.drop_item || false,
+        drop_title: item.drop_title || ""
       });
 
       // Load existing images
@@ -181,19 +196,14 @@ export default function GalleryEdit({ isOpen, onClose, onEditSuccess, item }: Ga
       
       const allImageUrls = [...existingUrls, ...newImageUrls];
 
-      // Update gallery item
+      // Update product item
       const updateData = {
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        price: formData.price,
+        ...formData,
         size: formData.size || null,
-        status: formData.status,
-        original_brand: formData.original_brand || null,
         image_urls: allImageUrls
       };
 
-      const response = await fetch(`/api/gallery/${item.id}`, {
+      const response = await fetch(`/api/products/${item.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -245,7 +255,11 @@ export default function GalleryEdit({ isOpen, onClose, onEditSuccess, item }: Ga
       status: "available",
       category: "",
       size: "",
-      original_brand: ""
+      user_id: null,
+      commission_id: null,
+      paid: false,
+      drop_item: false,
+      drop_title: ""
     });
   };
 
@@ -375,14 +389,6 @@ export default function GalleryEdit({ isOpen, onClose, onEditSuccess, item }: Ga
               </FormControl>
             </HStack>
 
-            <FormControl>
-              <FormLabel>Original Brand</FormLabel>
-              <Input
-                value={formData.original_brand}
-                onChange={(e) => setFormData({ ...formData, original_brand: e.target.value })}
-                placeholder="e.g., Levi's, Carhartt"
-              />
-            </FormControl>
 
             <FormControl>
               <FormLabel>Status</FormLabel>

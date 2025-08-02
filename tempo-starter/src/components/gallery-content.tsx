@@ -55,10 +55,16 @@ interface GalleryItem {
   price: string;
   size?: string;
   status: ItemStatus;
-  original_brand?: string;
   image_urls: string[];
   created_at: string;
   updated_at: string;
+  // Products table fields we'll use for display
+  user_id?: string | null;
+  commission_id?: string | null;
+  paid?: boolean | null;
+  drop_item?: boolean | null;
+  drop_title?: string | null;
+  created_by?: string | null;
 }
 
 const StatusBadge = ({ status }: { status: ItemStatus }) => {
@@ -113,7 +119,13 @@ export default function GalleryContent() {
   const fetchGalleryItems = async () => {
     try {
       const supabase = createClient();
-      const { data, error } = await supabase.from('gallery_items').select('*').order('created_at', { ascending: false });
+      // Fetch from products table instead of gallery_items
+      // Only fetch items that are meant for display (no commission_id)
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .is('commission_id', null)
+        .order('created_at', { ascending: false });
 
       if (error) {
         throw error;
@@ -142,7 +154,7 @@ export default function GalleryContent() {
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/gallery/${selectedItem.id}`, {
+      const response = await fetch(`/api/products/${selectedItem.id}`, {
         method: 'DELETE',
       });
 
