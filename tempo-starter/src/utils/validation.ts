@@ -54,6 +54,10 @@ const CommissionSchema = z.object({
   retailor: z.coerce.boolean(),
   updated_at: z.coerce.date().transform(date => date.toISOString()),
   created_at: z.coerce.date().transform(date => date.toISOString()),
+  pockets: z.coerce.boolean(),
+  weekly_checkins: z.coerce.boolean(),
+  extra: z.string().nullable(),
+  symmetry_type: zodNoEmptyString
 })
 
 const exportedMethods = {
@@ -168,11 +172,11 @@ const exportedMethods = {
     if (!result.success) throw new Error(result.error.message)
     return result.data
   },
-  checkPieceVision(pieceVision: string): string {
-    this.checkString(pieceVision, 'piece vision')
+  checkSymmetryType(symmetryType: string): string {
+    this.checkString(symmetryType, 'piece vision')
     const schema = z.enum(['symmetrical', 'asymmetrical', 'mix', 'other'])
-    const result = schema.safeParse(pieceVision.toLowerCase())
-    if (!result.success) throw new Error('Piece vision must be one of the following: Symmetrical, Asymmetrical, Mix, or Other')
+    const result = schema.safeParse(symmetryType.toLowerCase())
+    if (!result.success) throw new Error('Symmetry type must be one of the following: Symmetrical, Asymmetrical, Mix, or Other')
     return result.data
   }
 }

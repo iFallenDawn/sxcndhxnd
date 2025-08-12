@@ -23,16 +23,20 @@ export type Database = {
           creative_control: boolean
           distress: boolean
           email: string
+          extra: string | null
           fabrics: string
           first_name: string
           id: string
           last_name: string
           piece_vision: string
+          pockets: boolean
           product_id: string | null
           retailor: boolean
           shape_patterns: string
+          symmetry_type: string
           updated_at: string
           user_id: string | null
+          weekly_checkins: boolean
         }
         Insert: {
           base_material: boolean
@@ -42,16 +46,20 @@ export type Database = {
           creative_control: boolean
           distress: boolean
           email: string
+          extra?: string | null
           fabrics: string
           first_name: string
           id?: string
           last_name: string
           piece_vision: string
+          pockets: boolean
           product_id?: string | null
           retailor: boolean
           shape_patterns: string
+          symmetry_type: string
           updated_at: string
           user_id?: string | null
+          weekly_checkins: boolean
         }
         Update: {
           base_material?: boolean
@@ -61,16 +69,20 @@ export type Database = {
           creative_control?: boolean
           distress?: boolean
           email?: string
+          extra?: string | null
           fabrics?: string
           first_name?: string
           id?: string
           last_name?: string
           piece_vision?: string
+          pockets?: boolean
           product_id?: string | null
           retailor?: boolean
           shape_patterns?: string
+          symmetry_type?: string
           updated_at?: string
           user_id?: string | null
+          weekly_checkins?: boolean
         }
         Relationships: [
           {

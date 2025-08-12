@@ -40,13 +40,22 @@ export async function POST(
       reqBody.last_name = validation.checkString(reqBody.last_name, 'Last name')
       reqBody.email = validation.checkEmail(reqBody.email)
       reqBody.commission_type = validation.checkCommissionType(reqBody.commission_type)
-      reqBody.piece_vision = validation.checkPieceVision(reqBody.piece_vision)
+      reqBody.piece_vision = validation.checkString(reqBody.piece_vision, 'Piece vision')
       reqBody.base_material = validation.checkBoolean(reqBody.base_material)
       reqBody.creative_control = validation.checkBoolean(reqBody.creative_control)
       reqBody.colors = validation.checkString(reqBody.colors, 'Colors')
       reqBody.fabrics = validation.checkString(reqBody.fabrics, 'Fabrics')
+      reqBody.shape_patterns = validation.checkString(reqBody.shape_patterns, 'Shape patterns')
       reqBody.distress = validation.checkBoolean(reqBody.distress)
       reqBody.retailor = validation.checkBoolean(reqBody.retailor)
+      reqBody.pockets = validation.checkBoolean(reqBody.pockets)
+      reqBody.weekly_checkins = validation.checkBoolean(reqBody.weekly_checkins)
+
+      if (reqBody.extra) {
+        reqBody.extra = validation.checkString(reqBody.extra, 'Extra')
+      }
+
+      reqBody.symmetry_type = validation.checkSymmetryType(reqBody.symmetry_type)
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
       return NextResponse.json({ error: errorMessage }, { status: 400 })
@@ -66,7 +75,11 @@ export async function POST(
       reqBody.fabrics,
       reqBody.shape_patterns,
       reqBody.distress,
-      reqBody.retailor
+      reqBody.retailor,
+      reqBody.pockets,
+      reqBody.weekly_checkins,
+      reqBody.extra,
+      reqBody.symmetry_type
     )
     return NextResponse.json(newCommission, { status: 200 })
   } catch (e) {

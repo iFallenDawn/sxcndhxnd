@@ -74,7 +74,7 @@ export async function PUT(
     }
 
     if (reqBody.piece_vision) {
-      reqBody.piece_vision = validation.checkPieceVision(reqBody.piece_vision)
+      reqBody.piece_vision = validation.checkString(reqBody.piece_vision, 'Piece vision')
     }
 
     if (reqBody.base_material) {
@@ -105,6 +105,22 @@ export async function PUT(
       reqBody.retailor = validation.checkBoolean(reqBody.retailor)
     }
 
+    if (reqBody.pockets) {
+      reqBody.pockets = validation.checkBoolean(reqBody.pockets)
+    }
+
+    if (reqBody.weekly_checkins) {
+      reqBody.weekly_checkins = validation.checkBoolean(reqBody.weekly_checkins)
+    }
+
+    if (reqBody.extra) {
+      reqBody.extra = validation.checkString(reqBody.extra, 'Extra')
+    }
+
+    if (reqBody.symmetry_type) {
+      reqBody.symmetry_type = validation.checkSymmetryType(reqBody.symmetry_type)
+    }
+
   } catch (e) {
     return NextResponse.json({ error: e }, { status: 400 })
   }
@@ -125,7 +141,11 @@ export async function PUT(
       reqBody.fabrics,
       reqBody.shape_patterns,
       reqBody.distress,
-      reqBody.retailor
+      reqBody.retailor,
+      reqBody.pockets,
+      reqBody.weekly_checkins,
+      reqBody.extra,
+      reqBody.symmetry_type
     )
     return NextResponse.json(updatedCommission, { status: 200 })
   } catch (e) {

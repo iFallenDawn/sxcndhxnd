@@ -47,6 +47,10 @@ const exportedMethods = {
    * @param shape_patterns 
    * @param distress 
    * @param retailor 
+   * @param pockets
+   * @param weekly_checkins
+   * @param extra
+   * @param symmetry_type
    * @returns The created commission
    */
   async createCommission(
@@ -63,7 +67,11 @@ const exportedMethods = {
     fabrics: string,
     shape_patterns: string,
     distress: boolean,
-    retailor: boolean
+    retailor: boolean,
+    pockets: boolean,
+    weekly_checkins: boolean,
+    extra: string | null,
+    symmetry_type: string
   ) {
     const supabase = await createClient()
     const id = crypto.randomUUID()
@@ -84,7 +92,11 @@ const exportedMethods = {
       distress: distress,
       retailor: retailor,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      pockets: pockets,
+      weekly_checkins: weekly_checkins,
+      extra: extra,
+      symmetry_type: symmetry_type
     }
     newCommission = validation.checkCommission(newCommission)
     const result = await supabase
@@ -110,6 +122,10 @@ const exportedMethods = {
    * @param shape_patterns 
    * @param distress 
    * @param retailor 
+   * @param pockets
+   * @param weekly_checkins
+   * @param extra
+   * @param symmetry_type
    * @returns 
    */
   async updateCommission(
@@ -127,7 +143,11 @@ const exportedMethods = {
     fabrics: string,
     shape_patterns: string,
     distress: boolean,
-    retailor: boolean
+    retailor: boolean,
+    pockets: boolean,
+    weekly_checkins: boolean,
+    extra: string | null,
+    symmetry_type: string
   ) {
     id = validation.checkId(id)
     const oldCommission = await this.getCommissionById(id)
@@ -148,7 +168,11 @@ const exportedMethods = {
       distress: distress ? distress : oldCommission.distress,
       retailor: retailor ? retailor : oldCommission.retailor,
       created_at: oldCommission.created_at,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      pockets: pockets ? pockets : oldCommission.pockets,
+      weekly_checkins: weekly_checkins ? weekly_checkins : oldCommission.weekly_checkins,
+      extra: extra ? extra : oldCommission.extra,
+      symmetry_type: symmetry_type ? symmetry_type : oldCommission.symmetry_type
     }
     updatedCommission = validation.checkCommission(updatedCommission)
     const supabase = await createClient()
