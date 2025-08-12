@@ -14,50 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
-      gallery_items: {
+      commissions: {
         Row: {
-          category: string
+          base_material: boolean
+          colors: string
+          commission_type: string
           created_at: string
-          created_by: string | null
-          description: string | null
+          creative_control: boolean
+          distress: boolean
+          email: string
+          fabrics: string
+          first_name: string
           id: string
-          image_urls: string[]
-          original_brand: string | null
-          price: string
-          size: string | null
-          status: string
-          title: string
+          last_name: string
+          piece_vision: string
+          product_id: string | null
+          retailor: boolean
+          shape_patterns: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
-          category: string
-          created_at?: string
-          created_by?: string | null
-          description?: string | null
+          base_material: boolean
+          colors: string
+          commission_type: string
+          created_at: string
+          creative_control: boolean
+          distress: boolean
+          email: string
+          fabrics: string
+          first_name: string
           id?: string
-          image_urls: string[]
-          original_brand?: string | null
-          price: string
-          size?: string | null
-          status?: string
-          title: string
-          updated_at?: string
+          last_name: string
+          piece_vision: string
+          product_id?: string | null
+          retailor: boolean
+          shape_patterns: string
+          updated_at: string
+          user_id?: string | null
         }
         Update: {
-          category?: string
+          base_material?: boolean
+          colors?: string
+          commission_type?: string
           created_at?: string
-          created_by?: string | null
-          description?: string | null
+          creative_control?: boolean
+          distress?: boolean
+          email?: string
+          fabrics?: string
+          first_name?: string
           id?: string
-          image_urls?: string[]
-          original_brand?: string | null
-          price?: string
-          size?: string | null
-          status?: string
-          title?: string
+          last_name?: string
+          piece_vision?: string
+          product_id?: string | null
+          retailor?: boolean
+          shape_patterns?: string
           updated_at?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "commissions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
