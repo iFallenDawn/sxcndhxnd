@@ -1,9 +1,10 @@
-import { z } from 'zod'
+import { Schema, z } from 'zod'
 import { Database } from '../types/supabase'
 import { createClient } from '../../supabase/server'
 
 type User = Database['public']['Tables']['users']['Row'];
 type Product = Database['public']['Tables']['products']['Row']
+type Commission = Database['public']['Tables']['commissions']['Row']
 const zodNoEmptyString = z.string().min(1, `cannot be an empty string`).trim()
 
 const PublicUserSchema = z.object({
@@ -33,6 +34,30 @@ const ProductSchema = z.object({
   created_by: z.string().uuid(),
   category: zodNoEmptyString,
   size: z.string().nullable()
+})
+
+const CommissionSchema = z.object({
+  id: z.string().uuid(),
+  user_id: z.string().uuid().nullable(),
+  product_id: z.string().uuid().nullable(),
+  first_name: zodNoEmptyString,
+  last_name: zodNoEmptyString,
+  email: zodNoEmptyString,
+  commission_type: zodNoEmptyString,
+  piece_vision: zodNoEmptyString,
+  base_material: z.coerce.boolean(),
+  creative_control: z.coerce.boolean(),
+  colors: zodNoEmptyString,
+  fabrics: zodNoEmptyString,
+  shape_patterns: zodNoEmptyString,
+  distress: z.coerce.boolean(),
+  retailor: z.coerce.boolean(),
+  updated_at: z.coerce.date().transform(date => date.toISOString()),
+  created_at: z.coerce.date().transform(date => date.toISOString()),
+  pockets: z.coerce.boolean(),
+  weekly_checkins: z.coerce.boolean(),
+  extra: z.string().nullable(),
+  symmetry_type: zodNoEmptyString
 })
 
 const exportedMethods = {
@@ -134,6 +159,25 @@ const exportedMethods = {
       throw new Error('Insufficient permissions to upload an image')
     }
     return user.id
+  },
+  checkCommissionType(commissionType: string): string {
+    this.checkString(commissionType, 'commission type')
+    const schema = z.enum(['pants', 'outerwear', 'tops', 'accessories', 'patchwork', 'hemming', 'other'])
+    const result = schema.safeParse(commissionType.toLowerCase())
+    if (!result.success) throw new Error('Commission type must be one of the following: Pants, Outerwear, Tops, Accessories, Patchwork, Hemming, or Other')
+    return result.data
+  },
+  checkCommission(commission: Commission): Commission {
+    const result = CommissionSchema.safeParse(commission)
+    if (!result.success) throw new Error(result.error.message)
+    return result.data
+  },
+  checkSymmetryType(symmetryType: string): string {
+    this.checkString(symmetryType, 'piece vision')
+    const schema = z.enum(['symmetrical', 'asymmetrical', 'mix', 'other'])
+    const result = schema.safeParse(symmetryType.toLowerCase())
+    if (!result.success) throw new Error('Symmetry type must be one of the following: Symmetrical, Asymmetrical, Mix, or Other')
+    return result.data
   }
 }
 

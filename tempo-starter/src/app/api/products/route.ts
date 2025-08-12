@@ -1,11 +1,11 @@
 import { NextResponse, NextRequest } from 'next/server'
-import productUtil from '../../../utils/products'
+import productsUtil from '../../../utils/products'
 import validation from '../../../utils/validation'
 
 // returns all products
 export async function GET() {
   try {
-    const allProducts = await productUtil.getAllProducts()
+    const allProducts = await productsUtil.getAllProducts()
     return NextResponse.json(allProducts, { status: 200 })
   } catch (e) {
     const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
@@ -65,7 +65,7 @@ export async function POST(
       return NextResponse.json({ error: errorMessage }, { status: 400 })
     }
 
-    let newProduct = await productUtil.createProduct(
+    let newProduct = await productsUtil.createProduct(
       reqBody.user_id,
       reqBody.commission_id,
       reqBody.title,
