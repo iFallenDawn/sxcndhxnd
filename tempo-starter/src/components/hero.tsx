@@ -1,19 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  Button,
-  HStack,
-  VStack,
-  Flex,
-} from "@chakra-ui/react";
+import { Badge, Box, Button, Container, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, Award, Recycle, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { useRef } from 'react';
 
 // Enhanced animation variants with smoother curves
 const containerVariants = {
@@ -31,12 +22,12 @@ const itemVariants = {
   hidden: {
     opacity: 0,
     y: 80,
-    filter: "blur(10px)",
+    filter: 'blur(10px)',
   },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
+    filter: 'blur(0px)',
     transition: {
       duration: 1.2,
       ease: [0.25, 0.46, 0.45, 0.94],
@@ -70,176 +61,206 @@ const buttonVariants = {
   },
 };
 
+const featureCardVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+    y: 50,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+  },
+};
+
 export default function Hero() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"],
+    offset: ['start start', 'end start'],
   });
-  
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
+  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
   const textY = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
     <Box
       ref={heroRef}
-      position="relative"
-      h="100vh"
-      w="full"
-      overflow="hidden"
-    >
+      position='relative'
+      h='100vh'
+      w='full'
+      overflow='hidden'>
       {/* Parallax background image */}
       <motion.div
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
           y: imageY,
-        }}
-      >
+        }}>
         <Box
-          position="absolute"
-          top="-10%"
-          left="0"
-          right="0"
-          bottom="-10%"
+          position='absolute'
+          top='-10%'
+          left='0'
+          right='0'
+          bottom='-10%'
           backgroundImage="url('/banner.png')"
-          backgroundSize="cover"
-          backgroundPosition="center 20%"
-          backgroundRepeat="no-repeat"
+          backgroundSize='cover'
+          backgroundPosition='center 20%'
+          backgroundRepeat='no-repeat'
         />
       </motion.div>
 
       {/* Gradient overlay for sophisticated look */}
       <Box
-        position="absolute"
-        top="0"
-        left="0"
-        right="0"
-        bottom="0"
-        bg="linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.6) 100%)"
-        zIndex="1"
+        position='absolute'
+        top='0'
+        left='0'
+        right='0'
+        bottom='0'
+        bg='linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.6) 100%)'
+        zIndex='1'
       />
 
       {/* Hero Content */}
       <Box
-        position="absolute"
-        top="0"
-        left="0"
-        right="0"
-        bottom="0"
-        zIndex="2"
-        display="flex"
-        alignItems="flex-end"
-        justifyContent="center"
-        pb={{ base: "20", md: "24" }}
-      >
+        position='absolute'
+        top='0'
+        left='0'
+        right='0'
+        bottom='0'
+        zIndex='2'
+        display='flex'
+        alignItems='center'
+        justifyContent={{ base: 'center', lg: 'flex-start' }}
+        py={{ base: '20', md: '24' }}
+        pl={{ base: '0', lg: '12' }}>
         <motion.div style={{ opacity }}>
-          <Container maxW="container.xl" px={{ base: "6", md: "8" }}>
+          <Container
+            maxW='container.xl'
+            px={{ base: '6', md: '8' }}>
             {/* Centered Content */}
             <motion.div
               variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              style={{ y: textY }}
-            >
-              <VStack spacing="8" color="white" textAlign="center">
+              initial='hidden'
+              animate='visible'
+              style={{ y: textY }}>
+              <VStack
+                spacing='8'
+                color='white'
+                textAlign={{ base: 'center', lg: 'left' }}
+                alignItems={{ base: 'center', lg: 'flex-start' }}>
                 <motion.div variants={itemVariants}>
                   <Text
-                    fontSize="sm"
-                    fontWeight="400"
-                    letterSpacing="0.2em"
-                    textTransform="uppercase"
-                    mb="4"
-                    opacity="0.8"
-                  >
+                    fontSize='sm'
+                    fontWeight='400'
+                    letterSpacing='0.2em'
+                    textTransform='uppercase'
+                    mb='4'
+                    opacity='0.8'>
                     Sustainable Fashion Redefined
                   </Text>
                   <Heading
-                    as="h1"
-                    fontSize={{ base: "6xl", sm: "7xl", md: "8xl", lg: "9xl" }}
-                    fontWeight="200"
-                    letterSpacing="-0.02em"
-                    textTransform="uppercase"
-                    lineHeight="0.9"
-                    className="font-display"
-                  >
-                    sxcndhxnd
+                    as='h1'
+                    size={{ base: '5xl', sm: '6xl', md: '7xl', lg: '8xl' }}
+                    fontWeight='100'
+                    letterSpacing='-0.04em'
+                    textTransform='uppercase'
+                    lineHeight='0.85'
+                    className='font-display'
+                    mb='2'>
+                    CHANGE THE WAY YOU
+                  </Heading>
+                  <Heading
+                    as='h1'
+                    size={{ base: '5xl', sm: '6xl', md: '7xl', lg: '8xl' }}
+                    fontWeight='700'
+                    letterSpacing='-0.04em'
+                    textTransform='uppercase'
+                    lineHeight='0.85'
+                    className='font-display'>
+                    FASHION
                   </Heading>
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
                   <Text
-                    fontSize={{ base: "lg", md: "xl" }}
-                    fontWeight="300"
-                    letterSpacing="0.05em"
-                    maxW="600px"
-                    lineHeight="1.6"
-                  >
-                    Giving second life to forgotten garments through artisanal craftsmanship
+                    fontSize={{ base: 'xl', md: '2xl' }}
+                    fontWeight='300'
+                    letterSpacing='0.02em'
+                    maxW='700px'
+                    lineHeight='1.4'
+                    opacity='0.9'>
+                    For those who want more from their wardrobe — there's sxcndhxnd. Transform your style with no waste, in a tap.
                   </Text>
                 </motion.div>
 
                 {/* CTA Buttons */}
                 <motion.div
                   variants={buttonContainerVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <HStack spacing="6" justify="center" flexWrap="wrap">
+                  initial='hidden'
+                  animate='visible'>
+                  <HStack
+                    spacing='6'
+                    justify='center'
+                    flexWrap='wrap'>
                     <motion.div variants={buttonVariants}>
                       <Button
                         as={Link}
-                        href="/store"
-                        size="lg"
-                        bg="white"
-                        color="black"
-                        _hover={{ 
-                          bg: "gray.100",
-                          transform: "translateY(-2px)",
-                          boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
+                        href='/store'
+                        size='xl'
+                        variant='solid'
+                        bg='white'
+                        color='black'
+                        _hover={{
+                          bg: 'gray.100',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 15px 40px rgba(0,0,0,0.4)',
                         }}
-                        rightIcon={<ArrowRight size={18} />}
-                        px="10"
-                        py="6"
-                        fontSize="sm"
-                        fontWeight="500"
-                        letterSpacing="0.1em"
-                        textTransform="uppercase"
-                        transition="all 0.3s ease"
-                        borderRadius="none"
-                      >
+                        px='12'
+                        py='7'
+                        fontSize='sm'
+                        fontWeight='600'
+                        letterSpacing='0.1em'
+                        textTransform='uppercase'
+                        transition='all 0.3s ease'
+                        borderRadius='none'>
                         Explore Collection
+                        <ArrowRight size={18} />
                       </Button>
                     </motion.div>
 
                     <motion.div variants={buttonVariants}>
                       <Button
                         as={Link}
-                        href="/gallery"
-                        size="lg"
-                        variant="outline"
-                        borderColor="white"
-                        borderWidth="2px"
-                        color="white"
-                        _hover={{ 
-                          bg: "white",
-                          color: "black",
-                          transform: "translateY(-2px)",
-                          boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
+                        href='/gallery'
+                        size='xl'
+                        variant='outline'
+                        borderColor='white'
+                        borderWidth='2px'
+                        color='white'
+                        _hover={{
+                          bg: 'white',
+                          color: 'black',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 15px 40px rgba(0,0,0,0.4)',
                         }}
-                        px="10"
-                        py="6"
-                        fontSize="sm"
-                        fontWeight="500"
-                        letterSpacing="0.1em"
-                        textTransform="uppercase"
-                        transition="all 0.3s ease"
-                        borderRadius="none"
-                      >
+                        px='12'
+                        py='7'
+                        fontSize='sm'
+                        fontWeight='600'
+                        letterSpacing='0.1em'
+                        textTransform='uppercase'
+                        transition='all 0.3s ease'
+                        borderRadius='none'>
                         View Gallery
                       </Button>
                     </motion.div>
@@ -250,39 +271,36 @@ export default function Hero() {
           </Container>
         </motion.div>
       </Box>
-          
+
       {/* Scroll Indicator */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2, duration: 1 }}
         style={{
-          position: "absolute",
-          bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
+          position: 'absolute',
+          bottom: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
           zIndex: 2,
-        }}
-      >
-        <VStack spacing="2">
+        }}>
+        <VStack spacing='2'>
           <Text
-            fontSize="xs"
-            color="white"
-            letterSpacing="0.2em"
-            textTransform="uppercase"
-            opacity="0.7"
-          >
+            fontSize='xs'
+            color='white'
+            letterSpacing='0.2em'
+            textTransform='uppercase'
+            opacity='0.7'>
             Scroll to Explore
           </Text>
           <motion.div
             animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-          >
+            transition={{ repeat: Infinity, duration: 1.5 }}>
             <Box
-              w="1px"
-              h="40px"
-              bg="white"
-              opacity="0.5"
+              w='1px'
+              h='40px'
+              bg='white'
+              opacity='0.5'
             />
           </motion.div>
         </VStack>
