@@ -40,7 +40,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Filter as FilterIcon, Plus, Search, X, Edit2, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { createClient } from '../../supabase/client';
+import { createClient } from '../../../supabase/client';
 import GalleryUpload from './gallery-upload';
 import GalleryEdit from './gallery-edit';
 

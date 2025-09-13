@@ -1,6 +1,6 @@
-import SimpleFooter from '@/components/simple-footer';
-import GalleryContent from '@/components/gallery-content';
-import NavbarWrapper from '@/components/navbar-wrapper';
+import SimpleFooter from '@/components/layout/footer/simple-footer';
+import GalleryContent from '@/components/gallery/gallery-content';
+import NavbarWrapper from '@/components/layout/navbar/navbar-wrapper';
 
 export default function Gallery() {
   return (

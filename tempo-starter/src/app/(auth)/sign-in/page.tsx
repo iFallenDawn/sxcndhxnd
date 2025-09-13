@@ -10,9 +10,9 @@ import {
   Link as ChakraLink,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { FormMessage, Message } from "@/components/form-message";
-import { SubmitButton } from "@/components/submit-button";
-import Navbar from "@/components/navbar";
+import { FormMessage, Message } from "@/components/ui/form-message";
+import { SubmitButton } from "@/components/ui/submit-button";
+import Navbar from "@/components/layout/navbar/navbar";
 import { signInAction } from "@/app/actions";
 
 export default async function SignIn(props: {

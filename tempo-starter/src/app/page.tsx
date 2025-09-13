@@ -1,9 +1,9 @@
-import Footer from "@/components/footer";
-import Hero from "@/components/hero";
-import Navbar from "@/components/navbar";
-import CollectionsSection from "@/components/collections-section";
-import PhilosophySection from "@/components/philosophy-section";
-import CommissionCTA from "@/components/commission-cta";
+import Footer from "@/components/layout/footer/footer";
+import Hero from "@/components/home/hero";
+import Navbar from "@/components/layout/navbar/navbar";
+import CollectionsSection from "@/components/home/collections-section";
+import PhilosophySection from "@/components/home/philosophy-section";
+import CommissionCTA from "@/components/home/commission-cta";
 import { createClient } from "../../supabase/server";
 
 export default async function Home() {
