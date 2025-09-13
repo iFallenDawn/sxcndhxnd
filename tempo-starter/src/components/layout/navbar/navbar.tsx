@@ -1,5 +1,5 @@
-import { createClient } from "../../supabase/server";
-import UserProfile from "./user-profile";
+import { createClient } from "../../../../supabase/server";
+import UserProfile from "../../user/user-profile";
 import NavbarClient from "./navbar-client";
 
 export default async function Navbar() {

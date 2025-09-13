@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
-import { TempoInit } from "@/components/tempo-init";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ChakraUIProvider } from "@/components/chakra-provider";
-import { BodyClassManager } from "@/components/body-class-manager";
+import { TempoInit } from "@/components/providers/tempo-init";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ChakraUIProvider } from "@/components/providers/chakra-provider";
+import { BodyClassManager } from "@/components/ui/body-class-manager";
 
 const inter = Inter({
   subsets: ["latin"],

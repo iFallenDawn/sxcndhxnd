@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "../../supabase/client";
-import UserProfile from "./user-profile";
+import { createClient } from "../../../../supabase/client";
+import UserProfile from "../../user/user-profile";
 import NavbarClient from "./navbar-client";
 import { User } from "@supabase/supabase-js";
 

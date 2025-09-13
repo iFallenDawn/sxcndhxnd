@@ -1,7 +1,7 @@
 'use client';
 
-import Footer from '@/components/footer';
-import NavbarClientOnly from '@/components/navbar-client-only';
+import Footer from '@/components/layout/footer/footer';
+import NavbarClientOnly from '@/components/layout/navbar/navbar-client-only';
 import {
   Badge,
   Box,

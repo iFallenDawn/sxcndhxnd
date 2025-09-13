@@ -1,10 +1,10 @@
-import { FormMessage, Message } from "@/components/form-message";
-import { SubmitButton } from "@/components/submit-button";
+import { FormMessage, Message } from "@/components/ui/form-message";
+import { SubmitButton } from "@/components/ui/submit-button";
 import Link from "next/link";
 import { SmtpMessage } from "../smtp-message";
 import { forgotPasswordAction } from "@/app/actions";
-import Navbar from "@/components/navbar";
-import { UrlProvider } from "@/components/url-provider";
+import Navbar from "@/components/layout/navbar/navbar";
+import { UrlProvider } from "@/components/providers/url-provider";
 import {
   Box,
   Container,

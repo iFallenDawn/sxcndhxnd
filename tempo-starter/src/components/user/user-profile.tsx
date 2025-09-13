@@ -9,7 +9,7 @@ import {
   PopoverBody,
   Portal,
 } from "@chakra-ui/react";
-import { createClient } from "../../supabase/client";
+import { createClient } from "../../../supabase/client";
 import { useRouter } from "next/navigation";
 
 export default function UserProfile() {

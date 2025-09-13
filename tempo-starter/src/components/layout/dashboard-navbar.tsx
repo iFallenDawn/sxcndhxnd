@@ -7,7 +7,7 @@ import {
   Container,
   Text,
 } from "@chakra-ui/react";
-import UserProfile from "./user-profile";
+import UserProfile from "../user/user-profile";
 
 export default function DashboardNavbar() {
   return (
