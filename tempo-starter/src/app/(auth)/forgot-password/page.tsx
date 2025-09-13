@@ -1,7 +1,7 @@
 import { FormMessage, Message } from "@/components/ui/form-message";
 import { SubmitButton } from "@/components/ui/submit-button";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
+import { SmtpMessage } from "@/components/ui/smtp-message";
 import { forgotPasswordAction } from "@/app/actions";
 import Navbar from "@/components/layout/navbar/navbar";
 import { UrlProvider } from "@/components/providers/url-provider";
