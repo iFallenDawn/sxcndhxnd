@@ -54,7 +54,7 @@ export default function NavbarClient({ user, children }: NavbarClientProps) {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <div className="container mx-auto px-6 md:px-8 py-6">
+        <div className="container mx-auto px-6 md:px-8 py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link
@@ -112,9 +112,10 @@ export default function NavbarClient({ user, children }: NavbarClientProps) {
                     </Link>
                     <Link
                       href="/sign-up"
-                      className={`text-sm font-normal tracking-wide px-6 py-3 transition-all duration-300 ${navColorClasses.buttonBg} border border-current hover:transform hover:scale-105`}
+                      className={`text-sm font-light tracking-wide transition-all duration-300 ${navColorClasses.textHover} relative group`}
                     >
                       Join
+                      <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-current transition-all duration-300 group-hover:w-full"></span>
                     </Link>
                   </>
                 )}
@@ -183,7 +184,7 @@ export default function NavbarClient({ user, children }: NavbarClientProps) {
                   <Link
                     href="/sign-up"
                     onClick={() => setIsMenuOpen(false)}
-                    className="inline-block text-center text-lg font-normal tracking-wide px-6 py-3 bg-black text-white hover:bg-gray-900 transition-colors"
+                    className="text-2xl font-light tracking-wide text-gray-900 hover:text-black transition-colors"
                   >
                     Join
                   </Link>
