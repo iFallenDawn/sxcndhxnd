@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { FormMessage, Message } from "@/components/ui/form-message";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { SmtpMessage } from "../smtp-message";
+import { SmtpMessage } from "@/components/ui/smtp-message";
 import { signUpAction } from "@/app/actions";
 import Navbar from "@/components/layout/navbar/navbar";
 import { UrlProvider } from "@/components/providers/url-provider";
