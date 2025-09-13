@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function CommissionCTA() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background with gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-900" />
       
@@ -38,7 +38,7 @@ export default function CommissionCTA() {
         />
       </div>
 
-      <div className="relative z-10 py-32 md:py-48">
+      <div className="relative z-10">
         <div className="container mx-auto px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
