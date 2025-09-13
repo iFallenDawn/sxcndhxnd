@@ -225,8 +225,8 @@ export default function Hero() {
                           transform: 'translateY(-2px)',
                           boxShadow: '0 15px 40px rgba(0,0,0,0.4)',
                         }}
-                        px='12'
-                        py='7'
+                        px='8'
+                        py='4'
                         fontSize='sm'
                         fontWeight='600'
                         letterSpacing='0.1em'
@@ -253,8 +253,8 @@ export default function Hero() {
                           transform: 'translateY(-2px)',
                           boxShadow: '0 15px 40px rgba(0,0,0,0.4)',
                         }}
-                        px='12'
-                        py='7'
+                        px='8'
+                        py='4'
                         fontSize='sm'
                         fontWeight='600'
                         letterSpacing='0.1em'

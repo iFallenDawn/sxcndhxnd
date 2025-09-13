@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useBodyClass } from "@/hooks/use-body-class";
+import { useBodyClass } from '@/hooks/use-body-class';
 
 interface BodyClassManagerProps {
   className: string;

@@ -12,8 +12,6 @@ const collections = [
     description: "Upcycled shirts, blouses & jackets",
     image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80",
     href: "/store?category=tops",
-    span: "col-span-2 row-span-2",
-    size: "large",
   },
   {
     id: 2,
@@ -21,8 +19,6 @@ const collections = [
     description: "Reconstructed pants, skirts & shorts",
     image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&q=80",
     href: "/store?category=bottoms",
-    span: "col-span-2 row-span-2",
-    size: "large",
   },
   {
     id: 3,
@@ -30,8 +26,6 @@ const collections = [
     description: "Handmade from reclaimed materials",
     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80",
     href: "/store?category=tote-bags",
-    span: "col-span-2 row-span-1",
-    size: "wide",
   },
   {
     id: 4,
@@ -39,8 +33,6 @@ const collections = [
     description: "Belts, scarves & unique pieces",
     image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800&q=80",
     href: "/store?category=accessories",
-    span: "col-span-2 row-span-1",
-    size: "wide",
   },
 ];
 
@@ -48,122 +40,56 @@ export default function CollectionsSection() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <section className="py-24 md:py-32 bg-gray-50 overflow-hidden">
-      <div className="container mx-auto px-6 md:px-8 max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="mb-16 md:mb-24"
-        >
-          <h2 className="font-display text-6xl md:text-8xl lg:text-9xl font-thin tracking-tighter uppercase mb-4">
-            Collections
-          </h2>
-          <div className="flex items-center gap-4">
-            <div className="h-[1px] w-24 bg-black"></div>
-            <p className="text-sm font-normal text-gray-600 uppercase tracking-widest">
-              Explore our curated selection
-            </p>
-          </div>
-        </motion.div>
+    <section className="h-screen bg-white overflow-hidden flex flex-col pt-16 md:pt-0 relative z-20">
+      {/* Small header - minimal space */}
+      <div className="flex-shrink-0 text-center py-4 md:py-8">
+        <h2 className="text-lg md:text-xl font-normal text-gray-800 tracking-wide">
+          Collections
+        </h2>
+      </div>
 
-        {/* Experimental asymmetric grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 auto-rows-[200px] md:auto-rows-[250px]">
+      {/* Full remaining height grid with padding */}
+      <div className="flex-1 p-4 md:p-8 pb-6 md:pb-8">
+        <div className="h-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {collections.map((collection, index) => (
             <motion.div
               key={collection.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{
                 duration: 0.6,
                 delay: index * 0.1,
-                ease: [0.165, 0.84, 0.44, 1],
+                ease: [0.25, 0.46, 0.45, 0.94],
               }}
-              viewport={{ once: true, margin: "-50px" }}
               onHoverStart={() => setHoveredId(collection.id)}
               onHoverEnd={() => setHoveredId(null)}
-              className={`group cursor-pointer ${collection.span}`}
+              className="group cursor-pointer relative h-full"
             >
               <Link href={collection.href} className="block w-full h-full">
-                <div className="relative w-full h-full overflow-hidden bg-gray-100">
+                <div className="relative w-full h-full overflow-hidden rounded-lg bg-gray-200">
                   <motion.img
                     src={collection.image}
                     alt={collection.name}
-                    className="w-full h-full object-cover filter grayscale"
+                    className="w-full h-full object-cover"
                     animate={{
-                      scale: hoveredId === collection.id ? 1.1 : 1,
-                      filter: hoveredId === collection.id ? "grayscale(0%)" : "grayscale(100%)",
+                      scale: hoveredId === collection.id ? 1.05 : 1,
                     }}
                     transition={{ duration: 0.6, ease: [0.165, 0.84, 0.44, 1] }}
-                  />
-                  
-                  {/* Dark overlay on hover */}
-                  <motion.div
-                    className="absolute inset-0 bg-black"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: hoveredId === collection.id ? 0.4 : 0,
+                    onError={(e) => {
+                      console.log(`Failed to load image for ${collection.name}:`, collection.image);
+                      e.currentTarget.style.display = 'none';
                     }}
-                    transition={{ duration: 0.3 }}
                   />
                   
-                  {/* Content overlay */}
-                  <div className="absolute inset-0 p-6 flex flex-col justify-between">
-                    {/* Top content */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{
-                        opacity: hoveredId === collection.id ? 1 : 0,
-                        x: hoveredId === collection.id ? 0 : -20,
-                      }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                    >
-                      <p className="text-white text-xs font-medium tracking-[0.2em] uppercase">
-                        {collection.description}
-                      </p>
-                    </motion.div>
-                    
-                    {/* Bottom content */}
-                    <div>
-                      <h3 className={`text-white font-display uppercase tracking-tight mb-2 ${
-                        collection.size === 'large' ? 'text-4xl md:text-5xl' : 
-                        collection.size === 'tall' ? 'text-3xl md:text-4xl' : 
-                        collection.size === 'wide' ? 'text-2xl md:text-3xl' : 
-                        'text-xl md:text-2xl'
-                      }`}>
-                        {collection.name}
-                      </h3>
-                      
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{
-                          opacity: hoveredId === collection.id ? 1 : 0,
-                          x: hoveredId === collection.id ? 0 : -20,
-                        }}
-                        transition={{ duration: 0.3, delay: 0.2 }}
-                      >
-                        <span className="inline-flex items-center text-white text-xs font-medium tracking-[0.15em] uppercase">
-                          Explore
-                          <ArrowRight className="ml-2 w-3 h-3" />
-                        </span>
-                      </motion.div>
-                    </div>
+                  {/* Dark overlay */}
+                  <div className="absolute inset-0 bg-black/40" />
+                  
+                  {/* Content overlay - centered */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <h3 className="text-white font-bold text-2xl md:text-3xl lg:text-4xl tracking-wide text-center px-4 drop-shadow-lg">
+                      {collection.name}
+                    </h3>
                   </div>
-                  
-                  {/* Corner accent */}
-                  <motion.div
-                    className="absolute top-0 right-0 w-16 h-16"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: hoveredId === collection.id ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <svg viewBox="0 0 64 64" className="w-full h-full">
-                      <path d="M0 0 L64 0 L64 64 Z" fill="white" opacity="0.1" />
-                    </svg>
-                  </motion.div>
                 </div>
               </Link>
             </motion.div>
