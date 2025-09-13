@@ -16,7 +16,7 @@ export default function PhilosophySection() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={sectionRef} className="py-32 md:py-48 relative overflow-hidden">
+    <section ref={sectionRef} className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background Pattern */}
       <motion.div
         style={{ y }}

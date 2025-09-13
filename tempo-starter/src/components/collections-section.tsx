@@ -40,7 +40,7 @@ export default function CollectionsSection() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <section className="h-screen bg-white overflow-hidden flex flex-col pt-16 md:pt-0 relative z-20">
+    <section className="min-h-screen bg-white overflow-hidden flex flex-col justify-center py-16 md:py-0 relative z-20">
       {/* Small header - minimal space */}
       <div className="flex-shrink-0 text-center py-4 md:py-8">
         <h2 className="text-lg md:text-xl font-normal text-gray-800 tracking-wide">
@@ -48,9 +48,9 @@ export default function CollectionsSection() {
         </h2>
       </div>
 
-      {/* Full remaining height grid with padding */}
-      <div className="flex-1 p-4 md:p-8 pb-6 md:pb-8">
-        <div className="h-full grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      {/* Grid with better mobile sizing */}
+      <div className="flex-1 p-4 md:p-8 pb-6 md:pb-8 max-w-6xl mx-auto w-full">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 h-[calc(100vh-12rem)] md:h-full">
           {collections.map((collection, index) => (
             <motion.div
               key={collection.id}
@@ -63,7 +63,7 @@ export default function CollectionsSection() {
               }}
               onHoverStart={() => setHoveredId(collection.id)}
               onHoverEnd={() => setHoveredId(null)}
-              className="group cursor-pointer relative h-full"
+              className="group cursor-pointer relative h-full min-h-[200px] sm:min-h-[250px]"
             >
               <Link href={collection.href} className="block w-full h-full">
                 <div className="relative w-full h-full overflow-hidden rounded-lg bg-gray-200">
