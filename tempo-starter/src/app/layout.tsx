@@ -6,6 +6,7 @@ import { TempoInit } from "@/components/providers/tempo-init";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ChakraUIProvider } from "@/components/providers/chakra-provider";
 import { BodyClassManager } from "@/components/ui/body-class-manager";
+import Footer from "@/components/layout/footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,7 +54,12 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <div className="min-h-screen flex flex-col">
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </ThemeProvider>
         </ChakraUIProvider>
         <TempoInit />

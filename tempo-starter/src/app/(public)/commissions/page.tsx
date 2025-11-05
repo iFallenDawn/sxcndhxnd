@@ -1,6 +1,5 @@
 'use client';
 
-import Footer from '@/components/layout/footer/footer';
 import NavbarClientOnly from '@/components/layout/navbar/navbar-client-only';
 import {
   Badge,
@@ -686,8 +685,6 @@ export default function Commissions() {
           </MotionBox>
         </Container>
       </Box>
-
-      <Footer />
     </Box>
   );
 }
