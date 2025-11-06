@@ -1,7 +1,21 @@
 'use client';
 
-import { Badge, Box, Button, Container, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import {
+  Badge,
+  Box,
+  Button,
+  chakra,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  shouldForwardProp,
+  Text,
+  useColorModeValue,
+  VStack
+} from '@chakra-ui/react';
+import { isValidMotionProp, motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Award, Recycle, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useRef } from 'react';
@@ -89,6 +103,11 @@ export default function Hero() {
   const textY = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
+  // Dynamic color values for dark/light mode - cohesive with design system
+  const textColor = useColorModeValue('gray.800', 'gray.100');
+  const mutedTextColor = useColorModeValue('gray.600', 'gray.400');
+  const accentBlue = useColorModeValue('blue.700', 'blue.600');
+
   return (
     <Box
       ref={heroRef}
@@ -159,47 +178,60 @@ export default function Hero() {
                 textAlign={{ base: 'center', lg: 'left' }}
                 alignItems={{ base: 'center', lg: 'flex-start' }}>
                 <motion.div variants={itemVariants}>
-                  <Text
-                    fontSize='sm'
-                    fontWeight='400'
-                    letterSpacing='0.2em'
-                    textTransform='uppercase'
-                    mb='4'
-                    opacity='0.8'>
-                    Sustainable Fashion Redefined
-                  </Text>
+                  {/* Updated to match commission section typography */}
                   <Heading
                     as='h1'
-                    size={{ base: '5xl', sm: '6xl', md: '7xl', lg: '8xl' }}
+                    fontSize={{ base: '4xl', sm: '5xl', md: '6xl', lg: '7xl' }}
                     fontWeight='100'
-                    letterSpacing='-0.04em'
+                    letterSpacing='0.02em'
                     textTransform='uppercase'
-                    lineHeight='0.85'
-                    className='font-display'
+                    lineHeight='1.1'
+                    color='white'
                     mb='2'>
-                    CHANGE THE WAY YOU
+                    REDEFINING
                   </Heading>
                   <Heading
                     as='h1'
-                    size={{ base: '5xl', sm: '6xl', md: '7xl', lg: '8xl' }}
+                    fontSize={{ base: '4xl', sm: '5xl', md: '6xl', lg: '7xl' }}
                     fontWeight='700'
                     letterSpacing='-0.04em'
                     textTransform='uppercase'
-                    lineHeight='0.85'
-                    className='font-display'>
-                    FASHION
+                    lineHeight='1'
+                    color='white'
+                    position='relative'>
+                    <Box
+                      as='span'
+                      display='inline'
+                      bgGradient={useColorModeValue(
+                        'linear(to-r, blue.300, orange.300, green.300)',
+                        'linear(to-r, blue.400, orange.400, green.400)'
+                      )}
+                      bgClip='text'>
+                      STREETWEAR
+                    </Box>
                   </Heading>
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
                   <Text
-                    fontSize={{ base: 'xl', md: '2xl' }}
+                    fontSize={{ base: 'lg', md: 'xl', lg: 'lg', xl: 'xl' }}
+                    color='white'
+                    maxW='700px'
+                    mx='auto'
+                    mt={{ base: 4, md: 5, lg: 4 }}
                     fontWeight='300'
                     letterSpacing='0.02em'
-                    maxW='700px'
                     lineHeight='1.4'
-                    opacity='0.9'>
-                    For those who want more from their wardrobe — there's sxcndhxnd. Transform your style with no waste, in a tap.
+                    opacity='0.95'>
+                    We transform deadstock and forgotten pieces into
+                    <Box
+                      as='span'
+                      color={useColorModeValue('blue.300', 'blue.400')}
+                      fontWeight='500'>
+                      {' '}
+                      exclusive streetwear{' '}
+                    </Box>
+                    that tells your story. Each piece is unique, sustainable, and crafted with purpose.
                   </Text>
                 </motion.div>
 
@@ -215,53 +247,55 @@ export default function Hero() {
                     <motion.div variants={buttonVariants}>
                       <Button
                         as={Link}
-                        href='/store'
-                        size='xl'
-                        variant='solid'
-                        bg='white'
-                        color='black'
-                        _hover={{
-                          bg: 'gray.100',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 15px 40px rgba(0,0,0,0.4)',
-                        }}
+                        href='/gallery'
+                        display='inline-flex'
+                        alignItems='center'
                         px='8'
                         py='4'
                         fontSize='sm'
                         fontWeight='600'
-                        letterSpacing='0.1em'
                         textTransform='uppercase'
+                        letterSpacing='0.1em'
+                        color='white'
+                        bg='gray.800'
+                        borderRadius='md'
+                        position='relative'
+                        overflow='hidden'
                         transition='all 0.3s ease'
-                        borderRadius='none'>
-                        Explore Collection
-                        <ArrowRight size={18} />
+                        _hover={{
+                          bg: 'gray.900',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 15px 40px rgba(0,0,0,0.3)',
+                        }}
+                        rightIcon={<Icon as={ArrowRight} w={4} h={4} />}>
+                        Explore Gallery
                       </Button>
                     </motion.div>
 
                     <motion.div variants={buttonVariants}>
                       <Button
                         as={Link}
-                        href='/gallery'
-                        size='xl'
-                        variant='outline'
-                        borderColor='white'
-                        borderWidth='2px'
-                        color='white'
-                        _hover={{
-                          bg: 'white',
-                          color: 'black',
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 15px 40px rgba(0,0,0,0.4)',
-                        }}
+                        href='/commissions'
+                        display='inline-flex'
+                        alignItems='center'
                         px='8'
                         py='4'
                         fontSize='sm'
                         fontWeight='600'
-                        letterSpacing='0.1em'
                         textTransform='uppercase'
+                        letterSpacing='0.1em'
+                        color='gray.800'
+                        bg='whiteAlpha.900'
+                        borderRadius='md'
+                        backdropFilter='blur(10px)'
                         transition='all 0.3s ease'
-                        borderRadius='none'>
-                        View Gallery
+                        _hover={{
+                          bg: 'white',
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 15px 40px rgba(255,255,255,0.2)',
+                        }}
+                        rightIcon={<Icon as={ArrowRight} w={4} h={4} />}>
+                        Custom Commission
                       </Button>
                     </motion.div>
                   </HStack>

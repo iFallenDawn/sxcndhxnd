@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "../../../../supabase/client";
 import UserProfile from "../../user/user-profile";
-import NavbarClient from "./navbar-client";
+import NavbarChakra from "./navbar-chakra";
 import { User } from "@supabase/supabase-js";
 
 export default function NavbarClientOnly() {
@@ -38,12 +38,12 @@ export default function NavbarClientOnly() {
   }, []);
 
   if (loading) {
-    return <NavbarClient user={null} />;
+    return <NavbarChakra user={null} />;
   }
 
   return (
-    <NavbarClient user={user}>
+    <NavbarChakra user={user}>
       {user && <UserProfile />}
-    </NavbarClient>
+    </NavbarChakra>
   );
 }

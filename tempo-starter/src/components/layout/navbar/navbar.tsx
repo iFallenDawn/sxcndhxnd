@@ -1,6 +1,6 @@
 import { createClient } from "../../../../supabase/server";
 import UserProfile from "../../user/user-profile";
-import NavbarClient from "./navbar-client";
+import NavbarChakra from "./navbar-chakra";
 
 export default async function Navbar() {
   const supabase = createClient();
@@ -10,8 +10,8 @@ export default async function Navbar() {
   } = await (await supabase).auth.getUser();
 
   return (
-    <NavbarClient user={user}>
+    <NavbarChakra user={user}>
       {user && <UserProfile />}
-    </NavbarClient>
+    </NavbarChakra>
   );
 }

@@ -1,11 +1,12 @@
 import GalleryContent from '@/components/gallery/gallery-content';
 import NavbarWrapper from '@/components/layout/navbar/navbar-wrapper';
+import { Box } from '@chakra-ui/react';
 
 export default function Gallery() {
   return (
-    <div className='bg-white'>
+    <Box bg='white' minH='100vh'>
       <NavbarWrapper />
       <GalleryContent />
-    </div>
+    </Box>
   );
 }

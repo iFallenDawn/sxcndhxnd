@@ -27,6 +27,7 @@ import {
   TagCloseButton,
   TagLabel,
   Text,
+  useColorModeValue,
   useDisclosure,
   VStack,
   AlertDialog,
@@ -248,43 +249,73 @@ export default function GalleryContent() {
 
   return (
     <>
-      {/* Minimal Header */}
+      {/* Header with Design System Typography */}
       <Box
         as='section'
-        pt={24}
-        pb={6}
-        bg='white'>
+        pt={28}
+        pb={8}
+        bg={useColorModeValue('gray.50', 'gray.900')}>
         <Container maxW='container.xl'>
-          <VStack spacing={2}>
+          <VStack spacing={4}>
+            {/* Thin/Bold Typography Contrast */}
             <Heading
               as='h1'
-              fontSize={{ base: 'lg', md: 'xl' }}
-              fontWeight='light'
-              letterSpacing='wider'
+              fontSize={{ base: '3xl', sm: '4xl', md: '5xl', lg: '5xl' }}
+              fontWeight='100'
               textTransform='uppercase'
+              lineHeight='1.1'
+              color={useColorModeValue('gray.800', 'gray.100')}
+              letterSpacing='0.02em'
               textAlign='center'>
-              Hand Crafted Inventory
+              CURATED
+            </Heading>
+            <Heading
+              as='h2'
+              fontSize={{ base: '3xl', sm: '4xl', md: '5xl', lg: '5xl' }}
+              fontWeight='700'
+              textTransform='uppercase'
+              lineHeight='1'
+              color={useColorModeValue('gray.800', 'gray.100')}
+              letterSpacing='-0.04em'
+              textAlign='center'
+              position='relative'>
+              <Box
+                as='span'
+                display='inline'
+                bgGradient={useColorModeValue(
+                  'linear(to-r, blue.700, green.800, orange.800)',
+                  'linear(to-r, blue.600, green.700, orange.700)'
+                )}
+                bgClip='text'>
+                INVENTORY
+              </Box>
             </Heading>
             <Text
-              fontSize='xs'
-              fontWeight='light'
-              letterSpacing='wide'
-              color='gray.600'
-              textAlign='center'>
-              Our current selection of items highlighted by all-new denim, the return of classic silhouettes and statement pieces
+              fontSize={{ base: 'md', md: 'lg' }}
+              fontWeight='300'
+              letterSpacing='0.02em'
+              color={useColorModeValue('gray.600', 'gray.400')}
+              textAlign='center'
+              maxW='600px'
+              lineHeight='1.4'>
+              Each piece in our collection is carefully selected and crafted from reclaimed materials,
+              telling a unique story of transformation and sustainable style.
             </Text>
           </VStack>
         </Container>
       </Box>
 
-      {/* Minimal Filter Bar */}
+      {/* Enhanced Filter Bar with Design System */}
       <Box
-        bg='white'
-        borderBottom='1px'
-        borderColor='gray.100'>
+        bg={useColorModeValue('white', 'gray.800')}
+        borderBottom='2px'
+        borderColor={useColorModeValue('gray.100', 'gray.700')}
+        position='sticky'
+        top='70px'
+        zIndex={10}>
         <Container
           maxW='container.xl'
-          py={2}>
+          py={3}>
           <Flex
             align='center'
             gap={3}>
@@ -336,15 +367,18 @@ export default function GalleryContent() {
                   as={Button}
                   rightIcon={<ChevronDown size={14} />}
                   size='sm'
-                  borderRadius='full'
+                  borderRadius='md'
                   fontSize='xs'
-                  fontWeight='medium'
-                  letterSpacing='wide'
-                  bg={statusFilter !== 'all' ? 'black' : 'gray.100'}
-                  color={statusFilter !== 'all' ? 'white' : 'gray.700'}
+                  fontWeight='600'
+                  letterSpacing='0.1em'
+                  textTransform='uppercase'
+                  bg={statusFilter !== 'all' ? 'gray.800' : useColorModeValue('gray.100', 'gray.700')}
+                  color={statusFilter !== 'all' ? 'white' : useColorModeValue('gray.700', 'gray.100')}
                   _hover={{
-                    bg: statusFilter !== 'all' ? 'gray.800' : 'gray.200',
-                  }}>
+                    bg: statusFilter !== 'all' ? 'gray.900' : useColorModeValue('gray.200', 'gray.600'),
+                    transform: 'translateY(-1px)',
+                  }}
+                  transition='all 0.2s'>
                   {statusFilter === 'all' ? 'All Items' : statusFilter}
                 </MenuButton>
                 <MenuList minW='140px'>
@@ -366,15 +400,18 @@ export default function GalleryContent() {
                   as={Button}
                   rightIcon={<ChevronDown size={14} />}
                   size='sm'
-                  borderRadius='full'
+                  borderRadius='md'
                   fontSize='xs'
-                  fontWeight='medium'
-                  letterSpacing='wide'
-                  bg={selectedCategories.length > 0 ? 'black' : 'gray.100'}
-                  color={selectedCategories.length > 0 ? 'white' : 'gray.700'}
+                  fontWeight='600'
+                  letterSpacing='0.1em'
+                  textTransform='uppercase'
+                  bg={selectedCategories.length > 0 ? useColorModeValue('blue.700', 'blue.600') : useColorModeValue('gray.100', 'gray.700')}
+                  color={selectedCategories.length > 0 ? 'white' : useColorModeValue('gray.700', 'gray.100')}
                   _hover={{
-                    bg: selectedCategories.length > 0 ? 'gray.800' : 'gray.200',
-                  }}>
+                    bg: selectedCategories.length > 0 ? useColorModeValue('blue.800', 'blue.700') : useColorModeValue('gray.200', 'gray.600'),
+                    transform: 'translateY(-1px)',
+                  }}
+                  transition='all 0.2s'>
                   <HStack spacing={1}>
                     <FilterIcon size={14} />
                     <Text>Categories</Text>
@@ -518,13 +555,15 @@ export default function GalleryContent() {
         </Container>
       </Box>
 
-      {/* Gallery Grid */}
+      {/* Gallery Grid with Design System */}
       <Box
         as='section'
-        pt={4}
-        pb={16}>
+        pt={8}
+        pb={20}
+        bg={useColorModeValue('gray.50', 'gray.900')}
+        minH='60vh'>
         <Container
-          maxW='100%'
+          maxW='container.2xl'
           px={{ base: 4, md: 6, lg: 8 }}>
           {loading ? (
             <Center py={20}>
