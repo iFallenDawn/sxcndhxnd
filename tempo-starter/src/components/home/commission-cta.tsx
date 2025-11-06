@@ -281,22 +281,10 @@ export default function CommissionCTA() {
               {/* Main title with consistent typography */}
               <Heading
                 as='h2'
-                fontSize={{ base: '5xl', sm: '6xl', md: '7xl', lg: '8xl' }}
-                fontWeight='100'
-                textTransform='uppercase'
-                lineHeight='0.85'
-                color={textColor}
-                letterSpacing='-0.04em'
-                position='relative'
-                mb='2'>
-                CUSTOM
-              </Heading>
-              <Heading
-                as='h2'
-                fontSize={{ base: '5xl', sm: '6xl', md: '7xl', lg: '8xl' }}
+                fontSize={{ base: '4xl', sm: '5xl', md: '6xl', lg: '6xl' }}
                 fontWeight='700'
                 textTransform='uppercase'
-                lineHeight='0.85'
+                lineHeight='1'
                 color={textColor}
                 letterSpacing='-0.04em'
                 position='relative'>
@@ -311,11 +299,11 @@ export default function CommissionCTA() {
 
               {/* Tagline with consistent messaging */}
               <Text
-                fontSize={{ base: 'xl', md: '2xl' }}
+                fontSize={{ base: 'lg', md: 'xl', lg: 'lg', xl: 'xl' }}
                 color={mutedTextColor}
                 maxW='700px'
                 mx='auto'
-                mt={8}
+                mt={{ base: 4, md: 5, lg: 4 }}
                 fontWeight='300'
                 letterSpacing='0.02em'
                 lineHeight='1.4'>
