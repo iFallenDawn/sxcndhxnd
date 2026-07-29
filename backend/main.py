@@ -1,6 +1,10 @@
-def main():
-    print("Hello from backend!")
+from dotenv import load_dotenv
+load_dotenv()
+
+from fastapi import FastAPI
+from routers import router as api_router
 
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()
+
+app.include_router(api_router)
