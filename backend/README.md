@@ -16,6 +16,9 @@ uv pip compile pyproject.toml -o requirements.txt
 ```
 
 ## how to auto generate pydantic models
+note, need to go in and manually change all the email types to `email: EmailStr` instead of `email: str`
+
+
 ```
 sb-pydantic gen --type pydantic --framework fastapi --db-url postgresql://postgres.wvsqcuiqbxaftjlrseyx:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres
 ```

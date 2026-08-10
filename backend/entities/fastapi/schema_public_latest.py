@@ -2,7 +2,7 @@ from __future__ import annotations
 from decimal import Decimal
 from pydantic import BaseModel
 from pydantic import Field
-from pydantic import UUID4
+from pydantic import UUID4, EmailStr, SecretStr
 from pydantic.types import StringConstraints
 from sqlalchemy.dialects.postgresql import ARRAY
 from typing import Any
@@ -46,7 +46,7 @@ class CommissionsBaseSchema(CustomModel):
 	created_at: datetime.datetime
 	creative_control: bool
 	distress: bool
-	email: str
+	email: EmailStr
 	extra: str | None = Field(default=None)
 	fabrics: str
 	first_name: str
@@ -94,7 +94,7 @@ class UsersBaseSchema(CustomModel):
 
 	# Columns
 	created_at: datetime.datetime
-	email: str
+	email: EmailStr
 	first_name: str
 	instagram: str = Field(description="instagram handle")
 	last_name: str
@@ -132,7 +132,7 @@ class CommissionsInsert(CustomModelInsert):
 	created_at: datetime.datetime
 	creative_control: bool
 	distress: bool
-	email: str
+	email: EmailStr
 	fabrics: str
 	first_name: str
 	last_name: str
@@ -198,14 +198,23 @@ class UsersInsert(CustomModelInsert):
 	# created_at: has default value
 	
 	# Required fields
-	email: str
+	email: EmailStr
 	first_name: str
 	instagram: str = Field(description="instagram handle")
 	last_name: str
-	updated_at: datetime.datetime
+	password: SecretStr
 	
-		# Optional fields
+	# Optional fields
+	updated_at: datetime.datetime | None = Field(default=None)
 	created_at: datetime.datetime | None = Field(default=None)
+
+class UsersAuthInsert(CustomModelInsert):
+    # Required fields
+	email: EmailStr
+	first_name: str
+	instagram: str = Field(description="instagram handle")
+	last_name: str
+	password: SecretStr
 
 
 class UsersRolesInsert(CustomModelInsert):
@@ -238,7 +247,7 @@ class CommissionsUpdate(CustomModelUpdate):
 	created_at: datetime.datetime | None = Field(default=None)
 	creative_control: bool | None = Field(default=None)
 	distress: bool | None = Field(default=None)
-	email: str | None = Field(default=None)
+	email: EmailStr | None = Field(default=None)
 	extra: str | None = Field(default=None)
 	fabrics: str | None = Field(default=None)
 	first_name: str | None = Field(default=None)
@@ -301,7 +310,7 @@ class UsersUpdate(CustomModelUpdate):
 	
 		# Optional fields
 	created_at: datetime.datetime | None = Field(default=None)
-	email: str | None = Field(default=None)
+	email: EmailStr | None = Field(default=None)
 	first_name: str | None = Field(default=None)
 	instagram: str | None = Field(default=None, description="instagram handle")
 	last_name: str | None = Field(default=None)
