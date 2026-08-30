@@ -302,18 +302,21 @@ class UsersUpdate(CustomModelUpdate):
 	"""Users Update Schema."""
 
 	# Primary Keys
-	id: UUID4 | None = Field(default=None)
+	id: UUID4
 
 	# Field properties:
 	# created_at: has default value
 	
 		# Optional fields
 	created_at: datetime.datetime | None = Field(default=None)
-	email: EmailStr | None = Field(default=None)
 	first_name: str | None = Field(default=None)
 	instagram: str | None = Field(default=None, description="instagram handle")
 	last_name: str | None = Field(default=None)
 	updated_at: datetime.datetime | None = Field(default=None)
+
+class UsersUpdateEmail(CustomModel):
+    new_email: EmailStr
+    refresh_token: str
 
 
 class UsersRolesUpdate(CustomModelUpdate):

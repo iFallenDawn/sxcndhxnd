@@ -13,3 +13,13 @@ class ConflictError(AppError):
     def __init__(self, message: str):
         self.message = message
         super().__init__(message)
+
+class UnauthorizedError(AppError):
+    def __init__(self, message: str = "Authentication required"):
+        self.message = message
+        super().__init__(message)
+
+class ForbiddenError(AppError):
+    def __init__(self, message: str = "You do not have sufficient permissions to perform this action"):
+        self.message = message
+        super().__init__(message)

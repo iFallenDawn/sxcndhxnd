@@ -1,7 +1,11 @@
 import os
 from supabase import create_client, Client
 
+SUPABASE_URL = os.environ.get("SUPABASE_URL") or ''
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY") or ''
+
 def db() -> Client:
-    url = os.environ.get("SUPABASE_URL") or ''
-    key = os.environ.get("SUPABASE_KEY") or ''
-    return create_client(url, key)
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
+    
+def scoped_client() -> Client:
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
