@@ -202,7 +202,6 @@ class UsersInsert(CustomModelInsert):
 	first_name: str
 	instagram: str = Field(description="instagram handle")
 	last_name: str
-	password: SecretStr
 	
 	# Optional fields
 	updated_at: datetime.datetime | None = Field(default=None)
