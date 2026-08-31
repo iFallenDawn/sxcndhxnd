@@ -1,8 +1,6 @@
 from __future__ import annotations
 from decimal import Decimal
-from pydantic import BaseModel
-from pydantic import Field
-from pydantic import UUID4, EmailStr, SecretStr
+from pydantic import BaseModel, Field, UUID4, EmailStr, SecretStr, field_validator
 from pydantic.types import StringConstraints
 from sqlalchemy.dialects.postgresql import ARRAY
 from typing import Any
@@ -12,6 +10,8 @@ import datetime
 # CUSTOM CLASSES
 # Note: These are custom model classes for defining common features among
 # Pydantic Base Schema.
+
+# Classes have been modified and added since the autogeneration
 
 
 class CustomModel(BaseModel):
@@ -207,14 +207,6 @@ class UsersInsert(CustomModelInsert):
 	updated_at: datetime.datetime | None = Field(default=None)
 	created_at: datetime.datetime | None = Field(default=None)
 
-class UsersAuthInsert(CustomModelInsert):
-    # Required fields
-	email: EmailStr
-	first_name: str
-	instagram: str = Field(description="instagram handle")
-	last_name: str
-	password: SecretStr
-
 
 class UsersRolesInsert(CustomModelInsert):
 	"""UsersRoles Insert Schema."""
@@ -298,27 +290,6 @@ class ProductsUpdate(CustomModelUpdate):
 	user_id: str | None = Field(default=None)
 
 
-class UsersUpdate(CustomModelUpdate):
-	"""Users Update Schema."""
-
-	# Primary Keys
-	id: UUID4
-
-	# Field properties:
-	# created_at: has default value
-	
-		# Optional fields
-	created_at: datetime.datetime | None = Field(default=None)
-	first_name: str | None = Field(default=None)
-	instagram: str | None = Field(default=None, description="instagram handle")
-	last_name: str | None = Field(default=None)
-	updated_at: datetime.datetime | None = Field(default=None)
-
-class UsersUpdateEmail(CustomModel):
-    new_email: EmailStr
-    refresh_token: str
-
-
 class UsersRolesUpdate(CustomModelUpdate):
 	"""UsersRoles Update Schema."""
 
@@ -369,3 +340,48 @@ class UsersRoles(UsersRolesBaseSchema):
 	Inherits from UsersRolesBaseSchema. Add any customization here.
 	"""
 	pass
+
+
+# New classes
+class AuthUpdateEmail(CustomModelUpdate):
+    new_email: EmailStr
+    refresh_token: str
+
+class AuthRegister(CustomModelInsert):
+    # Required fields
+	email: EmailStr
+	first_name: str
+	instagram: str = Field(description="instagram handle")
+	last_name: str
+	password: SecretStr
+
+class AuthSignIn(CustomModel):
+    email: EmailStr
+    password: SecretStr
+    
+class AuthSignOut(CustomModel):
+    refresh_token: str
+    
+class AuthChangePassword(CustomModelUpdate):
+    current_password: SecretStr
+    new_password: SecretStr
+    refresh_token: str
+    
+    @field_validator("new_password")
+    @classmethod
+    def validate_password_strength(cls, v: SecretStr) -> SecretStr:
+        pw = v.get_secret_value()
+        if len(pw) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        return v
+    
+class UsersUpdate(CustomModelUpdate):
+	"""Users Update Schema."""
+
+	# Field properties:
+	# created_at: has default value
+	
+	# Optional fields
+	first_name: str | None = Field(default=None)
+	instagram: str | None = Field(default=None, description="instagram handle")
+	last_name: str | None = Field(default=None)

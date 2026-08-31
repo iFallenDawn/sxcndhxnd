@@ -1,4 +1,4 @@
-from entities.fastapi.schema_public_latest import UsersBaseSchema, UsersInsert, UsersUpdate, UsersAuthInsert
+from entities.fastapi.schema_public_latest import UsersBaseSchema, UsersInsert, UsersUpdate, AuthRegister
 from supabasedb.supabase import db, scoped_client
 from supabase_auth.errors import AuthApiError, AuthError
 from datetime import datetime, timezone
@@ -34,31 +34,6 @@ async def check_user_with_email_exists (
         return False
     return True
 
-async def create_user_from_auth(
-    payload: UsersAuthInsert
-):
-    user_exists = await check_user_with_email_exists(payload.email)
-    if user_exists:
-        raise ConflictError(f'User with email {payload.email} already exists')
-    response = supabase.auth.sign_up({
-        "email": payload.email,
-        "password": payload.password.get_secret_value()
-    })
-    user_id = response.user.id if response.user else None
-    if not user_id:
-        raise NotFoundError("Auth user", payload.email)
-    now = datetime.now(timezone.utc)
-    new_payload = UsersInsert.model_validate({
-        "id": user_id,
-        "email": payload.email,
-        "first_name": payload.first_name,
-        "instagram": payload.instagram,
-        "last_name": payload.last_name,
-        "created_at": now,
-        "updated_at": now
-    })
-    return await create_user(new_payload)
-
 async def create_user(
     payload: UsersInsert
 ) -> UsersBaseSchema:
@@ -73,28 +48,15 @@ async def create_user(
 
 async def update_user(
     payload: UsersUpdate,
-    current_user_id: str
+    current_user_id: UUID4,
 ) -> UsersBaseSchema:
-    if str(current_user_id) != str(payload.id):
-        raise ForbiddenError("You can only update your own account")
-    updated_user = payload.model_dump(mode="json", exclude={"id"}, exclude_unset=True)
-    query = supabase.table("users").update(updated_user).eq("id", payload.id)
-    response = query.execute()
-    if len(response.data) == 0:
-        raise NotFoundError("User", payload.id)
-    return await get_user_by_id(payload.id)
-
-async def update_user_email(
-    access_token: str,
-    refresh_token: str,
-    new_email: EmailStr
-) -> None:
-    client = scoped_client()
     
-    try:
-        client.auth.set_session(access_token, refresh_token)
-        client.auth.update_user({"email": new_email})
-    except AuthApiError:
-        raise # bubble up the exception
-    except AuthError:
-        raise UnauthorizedError("Invalid or expired session, please log in again")
+    updated_user = payload.model_dump(mode="json", exclude={"id"}, exclude_unset=True)
+    updated_user["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    query = supabase.table("users").update(updated_user).eq("id", current_user_id)
+    response = query.execute()
+    
+    if len(response.data) == 0:
+        raise NotFoundError("User", current_user_id)
+    return await get_user_by_id(current_user_id)
