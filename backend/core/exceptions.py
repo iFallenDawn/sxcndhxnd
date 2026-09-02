@@ -8,6 +8,12 @@ class NotFoundError(AppError):
         self.resource = resource
         self.id = id
         super().__init__(f"{resource} with id {id} not found")
+
+# mainly for get all methods
+class NoResourcesReturnedError(AppError):
+    def __init__(self, resources: str):
+        self.resources = resources
+        super().__init__(f"No data found for {resources}")
         
 class ConflictError(AppError):
     def __init__(self, message: str):

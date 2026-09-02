@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Header
 from data import auth_util
-from entities.fastapi.schema_public_latest import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword
+from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword
 from core.exceptions import UnauthorizedError
 
 router = APIRouter(

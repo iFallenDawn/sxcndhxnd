@@ -53,6 +53,9 @@ CREATE POLICY "Allow role lookup for RLS" ON public.users_roles FOR SELECT USING
 
 ALTER TABLE public.users_roles ENABLE ROW LEVEL SECURITY;
 
+ALTER TABLE public.users_roles
+ADD CONSTRAINT role_check CHECK (role IN ('admin', 'user'));
+
 --
 -- PostgreSQL database dump complete
 --

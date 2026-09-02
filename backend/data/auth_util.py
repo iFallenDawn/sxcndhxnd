@@ -1,4 +1,4 @@
-from entities.fastapi.schema_public_latest import AuthRegister, UsersInsert
+from entities.models import AuthRegister, UsersInsert
 from supabasedb.supabase import db, scoped_client
 from data.users_util import check_user_with_email_exists, create_user
 from core.exceptions import NotFoundError, ConflictError, ForbiddenError, UnauthorizedError

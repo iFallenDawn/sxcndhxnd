@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Header
 from pydantic import EmailStr, UUID4
 from data import users_util
-from entities.fastapi.schema_public_latest import UsersBaseSchema, AuthRegister, UsersUpdate, AuthUpdateEmail
+from entities.models import UsersBaseSchema, AuthRegister, UsersUpdate, AuthUpdateEmail
 from core.auth import get_current_user_id
 from core.exceptions import UnauthorizedError
 
@@ -11,7 +11,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}}
 )
 
-@router.get("/id/{user_id}")
+@router.get("/{user_id}")
 async def get_user_by_id(user_id: UUID4) -> UsersBaseSchema:
     return await users_util.get_user_by_id(user_id)
 

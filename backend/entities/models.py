@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, UUID4, EmailStr, SecretStr, field_validat
 from pydantic.types import StringConstraints
 from sqlalchemy.dialects.postgresql import ARRAY
 from typing import Any
+from uuid import uuid4
 import datetime
 
 
@@ -118,7 +119,7 @@ class CommissionsInsert(CustomModelInsert):
 	"""Commissions Insert Schema."""
 
 	# Primary Keys
-	id: UUID4 | None = Field(default=None)  # has default value
+	id: UUID4 = Field(default_factory=uuid4)
 
 	# Field properties:
 	# extra: nullable
@@ -154,7 +155,7 @@ class ProductsInsert(CustomModelInsert):
 	"""Products Insert Schema."""
 
 	# Primary Keys
-	id: UUID4 | None = Field(default=None)  # has default value
+	id: UUID4 = Field(default_factory=uuid4)
 
 	# Field properties:
 	# category: nullable
@@ -175,7 +176,7 @@ class ProductsInsert(CustomModelInsert):
 	status: str
 	title: str
 	
-		# Optional fields
+	# Optional fields
 	category: str | None = Field(default=None)
 	commission_id: str | None = Field(default=None)
 	created_at: datetime.datetime | None = Field(default=None)
@@ -224,7 +225,7 @@ class CommissionsUpdate(CustomModelUpdate):
 	"""Commissions Update Schema."""
 
 	# Primary Keys
-	id: UUID4 | None = Field(default=None)
+	id: UUID4
 
 	# Field properties:
 	# extra: nullable
@@ -258,7 +259,7 @@ class ProductsUpdate(CustomModelUpdate):
 	"""Products Update Schema."""
 
 	# Primary Keys
-	id: UUID4 | None = Field(default=None)
+	id: UUID4
 
 	# Field properties:
 	# category: nullable
