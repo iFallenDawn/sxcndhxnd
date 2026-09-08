@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, Header
-from pydantic import EmailStr, UUID4
+from fastapi import APIRouter, Depends
+from pydantic import UUID4
 from data import products_util
 from entities.models import ProductsBaseSchema, ProductsUpdate, ProductsInsert
-from core.auth import get_current_user_id, require_admin
-from core.exceptions import UnauthorizedError
+from core.auth import require_admin
 
 router = APIRouter(
     prefix="/products",
@@ -25,3 +24,11 @@ async def create_product(
     current_user_id: UUID4 = Depends(require_admin),
 ):
     return await products_util.create_product(payload, current_user_id)
+
+@router.patch('/{product_id}')
+async def update_product(
+    product_id: UUID4,
+    payload: ProductsUpdate,
+    current_user_id: UUID4 = Depends(require_admin)
+):
+    return await products_util.update_product(product_id, payload, current_user_id)

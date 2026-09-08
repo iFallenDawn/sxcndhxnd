@@ -59,6 +59,7 @@ class CommissionsBaseSchema(CustomModel):
 	shape_patterns: str
 	symmetry_type: str
 	updated_at: datetime.datetime
+	updated_by: UUID4 | None = Field(default=None)
 	user_id: UUID4 | None = Field(default=None)
 	weekly_checkins: bool
 
@@ -84,6 +85,7 @@ class ProductsBaseSchema(CustomModel):
 	status: str
 	title: str
 	updated_at: datetime.datetime
+	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
 
 
@@ -149,6 +151,7 @@ class CommissionsInsert(CustomModelInsert):
 	extra: str | None = Field(default=None)
 	product_id: UUID4 | None = Field(default=None)
 	user_id: UUID4 | None = Field(default=None)
+	updated_by: UUID4 | None = Field(default=None)
 
 
 class ProductsInsert(CustomModelInsert):
@@ -167,6 +170,7 @@ class ProductsInsert(CustomModelInsert):
 	# paid: nullable
 	# size: nullable
 	# updated_at: has default value
+	# updated_by: nullable
 	# user_id: nullable
 	
 	# Required fields
@@ -186,6 +190,7 @@ class ProductsInsert(CustomModelInsert):
 	paid: bool | None = Field(default=None)
 	size: str | None = Field(default=None)
 	updated_at: datetime.datetime | None = Field(default=None)
+	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
 
 
@@ -232,7 +237,7 @@ class CommissionsUpdate(CustomModelUpdate):
 	# product_id: nullable
 	# user_id: nullable, has default value
 	
-		# Optional fields
+	# Optional fields
 	base_material: bool | None = Field(default=None)
 	colors: str | None = Field(default=None)
 	commission_type: str | None = Field(default=None)
@@ -251,6 +256,7 @@ class CommissionsUpdate(CustomModelUpdate):
 	shape_patterns: str | None = Field(default=None)
 	symmetry_type: str | None = Field(default=None)
 	updated_at: datetime.datetime | None = Field(default=None)
+	updated_by: UUID4 | None = Field(default=None)
 	user_id: UUID4 | None = Field(default=None)
 	weekly_checkins: bool | None = Field(default=None)
 
@@ -259,7 +265,7 @@ class ProductsUpdate(CustomModelUpdate):
 	"""Products Update Schema."""
 
 	# Primary Keys
-	id: UUID4
+	# id: UUID4 - comes from path parameter
 
 	# Field properties:
 	# category: nullable
@@ -271,6 +277,7 @@ class ProductsUpdate(CustomModelUpdate):
 	# paid: nullable
 	# size: nullable
 	# updated_at: has default value
+	# updated_by: nullable
 	# user_id: nullable
 	
 		# Optional fields
@@ -288,6 +295,7 @@ class ProductsUpdate(CustomModelUpdate):
 	status: str | None = Field(default=None)
 	title: str | None = Field(default=None)
 	updated_at: datetime.datetime | None = Field(default=None)
+	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
 
 
@@ -386,3 +394,9 @@ class UsersUpdate(CustomModelUpdate):
 	first_name: str | None = Field(default=None)
 	instagram: str | None = Field(default=None, description="instagram handle")
 	last_name: str | None = Field(default=None)
+
+class UsersPublicProfile(BaseModel):
+    id: UUID4
+    first_name: str
+    last_name: str
+    instagram: str
