@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Header
 from pydantic import UUID4
 from data import users_util
 from entities.models import  UsersBaseSchema
-from core.auth import require_admin
+from core.auth import require_admin, get_access_token
 from core.exceptions import UnauthorizedError
 
 router = APIRouter(
@@ -14,12 +14,7 @@ router = APIRouter(
 @router.get("/users/{user_id}")
 async def get_user_admin(
     user_id: UUID4,
-    authorization: str = Header(None),
+    access_token: str = Depends(get_access_token),
     _: UUID4 = Depends(require_admin),
 ) -> UsersBaseSchema:
-    print('hello world')
-    if not authorization or not authorization.startswith("Bearer "):
-        raise UnauthorizedError()
-        
-    access_token = authorization.removeprefix("Bearer ")
     return await users_util.get_user_by_id(user_id, access_token)

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from pydantic import UUID4
 from data import products_util
 from entities.models import ProductsBaseSchema, ProductsUpdate, ProductsInsert
-from core.auth import require_admin
+from core.auth import require_admin, get_access_token
 
 router = APIRouter(
     prefix="/products",
@@ -22,7 +22,7 @@ async def get_product_by_id(product_id: UUID4) -> ProductsBaseSchema:
 async def create_product(
     payload: ProductsInsert,
     current_user_id: UUID4 = Depends(require_admin),
-):
+) -> ProductsBaseSchema:
     return await products_util.create_product(payload, current_user_id)
 
 @router.patch('/{product_id}')
@@ -30,5 +30,13 @@ async def update_product(
     product_id: UUID4,
     payload: ProductsUpdate,
     current_user_id: UUID4 = Depends(require_admin)
-):
+) -> ProductsBaseSchema:
     return await products_util.update_product(product_id, payload, current_user_id)
+
+@router.delete('/{product_id}')
+async def delete_product(
+    product_id: UUID4,
+    access_token: str = Depends(get_access_token),
+    _: UUID4 = Depends(require_admin)
+) -> ProductsBaseSchema:
+    return await products_util.delete_product(product_id, access_token);

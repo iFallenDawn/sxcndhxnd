@@ -1,8 +1,7 @@
 from entities.models import ProductsBaseSchema, ProductsInsert, ProductsUpdate
-from supabasedb.supabase import db
-from core.exceptions import NotFoundError, ConflictError, NoResourcesReturnedError
-from pydantic import EmailStr, UUID4
-from uuid import uuid4
+from supabasedb.supabase import db, scoped_client
+from core.exceptions import NotFoundError, NoResourcesReturnedError
+from pydantic import UUID4
 from datetime import datetime, timezone
 
 supabase = db()
@@ -25,6 +24,7 @@ async def get_product_by_id(
     
     if len(response.data) == 0:
         raise NotFoundError('Product', product_id)
+    
     return ProductsBaseSchema.model_validate(response.data[0])
 
 async def create_product(
@@ -42,6 +42,7 @@ async def create_product(
     
     if len(response.data) == 0:
         raise NotFoundError('Product', payload.id)
+    
     return await get_product_by_id(payload.id)
 
 async def update_product(
@@ -58,4 +59,20 @@ async def update_product(
     
     if len(response.data) == 0:
         raise NotFoundError('Product', product_id)
+    
     return await get_product_by_id(product_id)
+
+async def delete_product(
+    product_id: UUID4,
+    access_token: str
+) -> ProductsBaseSchema:
+    client = scoped_client()
+    client.postgrest.auth(access_token)
+    
+    query = client.table('products').delete().eq('id', str(product_id))
+    response = query.execute()
+    
+    if len(response.data) == 0:
+        raise NotFoundError('Product', product_id)
+    
+    return ProductsBaseSchema.model_validate(response.data[0])

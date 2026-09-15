@@ -15,17 +15,22 @@ async def get_public_user_by_id(user_id: UUID4, access_token: str) -> UsersPubli
 
     if len(response.data) == 0:
         raise NotFoundError('User', user_id)
+    
     return UsersPublicProfile.model_validate(response.data[0])
 
-async def get_current_user(access_token: str) -> UsersBaseSchema:
+async def get_current_user(
+    access_token: str,
+    current_user_id: UUID4
+) -> UsersBaseSchema:
     client = scoped_client()
     client.postgrest.auth(access_token)
 
-    query = client.table('users').select("*")
+    query = client.table('users').select("*").eq('id', str(current_user_id))
     response = query.execute()
     
     if len(response.data) == 0:
         raise NotFoundError('User', 'current user')
+    
     return UsersBaseSchema.model_validate(response.data[0])
 
 async def get_user_by_id (
@@ -40,6 +45,7 @@ async def get_user_by_id (
     
     if len(response.data) == 0:
         raise NotFoundError('User', user_id)
+    
     return UsersBaseSchema.model_validate(response.data[0])
 
 async def check_user_with_email_exists (
@@ -50,6 +56,7 @@ async def check_user_with_email_exists (
     
     if len(response.data) == 0:
         return False
+    
     return True
 
 async def update_user(
@@ -68,4 +75,5 @@ async def update_user(
     
     if len(response.data) == 0:
         raise NotFoundError('User', current_user_id)
+    
     return await get_user_by_id(current_user_id, access_token)

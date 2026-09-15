@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Header
 from data import auth_util
 from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword
 from core.exceptions import UnauthorizedError
+from core.auth import get_access_token
 
 router = APIRouter(
     prefix="/auth",
@@ -20,13 +21,8 @@ async def create_user(payload: AuthRegister):
 @router.patch("/email")
 async def update_user_email(
     payload: AuthUpdateEmail,
-    authorization: str = Header(None)
-):
-    if not authorization or not authorization.startswith("Bearer "):
-        raise UnauthorizedError()
-
-    access_token = authorization.removeprefix("Bearer ")
-    
+    access_token: str = Depends(get_access_token)
+):  
     await auth_util.update_user_email(
         access_token,
         payload.refresh_token,
@@ -34,27 +30,22 @@ async def update_user_email(
     )
     return {"detail": "Confirmation email sent to new address"}
 
-@router.get("/sign-out")
-async def sign_out(payload: AuthSignOut, authorization: str = Header(None)):
-    if not authorization or not authorization.startswith("Bearer "):
-        raise UnauthorizedError()
-
-    access_token = authorization.removeprefix("Bearer ")
-    
+@router.post("/sign-out")
+async def sign_out(
+    payload: AuthSignOut, 
+    access_token: str = Depends(get_access_token)
+): 
     await auth_util.sign_out(access_token, payload.refresh_token)
     return {"detail": "Signed out successfully"}
 
 @router.patch("/password")
-async def change_password(payload: AuthChangePassword, authorization: str = Header(None)):
-    if not authorization or not authorization.startswith("Bearer "):
-        raise UnauthorizedError()
-    
-    access_token = authorization.removeprefix("Bearer ")
-    
+async def change_password(
+    payload: AuthChangePassword, 
+    access_token: str = Depends(get_access_token)
+):    
     await auth_util.change_password(
         access_token, 
         payload.refresh_token,
         payload.current_password,
         payload.new_password)
-    
     return {"detail": "Password changed successfully"}

@@ -41,7 +41,7 @@ async def create_user_from_auth(
     
     client = scoped_client()
     try:
-        client.auth.sign_up({
+        response = client.auth.sign_up({
             "email": payload.email,
             "password": payload.password.get_secret_value(),
             "options": {
@@ -56,6 +56,14 @@ async def create_user_from_auth(
         raise
     except AuthError:
         raise UnauthorizedError("Could not create account")
+    
+    if response.user is None:
+        raise UnauthorizedError("Could not create account")
+    
+    return {
+        "detail": "Account created. Please check your email to confirm your account before signing in.",
+        "user_id": response.user.id,
+    }
 
 async def update_user_email(
     access_token: str,

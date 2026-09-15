@@ -241,7 +241,6 @@ class CommissionsUpdate(CustomModelUpdate):
 	base_material: bool | None = Field(default=None)
 	colors: str | None = Field(default=None)
 	commission_type: str | None = Field(default=None)
-	created_at: datetime.datetime | None = Field(default=None)
 	creative_control: bool | None = Field(default=None)
 	distress: bool | None = Field(default=None)
 	email: EmailStr | None = Field(default=None)
@@ -255,8 +254,6 @@ class CommissionsUpdate(CustomModelUpdate):
 	retailor: bool | None = Field(default=None)
 	shape_patterns: str | None = Field(default=None)
 	symmetry_type: str | None = Field(default=None)
-	updated_at: datetime.datetime | None = Field(default=None)
-	updated_by: UUID4 | None = Field(default=None)
 	user_id: UUID4 | None = Field(default=None)
 	weekly_checkins: bool | None = Field(default=None)
 
@@ -270,21 +267,15 @@ class ProductsUpdate(CustomModelUpdate):
 	# Field properties:
 	# category: nullable
 	# commission_id: nullable
-	# created_at: has default value
-	# created_by: nullable
 	# drop_item: nullable
 	# drop_title: nullable
 	# paid: nullable
 	# size: nullable
-	# updated_at: has default value
-	# updated_by: nullable
 	# user_id: nullable
 	
-		# Optional fields
+	# Optional fields
 	category: str | None = Field(default=None)
 	commission_id: str | None = Field(default=None)
-	created_at: datetime.datetime | None = Field(default=None)
-	created_by: UUID4 | None = Field(default=None)
 	description: str | None = Field(default=None)
 	drop_item: bool | None = Field(default=None)
 	drop_title: str | None = Field(default=None)
@@ -294,8 +285,6 @@ class ProductsUpdate(CustomModelUpdate):
 	size: str | None = Field(default=None)
 	status: str | None = Field(default=None)
 	title: str | None = Field(default=None)
-	updated_at: datetime.datetime | None = Field(default=None)
-	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
 
 
