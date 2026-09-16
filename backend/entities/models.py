@@ -3,10 +3,11 @@ from decimal import Decimal
 from pydantic import BaseModel, Field, UUID4, EmailStr, SecretStr, field_validator
 from pydantic.types import StringConstraints
 from sqlalchemy.dialects.postgresql import ARRAY
-from typing import Any
+from typing import Literal
 from uuid import uuid4
 import datetime
 
+ProductStatus = Literal['sold', 'reserved', 'archive', 'available', 'display']
 
 # CUSTOM CLASSES
 # Note: These are custom model classes for defining common features among
@@ -177,7 +178,6 @@ class ProductsInsert(CustomModelInsert):
 	description: str
 	image_urls: list[str]
 	price: Decimal
-	status: str
 	title: str
 	
 	# Optional fields
@@ -189,6 +189,7 @@ class ProductsInsert(CustomModelInsert):
 	drop_title: str | None = Field(default=None)
 	paid: bool | None = Field(default=None)
 	size: str | None = Field(default=None)
+	status: ProductStatus | None = Field(default=None)
 	updated_at: datetime.datetime | None = Field(default=None)
 	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
@@ -283,7 +284,7 @@ class ProductsUpdate(CustomModelUpdate):
 	paid: bool | None = Field(default=None)
 	price: Decimal | None = Field(default=None)
 	size: str | None = Field(default=None)
-	status: str | None = Field(default=None)
+	status: ProductStatus | None = Field(default=None)
 	title: str | None = Field(default=None)
 	user_id: str | None = Field(default=None)
 

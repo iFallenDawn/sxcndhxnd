@@ -29,3 +29,8 @@ class ForbiddenError(AppError):
     def __init__(self, message: str = "You do not have sufficient permissions to perform this action"):
         self.message = message
         super().__init__(message)
+
+class InvalidFileTypeError(AppError):
+    def __init__(self, content_type: str | None):
+        self.content_type = content_type
+        super().__init__(f"Unsupported file type: {content_type}")

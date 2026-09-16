@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile
 from pydantic import UUID4
 from data import products_util
 from entities.models import ProductsBaseSchema, ProductsUpdate, ProductsInsert
@@ -17,6 +17,10 @@ async def get_all_products() -> list[ProductsBaseSchema]:
 @router.get("/{product_id}")
 async def get_product_by_id(product_id: UUID4) -> ProductsBaseSchema:
     return await products_util.get_product_by_id(product_id)
+
+@router.get("/gallery")
+async def get_all_gallery_products() -> list[ProductsBaseSchema]:
+    return await products_util.get_all_gallery_products()
 
 @router.post("/")
 async def create_product(
@@ -39,4 +43,12 @@ async def delete_product(
     access_token: str = Depends(get_access_token),
     _: UUID4 = Depends(require_admin)
 ) -> ProductsBaseSchema:
-    return await products_util.delete_product(product_id, access_token);
+    return await products_util.delete_product(product_id, access_token)
+
+@router.post("/upload-image")
+async def upload_product_image(
+    file: UploadFile,
+    access_token: str = Depends(get_access_token),
+    _: UUID4 = Depends(require_admin)
+) -> dict:
+    return await products_util.upload_product_image(file, access_token)

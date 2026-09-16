@@ -1,8 +1,11 @@
 from entities.models import ProductsBaseSchema, ProductsInsert, ProductsUpdate
 from supabasedb.supabase import db, scoped_client
-from core.exceptions import NotFoundError, NoResourcesReturnedError
+from core.exceptions import NotFoundError, NoResourcesReturnedError, InvalidFileTypeError
 from pydantic import UUID4
 from datetime import datetime, timezone
+from fastapi import UploadFile
+from uuid import uuid4
+from core.constants import ALLOWED_CONTENT_TYPES, GALLERY_STATUSES
 
 supabase = db()
 
@@ -15,6 +18,11 @@ async def get_all_products() -> list[ProductsBaseSchema]:
     
     result = [ProductsBaseSchema.model_validate(row) for row in response.data]
     return result
+
+async def get_all_gallery_products() -> list[ProductsBaseSchema]:
+    query = supabase.table('products').select('*').in_('status', GALLERY_STATUSES)
+    response = query.execute()
+    return [ProductsBaseSchema.model_validate(row) for row in response.data]
 
 async def get_product_by_id(
     product_id: UUID4
@@ -76,3 +84,23 @@ async def delete_product(
         raise NotFoundError('Product', product_id)
     
     return ProductsBaseSchema.model_validate(response.data[0])
+
+async def upload_product_image(
+    file: UploadFile,
+    access_token: str
+) -> dict:
+    if file.content_type not in ALLOWED_CONTENT_TYPES:
+         raise InvalidFileTypeError(file.content_type)
+    
+    client = scoped_client()
+    client.postgrest.auth(access_token)
+    
+    contents = await file.read()
+    file_path = f"products/{uuid4()}-{file.filename}"
+    
+    client.storage.from_('product-images').upload(
+        file_path, contents, {"content-type": file.content_type}
+    )
+    
+    image_url = client.storage.from_('product-images').get_public_url(file_path)
+    return {"image_url": image_url}

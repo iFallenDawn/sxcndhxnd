@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from postgrest.exceptions import APIError
 from supabase_auth.errors import AuthApiError
 from pydantic import ValidationError
-from core.exceptions import NotFoundError, ConflictError, UnauthorizedError,ForbiddenError
+from core.exceptions import NotFoundError, ConflictError, UnauthorizedError,ForbiddenError, InvalidFileTypeError
 
 logger = logging.getLogger(__name__)
 
@@ -86,6 +86,13 @@ def register_exception_handlers(app):
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
             content={"detail": exc.message}
+        )
+        
+    @app.exception_handler(InvalidFileTypeError)
+    async def invalid_file_type_handler(request: Request, exc: InvalidFileTypeError):
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content={"detail": str(exc)}
         )
         
     @app.exception_handler(Exception)
