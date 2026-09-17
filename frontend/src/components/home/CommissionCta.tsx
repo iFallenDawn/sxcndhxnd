@@ -1,8 +1,6 @@
 import { Link } from 'react-router'
-import { motion, useReducedMotion } from 'framer-motion'
 import { MessageCircle, Ruler, Scissors, PackageCheck, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import { Reveal, RevealGroup, RevealItem } from './reveal'
 
 interface Step {
@@ -34,44 +32,11 @@ const STEPS: Step[] = [
   },
 ]
 
-// Purely decorative, floating in the background of the section — hidden from
-// assistive tech and skipped entirely under reduced motion.
-const FLOATING_ICONS: { icon: LucideIcon; className: string; duration: number }[] = [
-  { icon: Scissors, className: 'top-6 left-[8%] size-8 -rotate-12', duration: 7 },
-  { icon: Ruler, className: 'top-1/3 right-[10%] size-9 rotate-6', duration: 8.5 },
-  { icon: PackageCheck, className: 'bottom-10 left-[18%] size-7 rotate-3', duration: 6.5 },
-]
-
-function FloatingIcons() {
-  const shouldReduceMotion = useReducedMotion()
-
-  if (shouldReduceMotion) {
-    return null
-  }
-
-  return (
-    <div className="pointer-events-none absolute inset-0 hidden overflow-hidden opacity-[0.08] sm:block" aria-hidden="true">
-      {FLOATING_ICONS.map(({ icon: Icon, className, duration }, index) => (
-        <motion.div
-          key={index}
-          className={cn('absolute', className)}
-          animate={{ y: [0, -16, 0] }}
-          transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <Icon className="size-full" />
-        </motion.div>
-      ))}
-    </div>
-  )
-}
-
 /** The 4-step commission process (v1: `commission-cta.tsx`). */
 export function CommissionCta() {
   return (
-    <section className="relative overflow-hidden bg-secondary py-24 sm:py-32">
-      <FloatingIcons />
-
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 sm:px-6">
+    <section className="bg-secondary py-24 sm:py-32">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 sm:px-6">
         <Reveal className="mx-auto flex max-w-2xl flex-col items-center gap-3 text-center">
           <p className="heading-display text-xs text-muted-foreground">Commissions</p>
           <h2 className="heading-display text-3xl sm:text-4xl">

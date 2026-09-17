@@ -89,7 +89,7 @@ function AuthLinks({ onNavigate }: { onNavigate?: () => void }) {
         >
           Sign in
         </Link>
-        <Button asChild size="sm" variant="outline" className="border-current text-current">
+        <Button asChild size="sm" variant="outline" className="border-current bg-transparent text-current hover:bg-current/10 hover:text-current">
           <Link to="/register" onClick={onNavigate}>
             Register
           </Link>
@@ -127,7 +127,7 @@ function AuthLinks({ onNavigate }: { onNavigate?: () => void }) {
       >
         {user?.email}
       </Link>
-      <Button size="sm" variant="outline" className="border-current text-current" onClick={handleSignOut}>
+      <Button size="sm" variant="outline" className="border-current bg-transparent text-current hover:bg-current/10 hover:text-current" onClick={handleSignOut}>
         Sign out
       </Button>
     </div>
@@ -164,16 +164,16 @@ export function Navbar() {
         'fixed inset-x-0 top-0 z-40 transition-colors duration-200',
         isSolid
           ? 'border-b border-border bg-background text-foreground'
-          : // Over a hero the surface behind the logo is the hero's own dark
-            // background, so the mark's interior cutouts have to match that
-            // instead of the page background — otherwise near-white silhouette
-            // on white cutouts renders it as a featureless blob.
-            'border-b border-transparent bg-transparent text-primary-foreground [--logo-cutout:var(--foreground)]',
+          : 'border-b border-transparent bg-transparent text-primary-foreground',
       )}
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2" aria-label="sxcndhxnd home">
-          <Logo />
+          {/* The mark's polarity is fixed (see Logo). Over a dark hero it gets a
+              light backing so it stays legible without being inverted. */}
+          <span className={cn('inline-flex p-1', isSolid ? null : 'bg-background')}>
+            <Logo />
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
