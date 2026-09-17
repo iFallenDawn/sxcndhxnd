@@ -8,12 +8,6 @@ class NotFoundError(AppError):
         self.resource = resource
         self.id = id
         super().__init__(f"{resource} with id {id} not found")
-
-# mainly for get all methods
-class NoResourcesReturnedError(AppError):
-    def __init__(self, resources: str):
-        self.resources = resources
-        super().__init__(f"No data found for {resources}")
         
 class ConflictError(AppError):
     def __init__(self, message: str):
@@ -34,3 +28,9 @@ class InvalidFileTypeError(AppError):
     def __init__(self, content_type: str | None):
         self.content_type = content_type
         super().__init__(f"Unsupported file type: {content_type}")
+
+class FailedToDeleteFromBucketError(AppError):
+    def __init__(self, id: str | UUID4, bucket: str):
+        self.id = id
+        self.bucket = bucket
+        super().__init__(f"Failed to delete storage object with id {id} from bucket {bucket}")

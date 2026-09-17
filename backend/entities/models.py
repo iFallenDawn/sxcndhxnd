@@ -390,3 +390,19 @@ class UsersPublicProfile(BaseModel):
     first_name: str
     last_name: str
     instagram: str
+    
+class GalleryImagesBaseSchema(CustomModel):
+    id: UUID4
+    image_url: str
+    description: str | None = Field(default=None)
+    created_by: UUID4 | None = Field(default=None)
+    created_at: datetime.datetime
+    
+class GalleryImagesInsert(CustomModelInsert):
+    id: UUID4 = Field(default_factory=uuid4)
+    image_url: str
+    description: str | None = Field(default=None)
+    
+class GalleryResponse(BaseModel):
+    products: list[ProductsBaseSchema]
+    gallery_images: list[GalleryImagesBaseSchema]

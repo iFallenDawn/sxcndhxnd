@@ -1,26 +1,23 @@
 from entities.models import ProductsBaseSchema, ProductsInsert, ProductsUpdate
 from supabasedb.supabase import db, scoped_client
-from core.exceptions import NotFoundError, NoResourcesReturnedError, InvalidFileTypeError
+from core.exceptions import NotFoundError, InvalidFileTypeError,FailedToDeleteFromBucketError
 from pydantic import UUID4
 from datetime import datetime, timezone
 from fastapi import UploadFile
 from uuid import uuid4
-from core.constants import ALLOWED_CONTENT_TYPES, GALLERY_STATUSES
+from core.constants import ALLOWED_CONTENT_TYPES, PRODUCT_GALLERY_STATUSES
+from core.storage import extract_storage_path
 
 supabase = db()
 
 async def get_all_products() -> list[ProductsBaseSchema]:
     query = supabase.table('products').select()
     response = query.execute()
-    
-    if len(response.data) == 0:
-        raise NoResourcesReturnedError('products')
-    
     result = [ProductsBaseSchema.model_validate(row) for row in response.data]
     return result
 
 async def get_all_gallery_products() -> list[ProductsBaseSchema]:
-    query = supabase.table('products').select('*').in_('status', GALLERY_STATUSES)
+    query = supabase.table('products').select('*').in_('status', PRODUCT_GALLERY_STATUSES)
     response = query.execute()
     return [ProductsBaseSchema.model_validate(row) for row in response.data]
 
@@ -83,14 +80,23 @@ async def delete_product(
     if len(response.data) == 0:
         raise NotFoundError('Product', product_id)
     
-    return ProductsBaseSchema.model_validate(response.data[0])
+    product = ProductsBaseSchema.model_validate(response.data[0])
+    
+    for url in product.image_urls:
+        bucket_file_path = extract_storage_path(url, bucket='product-images')
+        try:
+            client.storage.from_('product-images').remove([bucket_file_path])
+        except:
+            raise FailedToDeleteFromBucketError(product_id, bucket='product-images')
+    
+    return product
 
 async def upload_product_image(
     file: UploadFile,
     access_token: str
 ) -> dict:
     if file.content_type not in ALLOWED_CONTENT_TYPES:
-         raise InvalidFileTypeError(file.content_type)
+        raise InvalidFileTypeError(file.content_type)
     
     client = scoped_client()
     client.postgrest.auth(access_token)
@@ -104,3 +110,4 @@ async def upload_product_image(
     
     image_url = client.storage.from_('product-images').get_public_url(file_path)
     return {"image_url": image_url}
+

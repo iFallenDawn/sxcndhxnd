@@ -18,10 +18,6 @@ async def get_all_products() -> list[ProductsBaseSchema]:
 async def get_product_by_id(product_id: UUID4) -> ProductsBaseSchema:
     return await products_util.get_product_by_id(product_id)
 
-@router.get("/gallery")
-async def get_all_gallery_products() -> list[ProductsBaseSchema]:
-    return await products_util.get_all_gallery_products()
-
 @router.post("/")
 async def create_product(
     payload: ProductsInsert,
