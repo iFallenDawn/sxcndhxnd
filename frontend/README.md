@@ -26,7 +26,7 @@ npm install
 npm run dev
 ```
 
-Serves the app at http://localhost:5173 by default.
+Serves the app at http://localhost:3000 (pinned in `vite.config.ts`; the backend's CORS allowlist expects this origin).
 
 ### Pointing at a local backend
 
