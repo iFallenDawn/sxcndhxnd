@@ -22,6 +22,7 @@ function SkeletonGrid() {
 }
 
 interface StoreSectionProps {
+  id: string
   title: string
   description: string
   products: ProductsBaseSchema[]
@@ -30,8 +31,12 @@ interface StoreSectionProps {
   sort: SortOption
 }
 
-/** One storefront section (Commissions or Capsules): filters, sorts, groups, and renders its own product slice. */
-function StoreSection({ title, description, products, category, bucket, sort }: StoreSectionProps) {
+/**
+ * One storefront section (Commissions or Capsules): filters, sorts, groups,
+ * and renders its own product slice. `id` gives the product detail page's
+ * "back to store" link (issue #9) something to scroll to.
+ */
+function StoreSection({ id, title, description, products, category, bucket, sort }: StoreSectionProps) {
   const filtered = products.filter((product) => {
     if (category !== null && product.category !== category) return false
     if (bucket !== null && getProductBucket(product.status) !== bucket) return false
@@ -41,7 +46,7 @@ function StoreSection({ title, description, products, category, bucket, sort }: 
   const entries = useMemo(() => groupForDisplay(filtered, sort), [filtered, sort])
 
   return (
-    <section className="flex flex-col gap-6">
+    <section id={id} className="flex scroll-mt-20 flex-col gap-6">
       <div className="flex flex-col gap-1">
         <h2 className="heading-display text-2xl sm:text-3xl">{title}</h2>
         <p className="text-sm text-muted-foreground">{description}</p>
@@ -126,6 +131,7 @@ export function Store() {
 
           <div className="flex flex-col gap-16">
             <StoreSection
+              id="commissions"
               title="Commissions"
               description="Made to order, built around you."
               products={commissions}
@@ -134,6 +140,7 @@ export function Store() {
               sort={sort}
             />
             <StoreSection
+              id="capsules"
               title="Capsules"
               description="Pre-made, one-of-a-kind, sold as-is."
               products={capsules}
