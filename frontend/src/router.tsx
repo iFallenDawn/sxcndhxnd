@@ -2,6 +2,7 @@ import type { RouteObject } from 'react-router'
 import { createBrowserRouter } from 'react-router'
 import { RootLayout } from '@/layouts/RootLayout'
 import { NotFound } from '@/pages/NotFound'
+import { Home } from '@/pages/Home'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
 import { RequireAdmin } from '@/components/guards/RequireAdmin'
@@ -30,7 +31,7 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <RouteError />,
     children: [
-      { index: true, element: <Placeholder name="Home" /> },
+      { index: true, element: <Home /> },
       { path: 'store', element: <Placeholder name="Store" /> },
       {
         path: 'store/:productId',
