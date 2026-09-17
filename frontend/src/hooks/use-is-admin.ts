@@ -16,8 +16,8 @@ export function useIsAdmin() {
 
   return useQuery({
     queryKey: queryKeys.auth.adminProbe(userId),
-    queryFn: probeIsAdmin,
-    enabled: isAuthenticated,
+    queryFn: () => probeIsAdmin(userId!),
+    enabled: isAuthenticated && Boolean(userId),
     staleTime: Infinity,
     retry: false,
   })
