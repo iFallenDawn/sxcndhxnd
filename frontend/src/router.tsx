@@ -4,6 +4,7 @@ import { RootLayout } from '@/layouts/RootLayout'
 import { NotFound } from '@/pages/NotFound'
 import { Home } from '@/pages/Home'
 import { Store } from '@/pages/Store'
+import { ProductDetail } from '@/pages/ProductDetail'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
 import { RequireAdmin } from '@/components/guards/RequireAdmin'
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       { path: 'store', element: <Store /> },
       {
         path: 'store/:productId',
-        element: <Placeholder name="Product" />,
+        element: <ProductDetail />,
       },
       { path: 'gallery', element: <Placeholder name="Gallery" /> },
       { path: 'projects', element: <Placeholder name="Projects" /> },
