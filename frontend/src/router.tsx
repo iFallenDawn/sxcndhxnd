@@ -5,6 +5,7 @@ import { NotFound } from '@/pages/NotFound'
 import { Home } from '@/pages/Home'
 import { Store } from '@/pages/Store'
 import { ProductDetail } from '@/pages/ProductDetail'
+import { Gallery } from '@/pages/Gallery'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
 import { RequireAdmin } from '@/components/guards/RequireAdmin'
@@ -42,7 +43,7 @@ export const router = createBrowserRouter([
         path: 'store/:productId',
         element: <ProductDetail />,
       },
-      { path: 'gallery', element: <Placeholder name="Gallery" /> },
+      { path: 'gallery', element: <Gallery /> },
       { path: 'projects', element: <Placeholder name="Projects" /> },
       {
         path: 'commissions/request',
