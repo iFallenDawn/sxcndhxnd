@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router'
 import { RootLayout } from '@/layouts/RootLayout'
 import { NotFound } from '@/pages/NotFound'
 import { Home } from '@/pages/Home'
+import { Store } from '@/pages/Store'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
 import { RequireAdmin } from '@/components/guards/RequireAdmin'
@@ -32,7 +33,7 @@ export const router = createBrowserRouter([
     errorElement: <RouteError />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'store', element: <Placeholder name="Store" /> },
+      { path: 'store', element: <Store /> },
       {
         path: 'store/:productId',
         element: <Placeholder name="Product" />,
