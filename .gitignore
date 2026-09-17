@@ -22,3 +22,6 @@ venv.bak/
 # Agent related files
 CLAUDE.md
 .claude/
+
+# Large client asset drops
+*.zip
