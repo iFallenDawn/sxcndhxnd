@@ -72,16 +72,21 @@ function Section({
   )
 }
 
+/**
+ * Swatches read `var(--<token>)`, not `var(--color-<token>)`. The theme block
+ * in index.css is `@theme inline`, and `inline` means Tailwind substitutes
+ * these values directly into the utilities it generates instead of emitting
+ * `--color-*` custom properties. So `--color-background` does not exist at
+ * runtime, while the `--background` it is defined from does.
+ */
 function Swatch({ token }: { token: string }) {
   return (
     <div className="flex flex-col gap-2">
       <div
         className="h-16 w-full border border-border"
-        style={{ backgroundColor: `var(--color-${token})` }}
+        style={{ backgroundColor: `var(--${token})` }}
       />
-      <code className="font-mono text-xs text-muted-foreground">
-        --color-{token}
-      </code>
+      <code className="font-mono text-xs text-muted-foreground">--{token}</code>
     </div>
   )
 }
