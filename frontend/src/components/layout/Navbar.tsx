@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router'
 import { Menu } from 'lucide-react'
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'

@@ -1,4 +1,4 @@
-import { Link, useRouteError } from 'react-router-dom'
+import { Link, useRouteError } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { PageMeta } from '@/components/seo/PageMeta'
 

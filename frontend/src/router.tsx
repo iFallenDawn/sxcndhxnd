@@ -1,5 +1,5 @@
-import type { RouteObject } from 'react-router-dom'
-import { createBrowserRouter } from 'react-router-dom'
+import type { RouteObject } from 'react-router'
+import { createBrowserRouter } from 'react-router'
 import { RootLayout } from '@/layouts/RootLayout'
 import { NotFound } from '@/pages/NotFound'
 import { Placeholder } from '@/pages/Placeholder'
