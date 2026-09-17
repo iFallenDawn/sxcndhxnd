@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router'
 import { Menu } from 'lucide-react'
-import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -168,11 +167,12 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2" aria-label="sxcndhxnd home">
-          {/* The mark's polarity is fixed (see Logo). Over a dark hero it gets a
-              light backing so it stays legible without being inverted. */}
-          <span className={cn('inline-flex p-1', isSolid ? null : 'bg-background')}>
-            <Logo />
+        {/* Wordmark rather than the face mark, following v1: it inherits the
+            nav's current color, so it stays legible over the hero without the
+            figurative mark needing a backing or a colour flip. */}
+        <Link to="/" className="flex items-center" aria-label="sxcndhxnd home">
+          <span className="heading-display text-xl text-current sm:text-2xl">
+            sxcndhxnd
           </span>
         </Link>
 
