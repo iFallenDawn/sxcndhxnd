@@ -91,7 +91,7 @@ export function Store() {
       />
 
       <div className="flex flex-col gap-2">
-        <p className="heading-display text-xs text-muted-foreground">Store</p>
+        <p className="eyebrow text-muted-foreground">Store</p>
         <h1 className="heading-display text-3xl sm:text-4xl">Commissions &amp; capsules</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Every piece we've made stays listed here, even once it's gone — currently available work

@@ -38,11 +38,11 @@ export function CommissionCta() {
     <section className="bg-secondary py-24 sm:py-32">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 sm:px-6">
         <Reveal className="mx-auto flex max-w-2xl flex-col items-center gap-3 text-center">
-          <p className="heading-display text-xs text-muted-foreground">Commissions</p>
-          <h2 className="heading-display text-3xl sm:text-4xl">
+          <p className="eyebrow text-muted-foreground">Commissions</p>
+          <h2 className="heading-display text-4xl sm:text-5xl">
             A one-of-one garment, made for you
           </h2>
-          <p className="text-sm text-muted-foreground sm:text-base">
+          <p className="text-base text-muted-foreground sm:text-lg">
             No two commissions leave here the same. Here's how one comes together.
           </p>
         </Reveal>
@@ -51,12 +51,12 @@ export function CommissionCta() {
           {STEPS.map((step, index) => (
             <RevealItem key={step.title} className="flex flex-col items-start gap-3">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-xs text-muted-foreground">
+                <span className="font-mono text-sm text-muted-foreground">
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <step.icon className="size-5 text-foreground" aria-hidden="true" />
               </div>
-              <h3 className="text-base font-medium text-foreground">{step.title}</h3>
+              <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
               <p className="text-sm text-muted-foreground">{step.description}</p>
             </RevealItem>
           ))}

@@ -104,8 +104,8 @@ export function Collections() {
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-24 sm:px-6 sm:py-32">
       <Reveal className="flex flex-col gap-2 text-center">
-        <p className="heading-display text-xs text-muted-foreground">Collections</p>
-        <h2 className="heading-display text-3xl sm:text-4xl">Shop by category</h2>
+        <p className="eyebrow text-muted-foreground">Collections</p>
+        <h2 className="heading-display text-4xl sm:text-5xl">Shop by category</h2>
       </Reveal>
 
       <RevealGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:grid-rows-2">

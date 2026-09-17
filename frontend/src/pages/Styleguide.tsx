@@ -134,9 +134,17 @@ export function Styleguide() {
 
       <Section title="Type scale">
         <div className="flex flex-col gap-4">
-          <p className="heading-display text-5xl">Display / 5xl</p>
+          <p className="heading-display text-7xl">Display / 7xl — hero only</p>
+          <p className="heading-display text-5xl">Display / 5xl — section heading</p>
           <p className="heading-display text-3xl">Display / 3xl</p>
           <p className="heading-display text-xl">Display / xl</p>
+          <p className="eyebrow text-muted-foreground">Eyebrow — section kicker</p>
+          <p className="text-sm text-muted-foreground">
+            Eyebrows use <code className="font-mono">.eyebrow</code>, not{' '}
+            <code className="font-mono">.heading-display</code>: display tracking
+            is negative (-0.04em), which closes up small caps. Eyebrows open to
+            +0.18em instead.
+          </p>
           <p className="text-base font-normal">
             Body / base — clean, simple, sans. This is the register for
             paragraphs, descriptions, and everything a customer reads.

@@ -13,17 +13,17 @@ export function Philosophy() {
   return (
     <section className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4 py-24 text-center sm:px-6 sm:py-32">
       <Reveal>
-        <p className="heading-display text-xs text-muted-foreground">Our philosophy</p>
+        <p className="eyebrow text-muted-foreground">Our philosophy</p>
       </Reveal>
       <Reveal delay={0.1}>
-        <p className="text-xl leading-relaxed font-light text-foreground sm:text-2xl">
+        <p className="text-2xl leading-relaxed font-light text-foreground sm:text-3xl">
           {MISSION_STATEMENT}
         </p>
       </Reveal>
       <Reveal delay={0.2}>
         <Link
           to="/projects"
-          className="group inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-muted-foreground"
+          className="group inline-flex items-center gap-2 text-base font-medium text-foreground transition-colors hover:text-muted-foreground"
         >
           See the work behind it
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />

@@ -21,9 +21,9 @@ export function About() {
       </Reveal>
 
       <Reveal delay={0.1} className="flex w-full flex-col gap-4 sm:w-3/5">
-        <p className="heading-display text-xs text-muted-foreground">Behind sxcndhxnd</p>
-        <h2 className="heading-display text-2xl sm:text-3xl">Nico Monte</h2>
-        <p className="text-base leading-relaxed text-muted-foreground">
+        <p className="eyebrow text-muted-foreground">Behind sxcndhxnd</p>
+        <h2 className="heading-display text-4xl sm:text-5xl">Nico Monte</h2>
+        <p className="text-lg leading-relaxed text-muted-foreground">
           I didn't set out to build a brand — I set out to stop watching
           good garments get thrown away. Every piece that comes through
           here already has a history. My job is just to listen to it, then
