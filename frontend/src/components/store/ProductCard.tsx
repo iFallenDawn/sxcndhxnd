@@ -6,10 +6,16 @@ import { cn } from '@/lib/utils'
 import { formatPrice, getProductBucket, BUCKET_LABEL, type ProductBucket } from '@/lib/products'
 import type { ProductsBaseSchema } from '@/types/api'
 
-const BUCKET_BADGE_VARIANT: Record<ProductBucket, 'default' | 'secondary' | 'outline'> = {
-  available: 'default',
-  reserved: 'secondary',
-  archive: 'outline',
+/**
+ * These badges sit ON the product photo, so every one needs its own opaque
+ * surface — a transparent or outline treatment is illegible the moment a
+ * photo happens to be dark behind it. Status is differentiated by tone
+ * (dark chip / light chip / muted chip), never by dropping the background.
+ */
+const BUCKET_BADGE_CLASS: Record<ProductBucket, string> = {
+  available: 'border-transparent bg-foreground text-background',
+  reserved: 'border-transparent bg-background text-foreground',
+  archive: 'border-transparent bg-muted text-muted-foreground',
 }
 
 interface ProductCardProps {
@@ -52,8 +58,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <ImagePlaceholder label={product.title} className="h-full w-full border-none" />
         )}
         <Badge
-          variant={BUCKET_BADGE_VARIANT[bucket]}
-          className="absolute top-2 left-2 uppercase tracking-wide"
+          className={cn(
+            'absolute top-2 left-2 uppercase tracking-wide',
+            BUCKET_BADGE_CLASS[bucket],
+          )}
         >
           {BUCKET_LABEL[bucket]}
         </Badge>
