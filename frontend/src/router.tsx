@@ -5,6 +5,7 @@ import { NotFound } from '@/pages/NotFound'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
 import { RequireAdmin } from '@/components/guards/RequireAdmin'
+import { RouteError } from '@/components/layout/RouteError'
 
 // Dev-only route: guarded by `import.meta.env.DEV`, which Vite inlines as a
 // literal `false` in production builds. That lets the bundler dead-code
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
+    errorElement: <RouteError />,
     children: [
       { index: true, element: <Placeholder name="Home" /> },
       { path: 'store', element: <Placeholder name="Store" /> },

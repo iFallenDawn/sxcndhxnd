@@ -1,39 +1,33 @@
-import { Link, Outlet } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
+import { Outlet } from 'react-router-dom'
+import { Navbar } from '@/components/layout/Navbar'
+import { Footer } from '@/components/layout/Footer'
+import { ScrollRestoration } from '@/components/layout/ScrollRestoration'
+import { HeroProvider, useHasHero } from '@/lib/hero-context'
+import { cn } from '@/lib/utils'
 
-const NAV_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/store', label: 'Store' },
-  { to: '/gallery', label: 'Gallery' },
-  { to: '/projects', label: 'Projects' },
-  { to: '/commissions/request', label: 'Commissions' },
-  { to: '/contact', label: 'Contact' },
-  { to: '/sign-in', label: 'Sign in' },
-]
+// The navbar is fixed, so ordinarily content needs top padding to clear it.
+// A hero page is the one exception: its hero art is meant to run full-bleed
+// behind the transparent nav (see `useHasHero`/`RouteHasHero`), so it opts
+// out of that padding instead of leaving a visible gap above the hero.
+function MainContent() {
+  const hasHero = useHasHero()
+
+  return (
+    <main className={cn('flex flex-1 flex-col', !hasHero && 'pt-14')}>
+      <Outlet />
+    </main>
+  )
+}
 
 export function RootLayout() {
   return (
-    <div className="flex min-h-svh flex-col bg-background text-foreground">
-      <header className="flex flex-wrap items-center gap-4 border-b border-border px-6 py-4">
-        <span className="text-lg font-semibold">sxcndhxnd</span>
-        <nav className="flex flex-wrap items-center gap-3">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <Button asChild size="sm" className="ml-auto">
-          <Link to="/register">Register</Link>
-        </Button>
-      </header>
-      <main className="flex flex-1 flex-col">
-        <Outlet />
-      </main>
-    </div>
+    <HeroProvider>
+      <div className="flex min-h-svh flex-col bg-background text-foreground">
+        <ScrollRestoration />
+        <Navbar />
+        <MainContent />
+        <Footer />
+      </div>
+    </HeroProvider>
   )
 }
