@@ -21,3 +21,4 @@ venv.bak/
 
 # Agent related files
 CLAUDE.md
+.claude/
