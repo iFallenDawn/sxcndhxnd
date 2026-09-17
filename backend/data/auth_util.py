@@ -31,6 +31,25 @@ async def sign_in(email: EmailStr, password: SecretStr) -> dict:
     }
         
 
+async def refresh_session(refresh_token: str) -> dict:
+    client = scoped_client()
+
+    try:
+        response = client.auth.refresh_session(refresh_token)
+    except AuthApiError:
+        raise UnauthorizedError("Invalid or expired refresh token")
+    except AuthError:
+        raise UnauthorizedError("Invalid or expired refresh token")
+
+    if response.session is None or response.user is None:
+        raise UnauthorizedError("Invalid or expired refresh token")
+
+    return {
+        "access_token": response.session.access_token,
+        "refresh_token": response.session.refresh_token,
+        "user_id": response.user.id,
+    }
+
 async def create_user_from_auth(
     payload: AuthRegister
 ):

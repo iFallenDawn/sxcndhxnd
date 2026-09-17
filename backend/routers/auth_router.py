@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Header
 from data import auth_util
-from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword
+from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword, AuthRefresh
 from core.exceptions import UnauthorizedError
 from core.auth import get_access_token
 
@@ -13,6 +13,10 @@ router = APIRouter(
 @router.post("/sign-in")
 async def sign_in(payload: AuthSignIn):
     return await auth_util.sign_in(payload.email, payload.password)
+
+@router.post("/refresh")
+async def refresh_session(payload: AuthRefresh):
+    return await auth_util.refresh_session(payload.refresh_token)
 
 @router.post("/register")
 async def create_user(payload: AuthRegister):

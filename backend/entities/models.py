@@ -360,7 +360,10 @@ class AuthSignIn(CustomModel):
     
 class AuthSignOut(CustomModel):
     refresh_token: str
-    
+
+class AuthRefresh(CustomModel):
+    refresh_token: str
+
 class AuthChangePassword(CustomModelUpdate):
     current_password: SecretStr
     new_password: SecretStr
