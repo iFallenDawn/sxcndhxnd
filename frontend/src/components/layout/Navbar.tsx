@@ -158,7 +158,11 @@ export function Navbar() {
         'fixed inset-x-0 top-0 z-40 transition-colors duration-200',
         isSolid
           ? 'border-b border-border bg-background text-foreground'
-          : 'border-b border-transparent bg-transparent text-primary-foreground',
+          : // Over a hero the surface behind the logo is the hero's own dark
+            // background, so the mark's interior cutouts have to match that
+            // instead of the page background — otherwise near-white silhouette
+            // on white cutouts renders it as a featureless blob.
+            'border-b border-transparent bg-transparent text-primary-foreground [--logo-cutout:var(--foreground)]',
       )}
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
