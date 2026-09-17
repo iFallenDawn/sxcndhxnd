@@ -1,6 +1,7 @@
 import { apiFetch } from '@/lib/api-client'
 import type {
   AuthChangePasswordPayload,
+  AuthRefreshPayload,
   AuthRegisterPayload,
   AuthRegisterResponse,
   AuthSignInPayload,
@@ -29,6 +30,22 @@ export function registerUser(payload: AuthRegisterPayload) {
  */
 export function signIn(payload: AuthSignInPayload) {
   return apiFetch<AuthSignInResponse>('/auth/sign-in', {
+    method: 'POST',
+    body: payload,
+    authenticated: false,
+  })
+}
+
+/**
+ * `POST /auth/refresh`. Public (no bearer needed — the refresh token itself
+ * is the credential). Prefer `useAuthStore().refresh()` over calling this
+ * directly, since the store also persists the rotated tokens.
+ *
+ * Not verified end-to-end against a live Supabase project as of writing —
+ * see `lib/api-client.ts` for details.
+ */
+export function refreshSession(payload: AuthRefreshPayload) {
+  return apiFetch<AuthSignInResponse>('/auth/refresh', {
     method: 'POST',
     body: payload,
     authenticated: false,

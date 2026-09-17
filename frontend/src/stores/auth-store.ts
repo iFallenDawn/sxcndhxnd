@@ -1,11 +1,23 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { apiFetch } from '@/lib/api-client'
+import { refreshSession } from '@/api/auth'
 import type {
   AuthSignInPayload,
   AuthSignInResponse,
   UsersBaseSchema,
 } from '@/types/api'
+
+interface SignOutOptions {
+  /**
+   * Whether to best-effort notify the backend via `POST /auth/sign-out`
+   * before clearing local state. Set to `false` when signing out because a
+   * refresh already failed (the refresh token is known-dead, and calling
+   * the backend would itself 401 and re-enter the refresh path — see
+   * `lib/api-client.ts`). Defaults to `true`.
+   */
+  notifyBackend?: boolean
+}
 
 interface AuthState {
   accessToken: string | null
@@ -22,7 +34,15 @@ interface AuthState {
    * since an expired/invalid token would otherwise strand the user signed in
    * on the client.
    */
-  signOut: () => Promise<void>
+  signOut: (options?: SignOutOptions) => Promise<void>
+  /**
+   * Exchanges the stored refresh token for a new access/refresh token pair
+   * via `POST /auth/refresh` and persists both (Supabase rotates refresh
+   * tokens on every use, so the old one is single-use). Throws if there is
+   * no refresh token or the exchange fails — callers (see `apiFetch`) treat
+   * that as "the session is dead" and sign out.
+   */
+  refresh: () => Promise<void>
   setUser: (user: UsersBaseSchema | null) => void
   /** Internal: called by the `persist` middleware once storage has been read. */
   _setHasHydrated: (value: boolean) => void
@@ -54,9 +74,11 @@ export const useAuthStore = create<AuthState>()(
         set({ user })
       },
 
-      signOut: async () => {
+      signOut: async (options) => {
+        const { notifyBackend = true } = options ?? {}
         const { refreshToken } = get()
-        if (refreshToken) {
+
+        if (notifyBackend && refreshToken) {
           try {
             await apiFetch('/auth/sign-out', {
               method: 'POST',
@@ -69,6 +91,22 @@ export const useAuthStore = create<AuthState>()(
         }
 
         set({ accessToken: null, refreshToken: null, user: null })
+      },
+
+      refresh: async () => {
+        const { refreshToken } = get()
+        if (!refreshToken) {
+          throw new Error('No refresh token available')
+        }
+
+        const session = await refreshSession({ refresh_token: refreshToken })
+
+        // Supabase rotates refresh tokens on every use — always persist the
+        // newly returned one, never reuse the one we sent.
+        set({
+          accessToken: session.access_token,
+          refreshToken: session.refresh_token,
+        })
       },
 
       setUser: (user) => set({ user }),
@@ -88,24 +126,3 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 )
-
-/*
- * TODO(refresh): There is no `POST /auth/refresh` endpoint on the backend
- * yet, so the `refreshToken` above is stored but never exchanged — once the
- * Supabase access token expires (default ~1h), authenticated requests will
- * start failing with 401 until the user signs in again.
- *
- * Options to fix this properly (tracked on issue #5):
- *   1. Add `POST /auth/refresh` to the backend that calls
- *      `client.auth.refresh_session(refresh_token)` and returns a new
- *      `{ access_token, refresh_token }` pair — mirrors the existing
- *      `sign_in` response shape and keeps the frontend backend-agnostic.
- *   2. Drive refresh directly from the client via `supabase-js`
- *      (`supabase.auth.refreshSession()`), which would mean this frontend
- *      talks to Supabase Auth directly instead of only through the FastAPI
- *      layer — a bigger architectural shift with its own tradeoffs (two
- *      sources of truth for the session, needs the anon key on the client).
- *
- * Once either lands, wire it in here — e.g. have `apiFetch` retry once on a
- * 401 by calling a new `refresh()` action before re-attempting the request.
- */

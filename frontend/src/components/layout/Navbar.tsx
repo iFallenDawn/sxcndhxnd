@@ -120,7 +120,13 @@ function AuthLinks({ onNavigate }: { onNavigate?: () => void }) {
           Dashboard
         </NavLink>
       ) : null}
-      <span className="text-sm text-current/70">{user?.email}</span>
+      <Link
+        to="/account"
+        onClick={onNavigate}
+        className="text-sm text-current/70 hover:text-current"
+      >
+        {user?.email}
+      </Link>
       <Button size="sm" variant="outline" className="border-current text-current" onClick={handleSignOut}>
         Sign out
       </Button>

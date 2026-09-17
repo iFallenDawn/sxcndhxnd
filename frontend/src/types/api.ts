@@ -176,6 +176,18 @@ export interface AuthSignOutPayload {
   refresh_token: string
 }
 
+/**
+ * Sent to `POST /auth/refresh`. Mirrors `entities.models.AuthRefresh`.
+ *
+ * The response is the same ad hoc shape as `POST /auth/sign-in` (see
+ * `AuthSignInResponse`) — `data/auth_util.py::refresh_session` builds it
+ * identically. Supabase rotates refresh tokens on every use, so the
+ * `refresh_token` in the response must replace the one that was sent.
+ */
+export interface AuthRefreshPayload {
+  refresh_token: string
+}
+
 /** Sent to `PATCH /auth/email`. Mirrors `entities.models.AuthUpdateEmail`. */
 export interface AuthUpdateEmailPayload {
   new_email: string
