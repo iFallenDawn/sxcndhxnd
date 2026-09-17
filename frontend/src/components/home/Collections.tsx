@@ -11,15 +11,15 @@ interface Collection {
   imageWidth: number
   imageHeight: number
   alt: string
-  accentClassName: string
   /** Grid span, driving the asymmetrical layout (v1: `collections-section.tsx`). */
   spanClassName: string
 }
 
 // "Show don't tell" per the design notes — imagery carries each category, so
-// there's deliberately no copy beyond the name itself. One card (Tops) runs
-// larger to keep the grid asymmetrical rather than a uniform 2x2, matching
-// v1's layout.
+// there's deliberately no copy beyond the name itself. Tops runs 2x2 and fills
+// the left block, Bottoms and Tote Bags stack down the right column, and
+// Accessories runs full width beneath as a band — keeping v1's asymmetry
+// without leaving an empty cell in the grid.
 const COLLECTIONS: Collection[] = [
   {
     name: 'Tops',
@@ -28,7 +28,6 @@ const COLLECTIONS: Collection[] = [
     imageWidth: 900,
     imageHeight: 1350,
     alt: 'Patchwork cardigan made from upcycled fabric',
-    accentClassName: 'bg-brand-clay',
     spanClassName: 'sm:col-span-2 sm:row-span-2',
   },
   {
@@ -38,7 +37,6 @@ const COLLECTIONS: Collection[] = [
     imageWidth: 900,
     imageHeight: 1125,
     alt: 'Patched denim shorts made from upcycled denim',
-    accentClassName: 'bg-brand-moss',
     spanClassName: 'sm:col-span-1',
   },
   {
@@ -48,7 +46,6 @@ const COLLECTIONS: Collection[] = [
     imageWidth: 900,
     imageHeight: 1125,
     alt: 'Patchwork tote bag made from upcycled fabric scraps',
-    accentClassName: 'bg-brand-sand',
     spanClassName: 'sm:col-span-1',
   },
   {
@@ -58,8 +55,7 @@ const COLLECTIONS: Collection[] = [
     imageWidth: 900,
     imageHeight: 1125,
     alt: 'Tote bag upcycled from a rice bag',
-    accentClassName: 'bg-foreground',
-    spanClassName: 'sm:col-span-2',
+    spanClassName: 'sm:col-span-3 sm:h-[340px]',
   },
 ]
 
@@ -76,10 +72,6 @@ function CollectionCard({ collection }: { collection: Collection }) {
             loading="lazy"
             decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <span
-            className={cn('absolute top-0 left-0 h-1 w-10', collection.accentClassName)}
-            aria-hidden="true"
           />
           {/* Hover reveal, per v1: name + affordance stay dim until interaction. */}
           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-foreground/70 via-foreground/0 to-foreground/0 p-5 opacity-90 transition-opacity duration-300 group-hover:opacity-100">
@@ -108,7 +100,7 @@ export function Collections() {
         <h2 className="heading-display text-4xl sm:text-5xl">Shop by category</h2>
       </Reveal>
 
-      <RevealGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:grid-rows-2">
+      <RevealGroup className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:grid-rows-[repeat(2,minmax(0,1fr))_auto]">
         {COLLECTIONS.map((collection) => (
           <CollectionCard key={collection.name} collection={collection} />
         ))}
