@@ -1,4 +1,5 @@
 import { apiFetch } from '@/lib/api-client'
+import { uploadWithProgress } from '@/lib/upload-with-progress'
 import type {
   ProductImageUploadResponse,
   ProductsBaseSchema,
@@ -48,4 +49,24 @@ export function uploadProductImage(file: File) {
     method: 'POST',
     formData,
   })
+}
+
+/**
+ * Same endpoint as {@link uploadProductImage}, via `XMLHttpRequest` so the
+ * dashboard's upload queue can show real per-file progress (see
+ * `lib/upload-with-progress.ts`).
+ */
+export function uploadProductImageWithProgress(
+  file: File,
+  onProgress: (percent: number) => void,
+  signal: AbortSignal,
+) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return uploadWithProgress<ProductImageUploadResponse>(
+    '/products/upload-image',
+    formData,
+    onProgress,
+    signal,
+  )
 }
