@@ -3,20 +3,9 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ImagePlaceholder } from '@/components/home/ImagePlaceholder'
 import { cn } from '@/lib/utils'
-import { formatPrice, getProductBucket, BUCKET_LABEL, type ProductBucket } from '@/lib/products'
+import { formatPrice, getProductBucket, BUCKET_LABEL, BUCKET_BADGE_ON_IMAGE } from '@/lib/products'
 import type { ProductsBaseSchema } from '@/types/api'
 
-/**
- * These badges sit ON the product photo, so every one needs its own opaque
- * surface — a transparent or outline treatment is illegible the moment a
- * photo happens to be dark behind it. Status is differentiated by tone
- * (dark chip / light chip / muted chip), never by dropping the background.
- */
-const BUCKET_BADGE_CLASS: Record<ProductBucket, string> = {
-  available: 'border-transparent bg-foreground text-background',
-  reserved: 'border-transparent bg-background text-foreground',
-  archive: 'border-transparent bg-muted text-muted-foreground',
-}
 
 interface ProductCardProps {
   product: ProductsBaseSchema
@@ -60,7 +49,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Badge
           className={cn(
             'absolute top-2 left-2 uppercase tracking-wide',
-            BUCKET_BADGE_CLASS[bucket],
+            BUCKET_BADGE_ON_IMAGE[bucket],
           )}
         >
           {BUCKET_LABEL[bucket]}

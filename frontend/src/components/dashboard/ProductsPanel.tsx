@@ -15,16 +15,10 @@ import { ProductFormDialog } from '@/components/dashboard/ProductFormDialog'
 import { DeleteProductDialog } from '@/components/dashboard/DeleteProductDialog'
 import { useProducts } from '@/hooks/use-products'
 import { ApiError } from '@/lib/api-error'
-import { formatPrice, getProductBucket, BUCKET_LABEL, type ProductBucket } from '@/lib/products'
+import { formatPrice, getProductBucket, BUCKET_LABEL, BUCKET_BADGE_ON_SURFACE, type ProductBucket } from '@/lib/products'
 import { ImagePlaceholder } from '@/components/home/ImagePlaceholder'
 import type { ProductsBaseSchema } from '@/types/api'
 
-/** Same tone scheme as the storefront's `ProductCard` — every badge over a photo needs its own opaque surface. */
-const BUCKET_BADGE_CLASS: Record<ProductBucket, string> = {
-  available: 'border-transparent bg-foreground text-background',
-  reserved: 'border-transparent bg-background text-foreground',
-  archive: 'border-transparent bg-muted text-muted-foreground',
-}
 
 function ProductRow({
   product,
@@ -51,7 +45,7 @@ function ProductRow({
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="truncate font-medium text-foreground">{product.title}</span>
-          <Badge className={BUCKET_BADGE_CLASS[bucket]}>{BUCKET_LABEL[bucket]}</Badge>
+          <Badge className={BUCKET_BADGE_ON_SURFACE[bucket]}>{BUCKET_LABEL[bucket]}</Badge>
         </div>
         <span className="font-mono text-sm text-muted-foreground">{formatPrice(product.price)}</span>
       </div>

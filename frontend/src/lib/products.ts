@@ -55,6 +55,31 @@ export const BUCKET_LABEL: Record<ProductBucket, string> = {
   archive: 'Archive',
 }
 
+/**
+ * Status badge surfaces. Split by context because the two are genuinely
+ * different problems:
+ *
+ * - `ON_IMAGE` sits on product photography, which can be any colour, so every
+ *   variant needs its own opaque fill and states are told apart by tone
+ *   (dark chip / light chip / muted chip). A border would be unreliable here.
+ * - `ON_SURFACE` sits on the page background. There, a white `bg-background`
+ *   chip is invisible, so `reserved` carries a visible border instead.
+ *
+ * Kept here rather than duplicated per-component — the storefront card and the
+ * admin dashboard previously each had their own copy, and they drifted.
+ */
+export const BUCKET_BADGE_ON_IMAGE: Record<ProductBucket, string> = {
+  available: 'border-transparent bg-foreground text-background',
+  reserved: 'border-transparent bg-background text-foreground',
+  archive: 'border-transparent bg-muted text-muted-foreground',
+}
+
+export const BUCKET_BADGE_ON_SURFACE: Record<ProductBucket, string> = {
+  available: 'border-transparent bg-foreground text-background',
+  reserved: 'border-border bg-background text-foreground',
+  archive: 'border-transparent bg-muted text-muted-foreground',
+}
+
 export function getProductBucket(status: string): ProductBucket {
   switch (status) {
     case 'available':
