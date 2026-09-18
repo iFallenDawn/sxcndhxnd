@@ -6,6 +6,7 @@ import { Home } from '@/pages/Home'
 import { Store } from '@/pages/Store'
 import { ProductDetail } from '@/pages/ProductDetail'
 import { Gallery } from '@/pages/Gallery'
+import { Dashboard } from '@/pages/Dashboard'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
 import { RequireAdmin } from '@/components/guards/RequireAdmin'
@@ -63,7 +64,7 @@ export const router = createBrowserRouter([
           { path: 'account', element: <Account /> },
           {
             element: <RequireAdmin />,
-            children: [{ path: 'dashboard', element: <Placeholder name="Dashboard" /> }],
+            children: [{ path: 'dashboard', element: <Dashboard /> }],
           },
         ],
       },
