@@ -13,6 +13,7 @@ import { RouteError } from '@/components/layout/RouteError'
 import { SignIn } from '@/pages/auth/SignIn'
 import { Register } from '@/pages/auth/Register'
 import { Account } from '@/pages/auth/Account'
+import { AuthCallback } from '@/pages/auth/AuthCallback'
 
 // Dev-only route: guarded by `import.meta.env.DEV`, which Vite inlines as a
 // literal `false` in production builds. That lets the bundler dead-code
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
       { path: 'contact', element: <Placeholder name="Contact" /> },
       { path: 'sign-in', element: <SignIn /> },
       { path: 'register', element: <Register /> },
+      { path: 'auth/callback', element: <AuthCallback /> },
       {
         // Any authenticated user must be signed in to reach these; the
         // dashboard additionally requires the admin probe to pass (see

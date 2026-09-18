@@ -188,6 +188,17 @@ export interface AuthRefreshPayload {
   refresh_token: string
 }
 
+/**
+ * Sent to `POST /auth/confirm`. Mirrors `entities.models.AuthConfirm`.
+ *
+ * The response is the same ad hoc shape as `POST /auth/sign-in` (see
+ * `AuthSignInResponse`) — `data/auth_util.py::confirm` builds it identically.
+ */
+export interface AuthConfirmPayload {
+  token_hash: string
+  type: 'signup' | 'invite' | 'magiclink' | 'recovery' | 'email_change' | 'email'
+}
+
 /** Sent to `PATCH /auth/email`. Mirrors `entities.models.AuthUpdateEmail`. */
 export interface AuthUpdateEmailPayload {
   new_email: string

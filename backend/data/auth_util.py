@@ -1,4 +1,4 @@
-from entities.models import AuthRegister, UsersInsert
+from entities.models import AuthRegister, AuthConfirm, UsersInsert
 from supabasedb.supabase import db, scoped_client
 from data.users_util import check_user_with_email_exists
 from core.exceptions import NotFoundError, ConflictError, ForbiddenError, UnauthorizedError
@@ -43,6 +43,28 @@ async def refresh_session(refresh_token: str) -> dict:
 
     if response.session is None or response.user is None:
         raise UnauthorizedError("Invalid or expired refresh token")
+
+    return {
+        "access_token": response.session.access_token,
+        "refresh_token": response.session.refresh_token,
+        "user_id": response.user.id,
+    }
+
+async def confirm(payload: AuthConfirm) -> dict:
+    client = scoped_client()
+
+    try:
+        response = client.auth.verify_otp({
+            "token_hash": payload.token_hash,
+            "type": payload.type,
+        })
+    except AuthApiError:
+        raise UnauthorizedError("Invalid or expired confirmation link")
+    except AuthError:
+        raise UnauthorizedError("Invalid or expired confirmation link")
+
+    if response.session is None or response.user is None:
+        raise UnauthorizedError("Invalid or expired confirmation link")
 
     return {
         "access_token": response.session.access_token,
