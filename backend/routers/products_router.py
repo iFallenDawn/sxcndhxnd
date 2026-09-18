@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, Request
 from pydantic import UUID4
-from data import products_util
-from entities.models import ProductsBaseSchema, ProductsUpdate, ProductsInsert
-from core.auth import require_admin, get_access_token
+from data import products_util, reservations_util
+from entities.models import ProductsBaseSchema, ProductsUpdate, ProductsInsert, ReserveProductRequest
+from core.auth import require_admin, get_access_token, get_optional_user_id
+from core.rate_limit import limiter
 
 router = APIRouter(
     prefix="/products",
@@ -48,3 +49,13 @@ async def upload_product_image(
     _: UUID4 = Depends(require_admin)
 ) -> dict:
     return await products_util.upload_product_image(file, access_token)
+
+@router.post("/{product_id}/reserve")
+@limiter.limit("5/minute")
+async def reserve_product(
+    request: Request,
+    product_id: UUID4,
+    payload: ReserveProductRequest,
+    current_user_id: UUID4 | None = Depends(get_optional_user_id)
+) -> ProductsBaseSchema:
+    return await reservations_util.create_reservation(product_id, payload.instagram, current_user_id)

@@ -15,6 +15,27 @@ async def get_access_token(credentials: HTTPAuthorizationCredentials | None = De
     
     return credentials.credentials
 
+# primarily for reserving products as both anon and as logged in user
+async def get_optional_access_token(credentials: HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False))) -> str | None:
+    if credentials is None:
+        return None
+    
+    return credentials.credentials
+
+async def get_optional_user_id(access_token: str = Depends(get_optional_access_token)) -> UUID4 | None:
+    if access_token is None:
+        return None
+    
+    try: 
+        response = supabase.auth.get_user(access_token)
+    except Exception:
+        return None # invalid/expired token
+    
+    if response is None or response.user is None:
+        return None
+    
+    return UUID(response.user.id)
+
 async def get_current_user_id(access_token: str = Depends(get_access_token)) -> UUID:
     try:
         response = supabase.auth.get_user(access_token)

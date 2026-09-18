@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Depends, Request
 from data import auth_util
 from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword
-from core.exceptions import UnauthorizedError
 from core.auth import get_access_token
+from core.rate_limit import limiter
 
 router = APIRouter(
     prefix="/auth",
@@ -11,11 +11,13 @@ router = APIRouter(
 )
 
 @router.post("/sign-in")
-async def sign_in(payload: AuthSignIn):
+@limiter.limit("5/minute")
+async def sign_in(request: Request, payload: AuthSignIn):
     return await auth_util.sign_in(payload.email, payload.password)
 
 @router.post("/register")
-async def create_user(payload: AuthRegister):
+@limiter.limit("3/hour")
+async def create_user(request: Request, payload: AuthRegister):
     return await auth_util.create_user_from_auth(payload)
 
 @router.patch("/email")
@@ -39,7 +41,9 @@ async def sign_out(
     return {"detail": "Signed out successfully"}
 
 @router.patch("/password")
+@limiter.limit("5/hour")
 async def change_password(
+    request: Request,
     payload: AuthChangePassword, 
     access_token: str = Depends(get_access_token)
 ):    

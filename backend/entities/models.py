@@ -406,3 +406,22 @@ class GalleryImagesInsert(CustomModelInsert):
 class GalleryResponse(BaseModel):
     products: list[ProductsBaseSchema]
     gallery_images: list[GalleryImagesBaseSchema]
+    
+class ReserveProductRequest(BaseModel):
+    instagram: str
+    
+class ReservationsBaseSchema(CustomModel):
+    id: UUID4
+    product_id: UUID4
+    instagram: str
+    created_at: datetime.datetime
+    user_id: UUID4 | None = Field(default=None)
+    
+class ReservationsInsert(CustomModelInsert):
+    id: UUID4 = Field(default_factory=uuid4)
+    product_id: UUID4
+    instagram: str
+    
+class ReservationsUpdate(CustomModelUpdate):
+    instagram: str | None = Field(default=None)
+    
