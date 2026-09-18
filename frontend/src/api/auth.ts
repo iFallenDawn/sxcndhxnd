@@ -1,6 +1,7 @@
 import { apiFetch } from '@/lib/api-client'
 import type {
   AuthChangePasswordPayload,
+  AuthConfirmPayload,
   AuthRefreshPayload,
   AuthRegisterPayload,
   AuthRegisterResponse,
@@ -46,6 +47,23 @@ export function signIn(payload: AuthSignInPayload) {
  */
 export function refreshSession(payload: AuthRefreshPayload) {
   return apiFetch<AuthSignInResponse>('/auth/refresh', {
+    method: 'POST',
+    body: payload,
+    authenticated: false,
+  })
+}
+
+/**
+ * `POST /auth/confirm`. Public. Used by the `/auth/callback` route to
+ * exchange a `token_hash` (from the query-string form of a confirmation
+ * link) for a session, once Supabase's email template points there directly.
+ *
+ * Not verified end-to-end against a live Supabase project as of writing —
+ * the email template change is a manual dashboard step that hasn't happened
+ * yet. See `lib/api-client.ts` for the same caveat on `/auth/refresh`.
+ */
+export function confirm(payload: AuthConfirmPayload) {
+  return apiFetch<AuthSignInResponse>('/auth/confirm', {
     method: 'POST',
     body: payload,
     authenticated: false,

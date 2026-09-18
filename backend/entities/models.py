@@ -364,6 +364,10 @@ class AuthSignOut(CustomModel):
 class AuthRefresh(CustomModel):
     refresh_token: str
 
+class AuthConfirm(CustomModel):
+    token_hash: str
+    type: Literal["signup", "invite", "magiclink", "recovery", "email_change", "email"]
+
 class AuthChangePassword(CustomModelUpdate):
     current_password: SecretStr
     new_password: SecretStr

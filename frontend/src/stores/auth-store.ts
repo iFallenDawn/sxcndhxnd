@@ -29,6 +29,13 @@ interface AuthState {
   /** Signs in and populates `user` from `GET /users/me`. Throws `ApiError` on failure. */
   signIn: (payload: AuthSignInPayload) => Promise<void>
   /**
+   * Stores an already-issued access/refresh token pair (e.g. from the
+   * `/auth/callback` route, which never calls `/auth/sign-in` itself) and
+   * populates `user` from `GET /users/me`. Throws if fetching the user
+   * fails; callers should treat that as "the tokens were bad."
+   */
+  setSession: (session: { access_token: string; refresh_token: string }) => Promise<void>
+  /**
    * Clears local session state and best-effort notifies the backend via
    * `POST /auth/sign-out`. Local state is cleared even if that call fails,
    * since an expired/invalid token would otherwise strand the user signed in
@@ -65,6 +72,16 @@ export const useAuthStore = create<AuthState>()(
           authenticated: false,
         })
 
+        set({
+          accessToken: session.access_token,
+          refreshToken: session.refresh_token,
+        })
+
+        const user = await apiFetch<UsersBaseSchema>('/users/me')
+        set({ user })
+      },
+
+      setSession: async (session) => {
         set({
           accessToken: session.access_token,
           refreshToken: session.refresh_token,
