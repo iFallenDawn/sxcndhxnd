@@ -1,14 +1,13 @@
-from entities.models import ProductsBaseSchema, ProductsInsert, ProductsUpdate, ReserveProductRequest, ReservationsBaseSchema, ReservationsUpdate
+from entities.models import ProductsBaseSchema, ReservationsBaseSchema, ReservationsUpdate
 from supabasedb.supabase import db, scoped_client
 from core.exceptions import NotFoundError, NoFieldsProvidedError, ConflictError
 from pydantic import UUID4
 from datetime import datetime, timezone
-from fastapi import UploadFile
-from uuid import uuid4
-from core.constants import ALLOWED_CONTENT_TYPES, PRODUCT_GALLERY_STATUSES
-from core.storage import extract_storage_path
 from data import products_util
 import logging
+import os
+
+NICO_EMAIL = os.environ.get("NICO_EMAIL") or ""
 
 logger = logging.getLogger(__name__)
 supabase = db()
