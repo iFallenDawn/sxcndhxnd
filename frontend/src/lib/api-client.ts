@@ -1,14 +1,6 @@
 import { ApiError } from '@/lib/api-error'
 import { useAuthStore } from '@/stores/auth-store'
-
-// Production serves this SPA from the same FastAPI app as the API
-// (`app.frontend("/", directory="dist")` in `backend/main.py`), so requests are
-// same-origin and need no base -- `/products/` resolves against the deployed
-// host on its own. Hardcoding that rather than reading the env var keeps the
-// production bundle independent of whichever machine runs `vite build`; a
-// developer's local `.env` once shipped `http://127.0.0.1:8000` to production.
-// In dev, Vite serves on :3000 and the API on :8000, so the base is needed.
-const BASE_URL = import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL
+import { API_BASE_URL } from '@/lib/api-base-url'
 
 export interface ApiFetchOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
@@ -66,8 +58,18 @@ async function toApiError(response: Response): Promise<ApiError> {
 }
 
 /** Single attempt at the request — no 401-retry logic. See `apiFetch` below. */
-async function performFetch<T>(path: string, options: ApiFetchOptions): Promise<T> {
-  const { method = 'GET', body, formData, headers = {}, authenticated = true, signal } = options
+async function performFetch<T>(
+  path: string,
+  options: ApiFetchOptions,
+): Promise<T> {
+  const {
+    method = 'GET',
+    body,
+    formData,
+    headers = {},
+    authenticated = true,
+    signal,
+  } = options
 
   const requestHeaders: Record<string, string> = { ...headers }
 
@@ -88,7 +90,7 @@ async function performFetch<T>(path: string, options: ApiFetchOptions): Promise<
     requestBody = JSON.stringify(body)
   }
 
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers: requestHeaders,
     body: requestBody,
@@ -151,7 +153,10 @@ function refreshAccessToken(): Promise<boolean> {
  * `useAuthStore.signOut`'s `notifyBackend` option) and the original 401 is
  * rethrown for the caller to handle.
  */
-export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+export async function apiFetch<T>(
+  path: string,
+  options: ApiFetchOptions = {},
+): Promise<T> {
   try {
     return await performFetch<T>(path, options)
   } catch (error) {

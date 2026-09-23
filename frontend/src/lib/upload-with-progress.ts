@@ -1,14 +1,6 @@
 import { ApiError } from '@/lib/api-error'
 import { useAuthStore } from '@/stores/auth-store'
-
-// Production serves this SPA from the same FastAPI app as the API
-// (`app.frontend("/", directory="dist")` in `backend/main.py`), so requests are
-// same-origin and need no base -- `/products/` resolves against the deployed
-// host on its own. Hardcoding that rather than reading the env var keeps the
-// production bundle independent of whichever machine runs `vite build`; a
-// developer's local `.env` once shipped `http://127.0.0.1:8000` to production.
-// In dev, Vite serves on :3000 and the API on :8000, so the base is needed.
-const BASE_URL = import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL
+import { API_BASE_URL } from '@/lib/api-base-url'
 
 /**
  * Multipart upload with real upload-progress events, via `XMLHttpRequest`
@@ -30,7 +22,7 @@ export function uploadWithProgress<T>(
 ): Promise<T> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
-    xhr.open('POST', `${BASE_URL}${path}`)
+    xhr.open('POST', `${API_BASE_URL}${path}`)
 
     const accessToken = useAuthStore.getState().accessToken
     if (accessToken) {
@@ -52,7 +44,10 @@ export function uploadWithProgress<T>(
     }
 
     xhr.onabort = () => reject(new DOMException('Aborted', 'AbortError'))
-    xhr.onerror = () => reject(new ApiError(0, 'Network error — check your connection and try again.'))
+    xhr.onerror = () =>
+      reject(
+        new ApiError(0, 'Network error — check your connection and try again.'),
+      )
 
     xhr.onload = () => {
       const text = xhr.responseText
