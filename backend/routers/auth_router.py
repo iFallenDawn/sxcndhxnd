@@ -24,7 +24,7 @@ async def confirm(payload: AuthConfirm):
     return await auth_util.confirm(payload)
 
 @router.post("/register")
-@limiter.limit("3/hour")
+@limiter.limit("50/hour")
 async def create_user(request: Request, payload: AuthRegister):
     return await auth_util.create_user_from_auth(payload)
 
