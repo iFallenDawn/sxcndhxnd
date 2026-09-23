@@ -1,12 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { apiFetch } from '@/lib/api-client'
-import { refreshSession } from '@/api/auth'
-import type {
-  AuthSignInPayload,
-  AuthSignInResponse,
-  UsersBaseSchema,
-} from '@/types/api'
+import * as authApi from '@/api/auth'
+import type { AuthSignInPayload, UsersBaseSchema } from '@/types/api'
 
 interface SignOutOptions {
   /**
@@ -25,14 +21,16 @@ interface AuthState {
   user: UsersBaseSchema | null
   /** True once the persisted store has been read back from storage on load. */
   hasHydrated: boolean
+  /** True only when both the tokens and `user` are present — see `setSession`. */
   isAuthenticated: () => boolean
-  /** Signs in and populates `user` from `GET /users/me`. Throws `ApiError` on failure. */
+  /** Signs in via `setSession`. Throws `ApiError` on failure. */
   signIn: (payload: AuthSignInPayload) => Promise<void>
   /**
    * Stores an already-issued access/refresh token pair (e.g. from the
-   * `/auth/callback` route, which never calls `/auth/sign-in` itself) and
-   * populates `user` from `GET /users/me`. Throws if fetching the user
-   * fails; callers should treat that as "the tokens were bad."
+   * `/auth/callback` route, which never calls `/auth/sign-in` itself)
+   * together with `user` from `GET /users/me`, in one update. Throws if
+   * fetching the user fails, in which case nothing is stored; callers should
+   * treat that as "the tokens were bad."
    */
   setSession: (session: { access_token: string; refresh_token: string }) => Promise<void>
   /**
@@ -50,7 +48,7 @@ interface AuthState {
    * that as "the session is dead" and sign out.
    */
   refresh: () => Promise<void>
-  setUser: (user: UsersBaseSchema | null) => void
+  setUser: (user: UsersBaseSchema) => void
   /** Internal: called by the `persist` middleware once storage has been read. */
   _setHasHydrated: (value: boolean) => void
 }
@@ -63,32 +61,17 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       hasHydrated: false,
 
-      isAuthenticated: () => get().accessToken !== null,
+      isAuthenticated: () => get().accessToken !== null && get().user !== null,
 
-      signIn: async (payload) => {
-        const session = await apiFetch<AuthSignInResponse>('/auth/sign-in', {
-          method: 'POST',
-          body: payload,
-          authenticated: false,
-        })
-
-        set({
-          accessToken: session.access_token,
-          refreshToken: session.refresh_token,
-        })
-
-        const user = await apiFetch<UsersBaseSchema>('/users/me')
-        set({ user })
-      },
+      signIn: async (payload) => get().setSession(await authApi.signIn(payload)),
 
       setSession: async (session) => {
-        set({
-          accessToken: session.access_token,
-          refreshToken: session.refresh_token,
+        // Fetch the user with the new token *before* committing anything.
+        const user = await apiFetch<UsersBaseSchema>('/users/me', {
+          authenticated: false,
+          headers: { Authorization: `Bearer ${session.access_token}` },
         })
-
-        const user = await apiFetch<UsersBaseSchema>('/users/me')
-        set({ user })
+        set({ accessToken: session.access_token, refreshToken: session.refresh_token, user })
       },
 
       signOut: async (options) => {
@@ -116,7 +99,7 @@ export const useAuthStore = create<AuthState>()(
           throw new Error('No refresh token available')
         }
 
-        const session = await refreshSession({ refresh_token: refreshToken })
+        const session = await authApi.refreshSession({ refresh_token: refreshToken })
 
         // Supabase rotates refresh tokens on every use — always persist the
         // newly returned one, never reuse the one we sent.

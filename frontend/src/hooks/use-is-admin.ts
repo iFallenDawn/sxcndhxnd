@@ -11,13 +11,12 @@ import { useAuthStore } from '@/stores/auth-store'
  * to live; signing out clears `user.id` and the cache key changes.
  */
 export function useIsAdmin() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated())
   const userId = useAuthStore((state) => state.user?.id)
 
   return useQuery({
     queryKey: queryKeys.auth.adminProbe(userId),
     queryFn: () => probeIsAdmin(userId!),
-    enabled: isAuthenticated && Boolean(userId),
+    enabled: userId !== undefined,
     staleTime: Infinity,
     retry: false,
   })
