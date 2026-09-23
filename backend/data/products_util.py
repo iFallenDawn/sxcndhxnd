@@ -1,13 +1,15 @@
-from entities.models import ProductsBaseSchema, ProductsInsert, ProductsUpdate
+from entities.models import ProductsBaseSchema, ProductsInsert, ProductsUpdate, ReserveProductRequest
 from supabasedb.supabase import db, scoped_client
-from core.exceptions import NotFoundError, InvalidFileTypeError,FailedToDeleteFromBucketError
+from core.exceptions import NotFoundError, InvalidFileTypeError, FailedToDeleteFromBucketError, ConflictError
 from pydantic import UUID4
 from datetime import datetime, timezone
 from fastapi import UploadFile
 from uuid import uuid4
 from core.constants import ALLOWED_CONTENT_TYPES, PRODUCT_GALLERY_STATUSES
 from core.storage import extract_storage_path
+import logging
 
+logger = logging.getLogger(__name__)
 supabase = db()
 
 async def get_all_products() -> list[ProductsBaseSchema]:
@@ -111,3 +113,22 @@ async def upload_product_image(
     image_url = client.storage.from_('product-images').get_public_url(file_path)
     return {"image_url": image_url}
 
+async def reserve_product(
+    product_id: UUID4,
+) -> ProductsBaseSchema:
+    updated_fields = {
+        "status": "reserved", 
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    query = (
+        supabase.table('products')
+            .update(updated_fields)
+            .eq('id', str(product_id))
+            .eq('status', 'available')
+    )
+    response = query.execute()
+    if len(response.data) == 0:
+        raise ConflictError("Product is no longer available")
+
+    return ProductsBaseSchema.model_validate(response.data[0])

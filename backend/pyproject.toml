@@ -5,9 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "fastapi-cloud-cli>=0.26.0",
     "fastapi[standard]>=0.141.1",
     "python-dotenv>=1.2.2",
     "python-multipart>=0.0.32",
+    "resend>=2.47.0",
+    "slowapi>=0.1.10",
     "sqlalchemy>=2.0.51",
     "supabase>=2.31.0",
     "supabase-pydantic>=0.26.23",

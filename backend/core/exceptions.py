@@ -34,3 +34,7 @@ class FailedToDeleteFromBucketError(AppError):
         self.id = id
         self.bucket = bucket
         super().__init__(f"Failed to delete storage object with id {id} from bucket {bucket}")
+        
+class NoFieldsProvidedError(AppError):
+    def __init__(self):
+        super().__init__("No fields provided to update")

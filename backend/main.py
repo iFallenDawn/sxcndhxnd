@@ -7,6 +7,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import router as api_router
 from core.exception_handlers import register_exception_handlers
+from core.rate_limit import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 # Browser clients are a different origin from this API (the Vite dev server
 # runs on :3000, the API on :8000), so every request from the frontend is
@@ -21,14 +24,8 @@ ALLOWED_ORIGINS = [
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) # type: ignore[arg-type]
 
 register_exception_handlers(app)
-
 app.include_router(api_router)
