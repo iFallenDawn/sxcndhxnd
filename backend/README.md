@@ -10,6 +10,34 @@ source .venv/bin/activate
 ```
 may need to change python interpreter in vscode to `.venv/bin/python3.13
 
+create `.env` file in `backend/`
+```
+
+# User Info
+_UID=1000
+_ADJUSTED_UID=1000
+USER=<USER HERE>
+
+# Docker Info
+COMPOSE_PROJECT_NAME=
+
+# API Keys
+SUPABASE_URL=<KEY HERE>
+SUPABASE_KEY=<KEY HERE>
+RESEND_API_KEY=<KEY HERE>
+
+# SUPABASE DB PW
+<DB PW HERE>
+
+# Service Ports
+FRONTEND_PORT=3000
+BACKEND_PORT=8000
+
+# Email
+ADMIN_NOTIFICATION_EMAIL=<EMAIL HERE>
+
+```
+
 ## how to migrate pyproject.toml to requirements.txt
 ```bash
 uv pip compile pyproject.toml -o requirements.txt

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, Request
 from pydantic import UUID4
 from data import products_util, reservations_util
 from entities.models import ProductsBaseSchema, ProductsUpdate, ProductsInsert, ReserveProductRequest
-from core.auth import require_admin, get_access_token, get_optional_user_id
+from core.auth import require_admin, get_access_token, get_optional_user_id, get_optional_access_token
 from core.rate_limit import limiter
 
 router = APIRouter(
@@ -56,6 +56,7 @@ async def reserve_product(
     request: Request,
     product_id: UUID4,
     payload: ReserveProductRequest,
-    current_user_id: UUID4 | None = Depends(get_optional_user_id)
+    current_user_id: UUID4 | None = Depends(get_optional_user_id),
+    access_token: str | None = Depends(get_optional_access_token)
 ) -> ProductsBaseSchema:
-    return await reservations_util.create_reservation(product_id, payload.instagram, current_user_id)
+    return await reservations_util.create_reservation(product_id, payload.instagram, current_user_id, access_token)

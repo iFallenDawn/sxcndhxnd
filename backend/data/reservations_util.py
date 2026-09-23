@@ -4,6 +4,8 @@ from core.exceptions import NotFoundError, NoFieldsProvidedError, ConflictError
 from pydantic import UUID4
 from datetime import datetime, timezone
 from data import products_util
+from core.email import send_admin_reservation_notification, send_customer_reservation_notification
+from typing import cast, Any
 import logging
 import os
 
@@ -50,7 +52,8 @@ async def get_my_reservations(
 async def create_reservation(
     product_id: UUID4,
     instagram: str,
-    user_id: UUID4 | None
+    user_id: UUID4 | None,
+    access_token: str | None,
 ) -> ProductsBaseSchema:
     product = await products_util.reserve_product(product_id)
     reservation = {
@@ -65,6 +68,21 @@ async def create_reservation(
         logger.error(f"Failed to record reservation for product {product_id}, instagram={instagram}")
         supabase.table('products').update({"status": "available"}).eq('id', str(product_id)).execute()
         raise ConflictError("Reservation could not be completed, please try again")
+    
+    await send_admin_reservation_notification(product.title, instagram)
+    
+    if user_id is not None and access_token is not None:
+        try:
+            client = scoped_client()
+            client.postgrest.auth(access_token)
+            query = client.table('users').select('email').eq('id', str(user_id))
+            user_response = query.execute()
+            if user_response.data:
+                row = cast(dict[str, Any], user_response.data[0])
+                user_email = row['email']
+                await send_customer_reservation_notification(user_email, product.title)
+        except Exception as e:
+            logger.error(f"Failed to send confirmation email to user {user_id} for product {product_id}: {e}")
     return product
 
 async def update_reservation(
