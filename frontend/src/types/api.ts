@@ -18,7 +18,9 @@
 // ---------------------------------------------------------------------------
 
 /** Mirrors `entities.models.ProductStatus`. */
-export type ProductStatus = 'sold' | 'reserved' | 'archive' | 'available' | 'display'
+export const PRODUCT_STATUSES = ['available', 'reserved', 'sold', 'display', 'archive'] as const
+
+export type ProductStatus = (typeof PRODUCT_STATUSES)[number]
 
 // ---------------------------------------------------------------------------
 // Products
@@ -39,7 +41,8 @@ export interface ProductsBaseSchema {
   /** Decimal over the wire — keep as string, format at the edge. */
   price: string
   size: string | null
-  status: string
+  /** `str` in the backend model, but every API write path validates it as `ProductStatus`. */
+  status: ProductStatus
   title: string
   updated_at: string
   updated_by: string | null

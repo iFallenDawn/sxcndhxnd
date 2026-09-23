@@ -12,9 +12,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ProductImageUploader } from '@/components/dashboard/ProductImageUploader'
-import { productFormSchema, PRODUCT_STATUS_OPTIONS, type ProductFormValues } from '@/lib/product-validation'
-import { getProductBucket } from '@/lib/products'
-import type { ProductsBaseSchema, ProductsInsert, ProductsUpdate } from '@/types/api'
+import { productFormSchema, type ProductFormValues } from '@/lib/product-validation'
+import { PRODUCT_STATUS_LABEL } from '@/lib/products'
+import { PRODUCT_STATUSES, type ProductsBaseSchema, type ProductsInsert, type ProductsUpdate } from '@/types/api'
 
 interface ProductFormProps {
   product?: ProductsBaseSchema
@@ -46,7 +46,7 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel }: Produc
       price: product?.price ?? '',
       category: product?.category ?? '',
       size: product?.size ?? '',
-      status: product ? getProductBucket(product.status) : 'available',
+      status: product?.status ?? 'available',
       drop_item: product?.drop_item ?? false,
       drop_title: product?.drop_title ?? '',
     },
@@ -139,16 +139,16 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel }: Produc
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {PRODUCT_STATUS_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            {PRODUCT_STATUSES.map((option) => (
+              <SelectItem key={option} value={option}>
+                {PRODUCT_STATUS_LABEL[option]}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <p className="text-sm text-muted-foreground">
-          Archive covers sold, no-longer-shown, and past pieces — they stay listed but fade back in the
-          store.
+          Sold and display pieces show under Archive in the store — they stay listed but fade to the
+          back.
         </p>
       </div>
 

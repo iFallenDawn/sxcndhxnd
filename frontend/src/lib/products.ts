@@ -1,4 +1,4 @@
-import type { ProductsBaseSchema } from '@/types/api'
+import type { ProductStatus, ProductsBaseSchema } from '@/types/api'
 
 // ---------------------------------------------------------------------------
 // COMMISSION vs. CAPSULE CLASSIFICATION — READ BEFORE CHANGING (issue #8)
@@ -37,8 +37,17 @@ export function isCommissionProduct(product: Pick<ProductsBaseSchema, 'commissio
 }
 
 // ---------------------------------------------------------------------------
-// Status buckets
+// Statuses and buckets
 // ---------------------------------------------------------------------------
+/** Raw DB status labels — the admin edits these directly. */
+export const PRODUCT_STATUS_LABEL: Record<ProductStatus, string> = {
+  available: 'Available',
+  reserved: 'Reserved',
+  sold: 'Sold',
+  display: 'Display',
+  archive: 'Archive',
+}
+
 // The client simplified the DB's finer-grained `status` values into three
 // user-facing buckets, verbatim: "Sold and display should just all
 // automatically lump into the archive." So `available` and `reserved` stay
@@ -80,7 +89,7 @@ export const BUCKET_BADGE_ON_SURFACE: Record<ProductBucket, string> = {
   archive: 'border-transparent bg-muted text-muted-foreground',
 }
 
-export function getProductBucket(status: string): ProductBucket {
+export function getProductBucket(status: ProductStatus): ProductBucket {
   switch (status) {
     case 'available':
       return 'available'
@@ -92,7 +101,7 @@ export function getProductBucket(status: string): ProductBucket {
   }
 }
 
-export function bucketRank(status: string): number {
+export function bucketRank(status: ProductStatus): number {
   return BUCKET_ORDER.indexOf(getProductBucket(status))
 }
 
