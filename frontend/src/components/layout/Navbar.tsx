@@ -77,13 +77,43 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+/**
+ * Layout-specific classes for `AuthLinks`, so the two layouts differ in one
+ * place rather than via per-element conditionals.
+ *
+ * - `row`: the desktop navbar's single horizontal row.
+ * - `stack`: the mobile menu sheet's footer — one control per line, full
+ *   width, each at least 44px tall, so a long email can't push Sign out off
+ *   a narrow screen.
+ *
+ * The email truncates in both layouts.
+ */
+const AUTH_LAYOUT = {
+  row: {
+    container: 'flex min-w-0 items-center gap-3',
+    link: 'text-sm',
+    email: 'min-w-0 max-w-48 truncate text-sm',
+    button: '',
+  },
+  stack: {
+    container: 'flex w-full flex-col gap-2',
+    link: 'flex min-h-11 w-full items-center text-sm',
+    email: 'block min-h-11 w-full min-w-0 truncate py-3 text-sm leading-5',
+    button: 'h-11 w-full text-sm',
+  },
+} as const
+
+type AuthLayout = keyof typeof AUTH_LAYOUT
+
 function AuthLinks({
   onNavigate,
   overHero = false,
+  layout = 'row',
 }: {
   onNavigate?: () => void
   /** Sitting on the hero photo: render the buttons as opaque chips. */
   overHero?: boolean
+  layout?: AuthLayout
 }) {
   const hasHydrated = useAuthStore((state) => state.hasHydrated)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated())
@@ -91,6 +121,7 @@ function AuthLinks({
   const signOut = useAuthStore((state) => state.signOut)
   const { data: isAdmin } = useIsAdmin()
   const navigate = useNavigate()
+  const styles = AUTH_LAYOUT[layout]
 
   // Avoid a flash of the signed-out state while the persisted store is
   // still being read back from storage on first load.
@@ -100,11 +131,11 @@ function AuthLinks({
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center gap-3">
+      <div className={styles.container}>
         <Link
           to="/sign-in"
           onClick={onNavigate}
-          className="text-sm text-current/70 hover:text-current"
+          className={cn(styles.link, 'text-current/70 hover:text-current')}
         >
           Sign in
         </Link>
@@ -112,11 +143,12 @@ function AuthLinks({
           asChild
           size="sm"
           variant="outline"
-          className={
+          className={cn(
+            styles.button,
             overHero
               ? cn('border-transparent', OVER_HERO_CHIP.light)
-              : 'border-current bg-transparent text-current hover:bg-current/10 hover:text-current'
-          }
+              : 'border-current bg-transparent text-current hover:bg-current/10 hover:text-current',
+          )}
         >
           <Link to="/register" onClick={onNavigate}>
             Register
@@ -133,14 +165,15 @@ function AuthLinks({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className={styles.container}>
       {isAdmin ? (
         <NavLink
           to="/dashboard"
           onClick={onNavigate}
           className={({ isActive }) =>
             cn(
-              'text-sm transition-colors',
+              styles.link,
+              'transition-colors',
               isActive ? 'font-medium text-current' : 'text-current/70 hover:text-current',
             )
           }
@@ -151,18 +184,20 @@ function AuthLinks({
       <Link
         to="/account"
         onClick={onNavigate}
-        className="text-sm text-current/70 hover:text-current"
+        title={user?.email}
+        className={cn(styles.email, 'text-current/70 hover:text-current')}
       >
         {user?.email}
       </Link>
       <Button
         size="sm"
         variant="outline"
-        className={
+        className={cn(
+          styles.button,
           overHero
             ? cn('border-transparent', OVER_HERO_CHIP.muted)
-            : 'border-current bg-transparent text-current hover:bg-current/10 hover:text-current'
-        }
+            : 'border-current bg-transparent text-current hover:bg-current/10 hover:text-current',
+        )}
         onClick={handleSignOut}
       >
         Sign out
@@ -259,7 +294,7 @@ export function Navbar() {
               <NavLinks onNavigate={() => setIsMenuOpen(false)} />
             </nav>
             <div className="mt-auto border-t border-border px-4 py-4">
-              <AuthLinks onNavigate={() => setIsMenuOpen(false)} />
+              <AuthLinks layout="stack" onNavigate={() => setIsMenuOpen(false)} />
             </div>
           </SheetContent>
         </Sheet>
