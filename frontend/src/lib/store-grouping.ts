@@ -49,38 +49,30 @@ export type DisplayEntry = SingleEntry | DropEntry
 
 /**
  * Groups a sorted product list into display entries: products sharing a
- * `drop_title` (with `drop_item` set) collapse into one `DropEntry`, whose
- * position is driven by the best (lowest-rank) availability bucket among its
- * members — a drop with any available item still leads, even if some of its
- * sizes/pieces have sold out. Everything else stays a standalone entry.
+ * `drop_title` (with `drop_item` set) collapse into one `DropEntry`, placed
+ * where its first member sorts — since the sort is bucket-first, that is its
+ * best availability bucket, so a drop with any available item still leads
+ * even if some of its sizes/pieces have sold out. Everything else stays a
+ * standalone entry.
  */
 export function groupForDisplay(products: ProductsBaseSchema[], sort: SortOption): DisplayEntry[] {
-  const sorted = sortProducts(products, sort)
+  const entries: DisplayEntry[] = []
+  const drops = new Map<string, DropEntry>()
 
-  const dropMembers = new Map<string, ProductsBaseSchema[]>()
-  for (const product of sorted) {
-    if (product.drop_item && product.drop_title) {
-      const members = dropMembers.get(product.drop_title) ?? []
-      members.push(product)
-      dropMembers.set(product.drop_title, members)
+  for (const product of sortProducts(products, sort)) {
+    if (!product.drop_item || !product.drop_title) {
+      entries.push({ kind: 'single', product })
+      continue
     }
-  }
-
-  const entries: { entry: DisplayEntry; rank: number }[] = []
-  const seenDropTitles = new Set<string>()
-
-  for (const product of sorted) {
-    if (product.drop_item && product.drop_title) {
-      if (seenDropTitles.has(product.drop_title)) continue
-      seenDropTitles.add(product.drop_title)
-      const members = dropMembers.get(product.drop_title) ?? [product]
-      const rank = Math.min(...members.map((member) => bucketRank(member.status)))
-      entries.push({ entry: { kind: 'drop', title: product.drop_title, products: members }, rank })
+    const drop = drops.get(product.drop_title)
+    if (drop) {
+      drop.products.push(product)
     } else {
-      entries.push({ entry: { kind: 'single', product }, rank: bucketRank(product.status) })
+      const entry: DropEntry = { kind: 'drop', title: product.drop_title, products: [product] }
+      drops.set(product.drop_title, entry)
+      entries.push(entry)
     }
   }
 
-  // Array#sort is stable, so ties preserve the already-sorted relative order.
-  return entries.sort((a, b) => a.rank - b.rank).map(({ entry }) => entry)
+  return entries
 }

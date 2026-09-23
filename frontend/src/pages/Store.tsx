@@ -6,8 +6,7 @@ import { ProductCardSkeleton } from '@/components/store/ProductCard'
 import { useProducts } from '@/hooks/use-products'
 import { ApiError } from '@/lib/api-error'
 import { isCommissionProduct, getProductBucket, type ProductBucket } from '@/lib/products'
-import { groupForDisplay, type SortOption } from '@/lib/store-grouping'
-import type { ProductsBaseSchema } from '@/types/api'
+import { groupForDisplay, type DisplayEntry, type SortOption } from '@/lib/store-grouping'
 
 const SKELETON_COUNT = 8
 
@@ -25,26 +24,14 @@ interface StoreSectionProps {
   id: string
   title: string
   description: string
-  products: ProductsBaseSchema[]
-  category: string | null
-  bucket: ProductBucket | null
-  sort: SortOption
+  entries: DisplayEntry[]
 }
 
 /**
- * One storefront section (Commissions or Capsules): filters, sorts, groups,
- * and renders its own product slice. `id` gives the product detail page's
- * "back to store" link (issue #9) something to scroll to.
+ * One storefront section (Commissions or Capsules). `id` gives the product
+ * detail page's "back to store" link (issue #9) something to scroll to.
  */
-function StoreSection({ id, title, description, products, category, bucket, sort }: StoreSectionProps) {
-  const filtered = products.filter((product) => {
-    if (category !== null && product.category !== category) return false
-    if (bucket !== null && getProductBucket(product.status) !== bucket) return false
-    return true
-  })
-
-  const entries = useMemo(() => groupForDisplay(filtered, sort), [filtered, sort])
-
+function StoreSection({ id, title, description, entries }: StoreSectionProps) {
   return (
     <section id={id} className="flex scroll-mt-20 flex-col gap-6">
       <div className="flex flex-col gap-1">
@@ -79,14 +66,17 @@ export function Store() {
     return Array.from(unique).sort((a, b) => a.localeCompare(b))
   }, [products])
 
-  const commissions = useMemo(
-    () => (products ?? []).filter((product) => isCommissionProduct(product)),
-    [products],
-  )
-  const capsules = useMemo(
-    () => (products ?? []).filter((product) => !isCommissionProduct(product)),
-    [products],
-  )
+  const { commissions, capsules } = useMemo(() => {
+    const filtered = (products ?? []).filter((product) => {
+      if (category !== null && product.category !== category) return false
+      if (bucket !== null && getProductBucket(product.status) !== bucket) return false
+      return true
+    })
+    return {
+      commissions: groupForDisplay(filtered.filter((product) => isCommissionProduct(product)), sort),
+      capsules: groupForDisplay(filtered.filter((product) => !isCommissionProduct(product)), sort),
+    }
+  }, [products, category, bucket, sort])
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-16">
@@ -134,19 +124,13 @@ export function Store() {
               id="commissions"
               title="Commissions"
               description="Made to order, built around you."
-              products={commissions}
-              category={category}
-              bucket={bucket}
-              sort={sort}
+              entries={commissions}
             />
             <StoreSection
               id="capsules"
               title="Capsules"
               description="Pre-made, one-of-a-kind, sold as-is."
-              products={capsules}
-              category={category}
-              bucket={bucket}
-              sort={sort}
+              entries={capsules}
             />
           </div>
         </>
