@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { ApiError } from '@/lib/api-error'
 
 /**
  * Shared field-level schemas for the auth forms (`/sign-in`, `/register`,
@@ -63,20 +64,21 @@ export const changePasswordSchema = z
 export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>
 
 /**
- * Best-effort mapping of common Supabase Auth error strings (which arrive as
- * the `detail` on an `ApiError` — see `core/exception_handlers.py`'s
- * `AuthApiError` handler, which passes Supabase's message straight through)
- * to friendlier copy. Falls back to the raw detail when nothing matches.
+ * Best-effort mapping of an auth request's failure to user-facing copy.
+ * Supabase Auth error strings arrive as the `detail` on an `ApiError` (see
+ * `core/exception_handlers.py`'s `AuthApiError` handler, which passes
+ * Supabase's message straight through); known ones get friendlier wording,
+ * any other detail is shown as-is, and errors without one get `fallback`.
  */
-export function friendlyAuthErrorMessage(detail: string | null, fallback: string): string {
+export function friendlyAuthErrorMessage(error: unknown, fallback: string): string {
+  const detail = error instanceof ApiError ? error.detail : null
   if (!detail) return fallback
 
-  const lower = detail.toLowerCase()
-
-  if (lower.includes('email not confirmed') || lower.includes('confirm')) {
+  if (detail === 'Email not confirmed') {
     return 'Please confirm your email before signing in — check your inbox for the confirmation link.'
   }
 
+  const lower = detail.toLowerCase()
   if (lower.includes('invalid') && (lower.includes('credential') || lower.includes('password') || lower.includes('email'))) {
     return 'Incorrect email or password.'
   }

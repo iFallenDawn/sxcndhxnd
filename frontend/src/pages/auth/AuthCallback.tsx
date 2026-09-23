@@ -4,8 +4,6 @@ import { PageMeta } from '@/components/seo/PageMeta'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/auth-store'
 import { confirm as confirmAuth } from '@/api/auth'
-import { ApiError } from '@/lib/api-error'
-import { friendlyAuthErrorMessage } from '@/lib/auth-validation'
 import type { AuthConfirmPayload } from '@/types/api'
 
 type Status = 'processing' | 'success' | 'error'
@@ -85,14 +83,10 @@ export function AuthCallback() {
 
         setErrorMessage('This confirmation link is missing or malformed.')
         setStatus('error')
-      } catch (error) {
-        if (error instanceof ApiError) {
-          setErrorMessage(
-            friendlyAuthErrorMessage(error.detail, 'This confirmation link has expired or already been used.'),
-          )
-        } else {
-          setErrorMessage('This confirmation link has expired or already been used.')
-        }
+      } catch {
+        // Whether `/auth/confirm` rejected the token hash or the minted tokens
+        // didn't work for `/users/me`, the link is what the user can act on.
+        setErrorMessage('This confirmation link has expired or already been used.')
         setStatus('error')
       }
     }

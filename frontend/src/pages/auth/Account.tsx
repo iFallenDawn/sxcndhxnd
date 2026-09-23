@@ -9,7 +9,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser, useUpdateCurrentUser } from '@/hooks/use-users'
 import { changePassword, updateEmail } from '@/api/auth'
 import { useAuthStore } from '@/stores/auth-store'
-import { ApiError } from '@/lib/api-error'
 import {
   changeEmailSchema,
   changePasswordSchema,
@@ -157,12 +156,9 @@ function ChangeEmailSection() {
     onSuccess: () => reset(),
   })
 
-  const errorMessage =
-    mutation.error instanceof ApiError
-      ? friendlyAuthErrorMessage(mutation.error.detail, 'Could not update your email.')
-      : mutation.isError
-        ? 'Could not update your email.'
-        : null
+  const errorMessage = mutation.isError
+    ? friendlyAuthErrorMessage(mutation.error, 'Could not update your email.')
+    : null
 
   return (
     <SectionCard title="Change email" description="You'll need to confirm the new address before it takes effect.">
@@ -223,12 +219,9 @@ function ChangePasswordSection() {
     onSuccess: () => reset(),
   })
 
-  const errorMessage =
-    mutation.error instanceof ApiError
-      ? friendlyAuthErrorMessage(mutation.error.detail, 'Could not change your password.')
-      : mutation.isError
-        ? 'Could not change your password.'
-        : null
+  const errorMessage = mutation.isError
+    ? friendlyAuthErrorMessage(mutation.error, 'Could not change your password.')
+    : null
 
   return (
     <SectionCard title="Change password">

@@ -6,7 +6,6 @@ import { PageMeta } from '@/components/seo/PageMeta'
 import { FormField } from '@/components/auth/FormField'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/auth-store'
-import { ApiError } from '@/lib/api-error'
 import { friendlyAuthErrorMessage, signInSchema, type SignInFormValues } from '@/lib/auth-validation'
 
 interface LocationState {
@@ -37,11 +36,7 @@ export function SignIn() {
       await signIn(values)
       navigate(redirectTo, { replace: true })
     } catch (error) {
-      if (error instanceof ApiError) {
-        setFormError(friendlyAuthErrorMessage(error.detail, 'Could not sign in. Please try again.'))
-      } else {
-        setFormError('Could not sign in. Please try again.')
-      }
+      setFormError(friendlyAuthErrorMessage(error, 'Could not sign in. Please try again.'))
     }
   }
 
