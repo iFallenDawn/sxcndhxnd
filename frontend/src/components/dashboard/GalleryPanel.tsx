@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { ImagePlusIcon, TrashIcon } from 'lucide-react'
+import { TrashIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
+import { ImageFilePicker } from '@/components/dashboard/ImageFilePicker'
 import { ImageUploadQueueList } from '@/components/dashboard/ImageUploadQueueList'
 import { useUploadQueue } from '@/hooks/use-upload-queue'
 import { useGallery, useDeleteGalleryImage } from '@/hooks/use-gallery'
@@ -36,34 +37,26 @@ export function GalleryPanel() {
   const deleteGalleryImage = useDeleteGalleryImage()
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
-  const inputId = useId()
-  const inputRef = useRef<HTMLInputElement>(null)
-  const descriptionRef = useRef(description)
-  useEffect(() => {
-    descriptionRef.current = description
-  }, [description])
-
+  // Captured when a batch is picked, so every file in it gets the same
+  // description even if the field is edited mid-upload.
   const uploadFn = useCallback(
-    async (file: File, onProgress: (percent: number) => void, signal: AbortSignal) => {
-      const result = await uploadGalleryImageWithProgress(
-        file,
-        descriptionRef.current || undefined,
-        onProgress,
-        signal,
-      )
-      void queryClient.invalidateQueries({ queryKey: queryKeys.gallery.list() })
-      return result
-    },
-    [queryClient],
+    (file: File, onProgress: (percent: number) => void, signal: AbortSignal) =>
+      uploadGalleryImageWithProgress(file, description, onProgress, signal),
+    [description],
   )
 
   const { items, enqueue, retry, dismiss, clearDone } = useUploadQueue(uploadFn)
 
-  const handleFiles = (fileList: FileList | null) => {
-    if (!fileList || fileList.length === 0) return
-    enqueue(Array.from(fileList))
-    if (inputRef.current) inputRef.current.value = ''
-  }
+  // Refetch the gallery once when a batch settles, not after every file — a
+  // few-hundred-photo dump would otherwise fire a few hundred `GET /gallery/`s.
+  const isUploading = items.some((item) => item.status !== 'done' && item.status !== 'error')
+  const wasUploading = useRef(false)
+  useEffect(() => {
+    if (wasUploading.current && !isUploading) {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.gallery.list() })
+    }
+    wasUploading.current = isUploading
+  }, [isUploading, queryClient])
 
   const handleDelete = async () => {
     if (!deleteTarget) return
@@ -98,21 +91,7 @@ export function GalleryPanel() {
         </div>
 
         <div>
-          <input
-            ref={inputRef}
-            id={inputId}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            multiple
-            className="sr-only"
-            onChange={(event) => handleFiles(event.target.files)}
-          />
-          <Button type="button" asChild>
-            <label htmlFor={inputId} className="cursor-pointer">
-              <ImagePlusIcon data-icon="inline-start" />
-              Upload photos
-            </label>
-          </Button>
+          <ImageFilePicker onFiles={enqueue}>Upload photos</ImageFilePicker>
           <p className="mt-1.5 text-xs text-muted-foreground">
             Pick as many as you want at once — each one is shrunk before upload, then sent one at a time
             so progress stays accurate.

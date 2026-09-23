@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useId, useRef } from 'react'
-import { ArrowLeftIcon, ArrowRightIcon, ImagePlusIcon, XIcon } from 'lucide-react'
+import { useCallback, type Dispatch, type SetStateAction } from 'react'
+import { ArrowLeftIcon, ArrowRightIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ImageFilePicker } from '@/components/dashboard/ImageFilePicker'
 import { ImageUploadQueueList } from '@/components/dashboard/ImageUploadQueueList'
 import { useUploadQueue } from '@/hooks/use-upload-queue'
 import { uploadProductImageWithProgress } from '@/api/products'
-import type { ProductImageUploadResponse } from '@/types/api'
 
 interface ProductImageUploaderProps {
   /** Already-uploaded image URLs, in display order. First image is the cover shown on the store. */
   imageUrls: string[]
-  onChange: (imageUrls: string[]) => void
+  onChange: Dispatch<SetStateAction<string[]>>
 }
 
 /**
@@ -20,39 +20,18 @@ interface ProductImageUploaderProps {
  * removed.
  */
 export function ProductImageUploader({ imageUrls, onChange }: ProductImageUploaderProps) {
-  const inputId = useId()
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  // Uploads within one batch complete out of order and asynchronously, so
-  // appending via a stale `imageUrls` closure could drop a sibling upload's
-  // URL. A ref tracking the latest value sidesteps that race.
-  const imageUrlsRef = useRef(imageUrls)
-  useEffect(() => {
-    imageUrlsRef.current = imageUrls
-  }, [imageUrls])
-
   const uploadFn = useCallback(
     async (file: File, onProgress: (percent: number) => void, signal: AbortSignal) => {
-      const result: ProductImageUploadResponse = await uploadProductImageWithProgress(
-        file,
-        onProgress,
-        signal,
-      )
-      const next = [...imageUrlsRef.current, result.image_url]
-      imageUrlsRef.current = next
-      onChange(next)
+      const result = await uploadProductImageWithProgress(file, onProgress, signal)
+      // Updater form: uploads in a batch finish asynchronously, so appending
+      // to a closed-over `imageUrls` could drop a sibling upload's URL.
+      onChange((prev) => [...prev, result.image_url])
       return result
     },
     [onChange],
   )
 
   const { items, enqueue, retry, dismiss } = useUploadQueue(uploadFn)
-
-  const handleFiles = (fileList: FileList | null) => {
-    if (!fileList || fileList.length === 0) return
-    enqueue(Array.from(fileList))
-    if (inputRef.current) inputRef.current.value = ''
-  }
 
   const moveImage = (index: number, direction: -1 | 1) => {
     const target = index + direction
@@ -123,21 +102,9 @@ export function ProductImageUploader({ imageUrls, onChange }: ProductImageUpload
       <ImageUploadQueueList items={items} onRetry={retry} onDismiss={dismiss} />
 
       <div>
-        <input
-          ref={inputRef}
-          id={inputId}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          multiple
-          className="sr-only"
-          onChange={(event) => handleFiles(event.target.files)}
-        />
-        <Button type="button" variant="outline" size="sm" asChild>
-          <label htmlFor={inputId} className="cursor-pointer">
-            <ImagePlusIcon data-icon="inline-start" />
-            Add photos
-          </label>
-        </Button>
+        <ImageFilePicker variant="outline" size="sm" onFiles={enqueue}>
+          Add photos
+        </ImageFilePicker>
         <p className="mt-1.5 text-xs text-muted-foreground">
           Photos are automatically shrunk before upload — this can take a moment on slow connections.
         </p>
