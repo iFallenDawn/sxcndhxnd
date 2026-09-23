@@ -1,0 +1,34 @@
+import { apiFetch } from '@/lib/api-client'
+import { uploadWithProgress } from '@/lib/upload-with-progress'
+import type { GalleryImagesBaseSchema, GalleryResponse } from '@/types/api'
+
+/** `GET /gallery/`. Public. */
+export function getGallery() {
+  return apiFetch<GalleryResponse>('/gallery/', { authenticated: false })
+}
+
+/**
+ * `POST /gallery/` (multipart `file`, form `description?`). Admin only.
+ * Sent via `XMLHttpRequest` so bulk uploads can show real per-file progress
+ * (see `lib/upload-with-progress.ts`).
+ */
+export function uploadGalleryImageWithProgress(
+  file: File,
+  description: string | undefined,
+  onProgress: (percent: number) => void,
+  signal: AbortSignal,
+) {
+  const formData = new FormData()
+  formData.append('file', file)
+  if (description !== undefined && description !== '') {
+    formData.append('description', description)
+  }
+  return uploadWithProgress<GalleryImagesBaseSchema>('/gallery/', formData, onProgress, signal)
+}
+
+/** `DELETE /gallery/{id}`. Admin only. */
+export function deleteGalleryImage(galleryImageId: string) {
+  return apiFetch<GalleryImagesBaseSchema>(`/gallery/${galleryImageId}`, {
+    method: 'DELETE',
+  })
+}

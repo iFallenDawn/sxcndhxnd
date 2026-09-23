@@ -1,4 +1,4 @@
-from entities.models import AuthRegister, UsersInsert
+from entities.models import AuthRegister, AuthConfirm, UsersInsert
 from supabasedb.supabase import db, scoped_client
 from data.users_util import check_user_with_email_exists
 from core.exceptions import NotFoundError, ConflictError, ForbiddenError, UnauthorizedError
@@ -7,6 +7,17 @@ from pydantic import EmailStr, SecretStr
 from supabase_auth.errors import AuthApiError, AuthError
 
 supabase = db()
+
+def _session_response(response, error_message: str) -> dict:
+    """Token payload from a Supabase auth response, or 401 if it has no session."""
+    if response.session is None or response.user is None:
+        raise UnauthorizedError(error_message)
+
+    return {
+        "access_token": response.session.access_token,
+        "refresh_token": response.session.refresh_token,
+        "user_id": response.user.id,
+    }
 
 async def sign_in(email: EmailStr, password: SecretStr) -> dict:
     client = scoped_client()
@@ -21,15 +32,30 @@ async def sign_in(email: EmailStr, password: SecretStr) -> dict:
     except AuthError:
         raise UnauthorizedError("Invalid email or password")
 
-    if response.session is None or response.user is None:
-        raise UnauthorizedError("Invalid email or password")
+    return _session_response(response, "Invalid email or password")
 
-    return {
-        "access_token": response.session.access_token,
-        "refresh_token": response.session.refresh_token,
-        "user_id": response.user.id,
-    }
-        
+async def refresh_session(refresh_token: str) -> dict:
+    client = scoped_client()
+
+    try:
+        response = client.auth.refresh_session(refresh_token)
+    except AuthError:
+        raise UnauthorizedError("Invalid or expired refresh token")
+
+    return _session_response(response, "Invalid or expired refresh token")
+
+async def confirm(payload: AuthConfirm) -> dict:
+    client = scoped_client()
+
+    try:
+        response = client.auth.verify_otp({
+            "token_hash": payload.token_hash,
+            "type": payload.type,
+        })
+    except AuthError:
+        raise UnauthorizedError("Invalid or expired confirmation link")
+
+    return _session_response(response, "Invalid or expired confirmation link")
 
 async def create_user_from_auth(
     payload: AuthRegister
@@ -128,14 +154,17 @@ async def change_password(
     
     email = user_response.user.email
     
-    # double check the user can sign in with their old password
+    # double check the user can sign in with their old password. A wrong
+    # password is a 403, not a 401: the bearer token is fine, and clients
+    # treat a 401 as "access token expired" (refresh and retry), which would
+    # burn the refresh token and re-check the password for nothing.
     try:
         client.auth.sign_in_with_password({
             "email": email,
             "password": current_password.get_secret_value(),
         })
     except AuthError:
-        raise UnauthorizedError("Current password is incorrect")
+        raise ForbiddenError("Current password is incorrect")
     
     # change the password
     try:
