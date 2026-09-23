@@ -45,12 +45,12 @@ export function Hero() {
         />
       </motion.div>
 
-      {/* Scrim so the headline and the transparent navbar's light text stay
-          legible over the bright studio backdrop. v1 used roughly 0.2/0.4/0.6
-          top-to-bottom; measured against this photo (light grey seamless
-          backdrop) that left the navbar/logo area under 3:1 contrast, so the
-          top stop is raised to 0.45 here — verified by pixel-sampling the
-          rendered page (see report). */}
+      {/* Scrim for the headline and body copy over the bright studio
+          backdrop. v1 used roughly 0.2/0.4/0.6 top-to-bottom; the top stop is
+          raised to 0.45 here for this photo's light grey seamless. The
+          controls (both CTAs below, and the navbar while it's transparent)
+          don't rely on it: each carries its own opaque chip, per the overlay
+          rule in CLAUDE.md. */}
       <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/50 to-foreground/45" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-16 sm:px-6 sm:pb-24">
@@ -71,14 +71,18 @@ export function Hero() {
 
         <Reveal delay={0.2}>
           <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="bg-background text-foreground hover:bg-background/85">
+            {/* Opaque, tone-differentiated chips (light = primary, dark =
+                secondary), hovers included — never outline/ghost over the
+                photo. Each has a contrasting 1px edge so its shape survives
+                a backdrop of its own tone (the fill is what carries the
+                text contrast, not the edge). */}
+            <Button asChild size="lg" className="border-foreground bg-background text-foreground hover:bg-muted">
               <Link to="/store">Shop the store</Link>
             </Button>
             <Button
               asChild
               size="lg"
-              variant="outline"
-              className="border-background bg-transparent text-background hover:bg-background/10 hover:text-background"
+              className="border-background bg-foreground text-background hover:bg-primary hover:text-background"
             >
               <Link to="/commissions/request">Start a commission</Link>
             </Button>

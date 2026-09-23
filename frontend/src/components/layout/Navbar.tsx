@@ -23,6 +23,19 @@ const PRIMARY_LINKS = [
   { to: '/contact', label: 'Contact' },
 ]
 
+/**
+ * Opaque surfaces for controls that sit directly on the hero photo while the
+ * nav is transparent (CLAUDE.md: anything overlaying an image carries its own
+ * opaque surface). Tone-differentiated, never transparent — the photo behind
+ * can be any colour, so nothing here may lean on it or on the hero's scrim.
+ * Hovers stay opaque too (a different solid token, not an alpha).
+ */
+const OVER_HERO_CHIP = {
+  dark: 'bg-foreground text-background',
+  light: 'bg-background text-foreground hover:bg-muted hover:text-foreground',
+  muted: 'bg-muted-foreground text-background hover:bg-foreground hover:text-background',
+}
+
 /** Scroll distance (px) past which the nav is considered "scrolled". */
 const SCROLL_THRESHOLD = 8
 
@@ -64,7 +77,14 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
-function AuthLinks({ onNavigate }: { onNavigate?: () => void }) {
+function AuthLinks({
+  onNavigate,
+  overHero = false,
+}: {
+  onNavigate?: () => void
+  /** Sitting on the hero photo: render the buttons as opaque chips. */
+  overHero?: boolean
+}) {
   const hasHydrated = useAuthStore((state) => state.hasHydrated)
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated())
   const user = useAuthStore((state) => state.user)
@@ -88,7 +108,16 @@ function AuthLinks({ onNavigate }: { onNavigate?: () => void }) {
         >
           Sign in
         </Link>
-        <Button asChild size="sm" variant="outline" className="border-current bg-transparent text-current hover:bg-current/10 hover:text-current">
+        <Button
+          asChild
+          size="sm"
+          variant="outline"
+          className={
+            overHero
+              ? cn('border-transparent', OVER_HERO_CHIP.light)
+              : 'border-current bg-transparent text-current hover:bg-current/10 hover:text-current'
+          }
+        >
           <Link to="/register" onClick={onNavigate}>
             Register
           </Link>
@@ -126,7 +155,16 @@ function AuthLinks({ onNavigate }: { onNavigate?: () => void }) {
       >
         {user?.email}
       </Link>
-      <Button size="sm" variant="outline" className="border-current bg-transparent text-current hover:bg-current/10 hover:text-current" onClick={handleSignOut}>
+      <Button
+        size="sm"
+        variant="outline"
+        className={
+          overHero
+            ? cn('border-transparent', OVER_HERO_CHIP.muted)
+            : 'border-current bg-transparent text-current hover:bg-current/10 hover:text-current'
+        }
+        onClick={handleSignOut}
+      >
         Sign out
       </Button>
     </div>
@@ -148,6 +186,7 @@ export function Navbar() {
   // Solid whenever there's no hero to sit over, or once the page has
   // scrolled past it. Transparent only in the narrow "hero, unscrolled" case.
   const isSolid = !hasHero || isScrolled
+  const overHero = !isSolid
 
   // Close the mobile menu on route change. Adjusted during render (rather
   // than in an effect) per https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes.
@@ -167,29 +206,46 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
-        {/* Wordmark rather than the face mark, following v1: it inherits the
-            nav's current color, so it stays legible over the hero without the
-            figurative mark needing a backing or a colour flip. */}
-        <Link to="/" className="flex items-center" aria-label="sxcndhxnd home">
+        {/* Wordmark rather than the face mark, following v1. Over the hero
+            it sits on a dark chip (the photo behind it can be any colour);
+            in the solid nav it's plain text in the nav's current colour. */}
+        <Link
+          to="/"
+          className={cn('flex items-center', overHero && cn(OVER_HERO_CHIP.dark, 'px-2 py-0.5'))}
+          aria-label="sxcndhxnd home"
+        >
           <span className="heading-display text-xl text-current sm:text-2xl">
             sxcndhxnd
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        {/* Over the hero, the links and the auth cluster each get a dark
+            chip; the Register/Sign out buttons inside are light/muted chips
+            so they still read as buttons against it. */}
+        <nav
+          className={cn(
+            'hidden items-center gap-6 md:flex',
+            overHero && cn(OVER_HERO_CHIP.dark, 'px-4 py-1.5'),
+          )}
+        >
           <NavLinks />
         </nav>
 
-        <div className="hidden md:flex">
-          <AuthLinks />
+        <div className={cn('hidden md:flex', overHero && cn(OVER_HERO_CHIP.dark, 'py-1 pr-1 pl-3'))}>
+          <AuthLinks overHero={overHero} />
         </div>
 
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild>
             <Button
-              variant="ghost"
+              variant={overHero ? 'default' : 'ghost'}
               size="icon"
-              className="text-current hover:text-current md:hidden"
+              className={cn(
+                'md:hidden',
+                overHero
+                  ? 'bg-foreground text-background hover:bg-primary hover:text-background'
+                  : 'text-current hover:text-current',
+              )}
               aria-label="Open menu"
             >
               <Menu />

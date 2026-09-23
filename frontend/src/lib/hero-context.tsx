@@ -15,9 +15,10 @@ interface HeroContextValue {
 /**
  * Shared "does the current route have a hero" flag, consumed by `Navbar` to
  * decide whether it should start transparent (over a hero) or solid
- * (everywhere else). No hero exists yet anywhere in the app (see issue #7),
- * so this defaults to `false` and nothing currently flips it — every route
- * today gets the solid, legible-from-first-paint nav.
+ * (everywhere else). It defaults to `false`; a route opts in by mounting
+ * `<RouteHasHero />` (today only the home page, `pages/Home.tsx`). While
+ * transparent, every navbar control carries its own opaque chip, since the
+ * hero photo behind it can be any colour.
  */
 const HeroContext = createContext<HeroContextValue | null>(null)
 
@@ -43,18 +44,19 @@ export function useHasHero() {
 /**
  * Mount this once, near the top of any route's page component, to declare
  * "this page renders a full-bleed hero at the top." It renders nothing
- * itself — the actual hero markup is a separate concern (issue #7) — it only
+ * itself — the hero markup is a separate component (e.g.
+ * `components/home/Hero.tsx`) — it only
  * flips the shared flag for as long as it stays mounted, so the navbar knows
  * to render transparent-over-hero instead of solid-from-first-paint. The
  * flag resets automatically on unmount (i.e. on route change), so nothing
  * needs to reset it manually.
  *
- * Usage (once #7 lands):
+ * Usage (as in `pages/Home.tsx`):
  *   function Home() {
  *     return (
  *       <>
  *         <RouteHasHero />
- *         <HeroSection ... />
+ *         <Hero />
  *         ...
  *       </>
  *     )

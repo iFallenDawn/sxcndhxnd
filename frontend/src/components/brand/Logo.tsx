@@ -9,8 +9,9 @@ import { cn } from '@/lib/utils'
  * interior — and must never be inverted or recolored to follow the
  * surrounding text color: a light-on-dark rendering reads as blackface.
  * That is why these fills are theme tokens rather than `currentColor`.
- * To keep the mark legible on a dark surface, put a light backing behind
- * it (see the navbar's over-hero state) instead of flipping its colors.
+ * To keep the mark legible on a dark surface or a photo, put a light,
+ * opaque backing behind it instead of flipping its colors. (The navbar
+ * uses the text wordmark, not this mark.)
  *
  * Source aspect ratio is 181.82 x 198 (taller than wide), so size this with
  * a height and let the width follow — the default is `h-8 w-auto`.
