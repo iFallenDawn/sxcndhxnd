@@ -1,7 +1,14 @@
 import { ApiError } from '@/lib/api-error'
 import { useAuthStore } from '@/stores/auth-store'
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+// Production serves this SPA from the same FastAPI app as the API
+// (`app.frontend("/", directory="dist")` in `backend/main.py`), so requests are
+// same-origin and need no base -- `/products/` resolves against the deployed
+// host on its own. Hardcoding that rather than reading the env var keeps the
+// production bundle independent of whichever machine runs `vite build`; a
+// developer's local `.env` once shipped `http://127.0.0.1:8000` to production.
+// In dev, Vite serves on :3000 and the API on :8000, so the base is needed.
+const BASE_URL = import.meta.env.PROD ? '' : import.meta.env.VITE_API_BASE_URL
 
 export interface ApiFetchOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
