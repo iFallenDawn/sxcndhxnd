@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ProductFormDialog } from '@/components/dashboard/ProductFormDialog'
+import { ProductFormDialog, type ProductDialogState } from '@/components/dashboard/ProductFormDialog'
 import { DeleteProductDialog } from '@/components/dashboard/DeleteProductDialog'
 import { useProducts } from '@/hooks/use-products'
 import { ApiError } from '@/lib/api-error'
@@ -77,8 +77,7 @@ export function ProductsPanel() {
   const { data: products, isLoading, isError, error } = useProducts()
   const [search, setSearch] = useState('')
   const [bucketFilter, setBucketFilter] = useState<ProductBucket | 'all'>('all')
-  const [createOpen, setCreateOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState<ProductsBaseSchema | null>(null)
+  const [productDialog, setProductDialog] = useState<ProductDialogState | null>(null)
   const [deletingProduct, setDeletingProduct] = useState<ProductsBaseSchema | null>(null)
 
   const filtered = useMemo(() => {
@@ -120,7 +119,7 @@ export function ProductsPanel() {
           </Select>
         </div>
 
-        <Button type="button" onClick={() => setCreateOpen(true)}>
+        <Button type="button" onClick={() => setProductDialog({ mode: 'create' })}>
           <PlusIcon data-icon="inline-start" />
           Add product
         </Button>
@@ -149,20 +148,15 @@ export function ProductsPanel() {
             <ProductRow
               key={product.id}
               product={product}
-              onEdit={() => setEditingProduct(product)}
+              onEdit={() => setProductDialog({ mode: 'edit', product })}
               onDelete={() => setDeletingProduct(product)}
             />
           ))}
         </ul>
       )}
 
-      <ProductFormDialog open={createOpen} onOpenChange={setCreateOpen} />
-      {editingProduct ? (
-        <ProductFormDialog
-          open={editingProduct !== null}
-          onOpenChange={(open) => !open && setEditingProduct(null)}
-          product={editingProduct}
-        />
+      {productDialog ? (
+        <ProductFormDialog state={productDialog} onClose={() => setProductDialog(null)} />
       ) : null}
       <DeleteProductDialog product={deletingProduct} onOpenChange={(open) => !open && setDeletingProduct(null)} />
     </div>

@@ -8,33 +8,34 @@ import {
 } from '@/components/ui/dialog'
 import { ProductForm } from '@/components/dashboard/ProductForm'
 import { useCreateProduct, useUpdateProduct } from '@/hooks/use-products'
-import type { ProductsBaseSchema, ProductsInsert, ProductsUpdate } from '@/types/api'
+import type { ProductsBaseSchema, ProductsInsert } from '@/types/api'
+
+export type ProductDialogState = { mode: 'create' } | { mode: 'edit'; product: ProductsBaseSchema }
 
 interface ProductFormDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  /** Omit to create a new product; pass an existing one to edit it. */
-  product?: ProductsBaseSchema
+  state: ProductDialogState
+  onClose: () => void
 }
 
-/** Dialog wrapping `ProductForm` for both create and edit. */
-export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDialogProps) {
+/** Dialog wrapping `ProductForm` for both create and edit. Mount it only while open. */
+export function ProductFormDialog({ state, onClose }: ProductFormDialogProps) {
   const createProduct = useCreateProduct()
-  const updateProduct = useUpdateProduct(product?.id ?? '')
+  const updateProduct = useUpdateProduct()
+  const product = state.mode === 'edit' ? state.product : undefined
 
-  const handleSubmit = async (payload: ProductsInsert | ProductsUpdate) => {
+  const handleSubmit = async (payload: ProductsInsert) => {
     if (product) {
-      await updateProduct.mutateAsync(payload as ProductsUpdate)
+      await updateProduct.mutateAsync({ id: product.id, payload })
       toast.success('Product updated.')
     } else {
-      await createProduct.mutateAsync(payload as ProductsInsert)
+      await createProduct.mutateAsync(payload)
       toast.success('Product added.')
     }
-    onOpenChange(false)
+    onClose()
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{product ? 'Edit product' : 'Add product'}</DialogTitle>
@@ -45,10 +46,9 @@ export function ProductFormDialog({ open, onOpenChange, product }: ProductFormDi
           </DialogDescription>
         </DialogHeader>
         <ProductForm
-          key={product?.id ?? 'new'}
           product={product}
           submitLabel={product ? 'Save changes' : 'Add product'}
-          onCancel={() => onOpenChange(false)}
+          onCancel={onClose}
           onSubmit={handleSubmit}
         />
       </DialogContent>

@@ -14,11 +14,11 @@ import {
 import { ProductImageUploader } from '@/components/dashboard/ProductImageUploader'
 import { productFormSchema, type ProductFormValues } from '@/lib/product-validation'
 import { PRODUCT_STATUS_LABEL } from '@/lib/products'
-import { PRODUCT_STATUSES, type ProductsBaseSchema, type ProductsInsert, type ProductsUpdate } from '@/types/api'
+import { PRODUCT_STATUSES, type ProductsBaseSchema, type ProductsInsert } from '@/types/api'
 
 interface ProductFormProps {
   product?: ProductsBaseSchema
-  onSubmit: (payload: ProductsInsert | ProductsUpdate) => Promise<void>
+  onSubmit: (payload: ProductsInsert) => Promise<void>
   onCancel: () => void
   submitLabel: string
 }

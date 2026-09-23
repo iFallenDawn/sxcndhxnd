@@ -46,17 +46,17 @@ export function useCreateProduct() {
  * fails, the previous snapshots are restored (`onError`) so the UI never
  * shows a change that didn't actually save.
  */
-export function useUpdateProduct(productId: string) {
+export function useUpdateProduct() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (payload: ProductsUpdate) => updateProduct(productId, payload),
-    onMutate: async (payload: ProductsUpdate) => {
+    mutationFn: ({ id, payload }: { id: string; payload: ProductsUpdate }) => updateProduct(id, payload),
+    onMutate: async ({ id, payload }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.products.list() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.products.detail(productId) })
+      await queryClient.cancelQueries({ queryKey: queryKeys.products.detail(id) })
 
       const previousList = queryClient.getQueryData<ProductsBaseSchema[]>(queryKeys.products.list())
       const previousDetail = queryClient.getQueryData<ProductsBaseSchema>(
-        queryKeys.products.detail(productId),
+        queryKeys.products.detail(id),
       )
 
       // `payload` is `ProductsUpdate` (fields optional/nullable for a PATCH);
@@ -65,25 +65,25 @@ export function useUpdateProduct(productId: string) {
       // type-identical, hence the cast.
       queryClient.setQueryData<ProductsBaseSchema[]>(queryKeys.products.list(), (old) =>
         old?.map((product) =>
-          product.id === productId ? ({ ...product, ...payload } as ProductsBaseSchema) : product,
+          product.id === id ? ({ ...product, ...payload } as ProductsBaseSchema) : product,
         ),
       )
-      queryClient.setQueryData<ProductsBaseSchema>(queryKeys.products.detail(productId), (old) =>
+      queryClient.setQueryData<ProductsBaseSchema>(queryKeys.products.detail(id), (old) =>
         old ? ({ ...old, ...payload } as ProductsBaseSchema) : old,
       )
 
       return { previousList, previousDetail }
     },
-    onError: (_error, _payload, context) => {
+    onError: (_error, { id }, context) => {
       if (context?.previousList) {
         queryClient.setQueryData(queryKeys.products.list(), context.previousList)
       }
       if (context?.previousDetail) {
-        queryClient.setQueryData(queryKeys.products.detail(productId), context.previousDetail)
+        queryClient.setQueryData(queryKeys.products.detail(id), context.previousDetail)
       }
     },
-    onSuccess: (product) => {
-      queryClient.setQueryData(queryKeys.products.detail(productId), product)
+    onSuccess: (product, { id }) => {
+      queryClient.setQueryData(queryKeys.products.detail(id), product)
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.products.list() })
