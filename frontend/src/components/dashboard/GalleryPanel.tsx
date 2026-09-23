@@ -5,20 +5,12 @@ import { TrashIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog'
+import { ConfirmDeleteDialog } from '@/components/dashboard/ConfirmDeleteDialog'
 import { ImageFilePicker } from '@/components/dashboard/ImageFilePicker'
 import { ImageUploadQueueList } from '@/components/dashboard/ImageUploadQueueList'
 import { useUploadQueue } from '@/hooks/use-upload-queue'
 import { useGallery, useDeleteGalleryImage } from '@/hooks/use-gallery'
 import { uploadGalleryImageWithProgress } from '@/api/gallery'
-import { ApiError } from '@/lib/api-error'
 import { queryKeys } from '@/lib/query-keys'
 import type { GalleryImagesBaseSchema } from '@/types/api'
 
@@ -35,7 +27,6 @@ export function GalleryPanel() {
   const [description, setDescription] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<GalleryImagesBaseSchema | null>(null)
   const deleteGalleryImage = useDeleteGalleryImage()
-  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // Captured when a batch is picked, so every file in it gets the same
   // description even if the field is edited mid-upload.
@@ -57,20 +48,6 @@ export function GalleryPanel() {
     }
     wasUploading.current = isUploading
   }, [isUploading, queryClient])
-
-  const handleDelete = async () => {
-    if (!deleteTarget) return
-    setDeleteError(null)
-    try {
-      await deleteGalleryImage.mutateAsync(deleteTarget.id)
-      toast.success('Photo deleted.')
-      setDeleteTarget(null)
-    } catch (error) {
-      setDeleteError(
-        error instanceof ApiError ? (error.detail ?? 'Could not delete this photo.') : 'Could not delete this photo.',
-      )
-    }
-  }
 
   const doneCount = items.filter((item) => item.status === 'done').length
 
@@ -154,29 +131,18 @@ export function GalleryPanel() {
         </ul>
       )}
 
-      <Dialog open={deleteTarget !== null} onOpenChange={(open) => !open && setDeleteTarget(null)}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete this photo for good?</DialogTitle>
-            <DialogDescription>
-              This permanently removes it from the gallery and storage. This can't be undone.
-            </DialogDescription>
-          </DialogHeader>
-          {deleteError ? (
-            <p role="alert" className="text-sm text-destructive">
-              {deleteError}
-            </p>
-          ) : null}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleteGalleryImage.isPending}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleteGalleryImage.isPending}>
-              {deleteGalleryImage.isPending ? 'Deleting…' : 'Delete permanently'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDeleteDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title="Delete this photo for good?"
+        description="This permanently removes it from the gallery and storage. This can't be undone."
+        errorMessage="Could not delete this photo."
+        onConfirm={async () => {
+          if (!deleteTarget) return
+          await deleteGalleryImage.mutateAsync(deleteTarget.id)
+          toast.success('Photo deleted.')
+        }}
+      />
     </div>
   )
 }
