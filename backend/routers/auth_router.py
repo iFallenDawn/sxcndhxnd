@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from data import auth_util
-from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword
+from entities.models import AuthRegister, AuthUpdateEmail, AuthSignIn, AuthSignOut, AuthChangePassword, AuthRefresh, AuthConfirm
 from core.auth import get_access_token
 from core.rate_limit import limiter
 
