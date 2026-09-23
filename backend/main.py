@@ -15,7 +15,7 @@ from slowapi.errors import RateLimitExceeded
 # runs on :3000, the API on :8000), so every request from the frontend is
 # cross-origin and blocked without this. Origins are configured rather than
 # wildcarded because the frontend sends an Authorization header.
-DEFAULT_ALLOWED_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000"
+DEFAULT_ALLOWED_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000,https://sxcndhxnd.com"
 ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get("ALLOWED_ORIGINS", DEFAULT_ALLOWED_ORIGINS).split(",")

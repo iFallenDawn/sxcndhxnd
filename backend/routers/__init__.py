@@ -7,7 +7,7 @@ from routers.admin_router import router as admin_router
 from routers.gallery_router import router as gallery_router
 from routers.reservations_router import router as reservations_router
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 router.include_router(admin_router)
 router.include_router(auth_router)
