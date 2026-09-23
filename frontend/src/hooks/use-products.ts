@@ -5,7 +5,6 @@ import {
   getAllProducts,
   getProductById,
   updateProduct,
-  uploadProductImage,
 } from '@/api/products'
 import { queryKeys } from '@/lib/query-keys'
 import type { ProductsBaseSchema, ProductsInsert, ProductsUpdate } from '@/types/api'
@@ -120,12 +119,5 @@ export function useDeleteProduct() {
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.products.list() })
     },
-  })
-}
-
-/** `POST /products/upload-image` (multipart). Admin only. */
-export function useUploadProductImage() {
-  return useMutation({
-    mutationFn: (file: File) => uploadProductImage(file),
   })
 }

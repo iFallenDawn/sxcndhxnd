@@ -174,11 +174,6 @@ export interface AuthRegisterResponse {
   user_id: string
 }
 
-/** Sent to `POST /auth/sign-out`. Mirrors `entities.models.AuthSignOut`. */
-export interface AuthSignOutPayload {
-  refresh_token: string
-}
-
 /**
  * Sent to `POST /auth/refresh`. Mirrors `entities.models.AuthRefresh`.
  *

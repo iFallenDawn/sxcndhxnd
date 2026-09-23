@@ -40,21 +40,10 @@ export function deleteProduct(productId: string) {
   })
 }
 
-/** `POST /products/upload-image` (multipart). Admin only. */
-export function uploadProductImage(file: File) {
-  const formData = new FormData()
-  formData.append('file', file)
-
-  return apiFetch<ProductImageUploadResponse>('/products/upload-image', {
-    method: 'POST',
-    formData,
-  })
-}
-
 /**
- * Same endpoint as {@link uploadProductImage}, via `XMLHttpRequest` so the
- * dashboard's upload queue can show real per-file progress (see
- * `lib/upload-with-progress.ts`).
+ * `POST /products/upload-image` (multipart). Admin only. Uses
+ * `XMLHttpRequest` so the dashboard's upload queue can show real per-file
+ * progress (see `lib/upload-with-progress.ts`).
  */
 export function uploadProductImageWithProgress(
   file: File,
