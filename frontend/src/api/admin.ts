@@ -23,14 +23,12 @@ export async function probeIsAdmin(userId: string): Promise<boolean> {
     await getUserAsAdmin(userId)
     return true
   } catch (error) {
-    if (!(error instanceof ApiError)) {
-      throw error
-    }
-    if (error.isForbidden) {
+    // A 403 means "not an admin"; any other status (401 expired session,
+    // 404, 500, ...) is inconclusive, so fail closed rather than granting
+    // admin UI on an ambiguous response.
+    if (error instanceof ApiError) {
       return false
     }
-    // Any other status (401 expired session, 404, 500, ...) is inconclusive.
-    // Fail closed rather than granting admin UI on an ambiguous response.
-    return false
+    throw error
   }
 }

@@ -1,5 +1,4 @@
-import { Navigate, Outlet, useLocation } from 'react-router'
-import { useAuthStore } from '@/stores/auth-store'
+import { Navigate, Outlet } from 'react-router'
 import { useIsAdmin } from '@/hooks/use-is-admin'
 
 /**
@@ -8,24 +7,12 @@ import { useIsAdmin } from '@/hooks/use-is-admin'
  *
  * There is no `role` field anywhere in the API (see `api/admin.ts`), so
  * "confirmed" here means "an admin-only route didn't 403 us" — see
- * `useIsAdmin`. Non-admins (and signed-out users) are redirected rather than
- * shown a broken/erroring page. Nest this under `RequireAuth` (or otherwise
- * ensure a session exists first) so the redirect target on failure is
- * unambiguous.
+ * `useIsAdmin`. Non-admins are redirected rather than shown a
+ * broken/erroring page. Only mount this under `RequireAuth`, which handles
+ * hydration and the signed-out redirect.
  */
 export function RequireAdmin() {
-  const hasHydrated = useAuthStore((state) => state.hasHydrated)
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated())
-  const location = useLocation()
   const { data: isAdmin, isPending } = useIsAdmin()
-
-  if (!hasHydrated) {
-    return null
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/sign-in" state={{ from: location }} replace />
-  }
 
   if (isPending) {
     return null

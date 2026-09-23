@@ -1,5 +1,4 @@
 import { ApiError } from '@/lib/api-error'
-import { useAuthStore } from '@/stores/auth-store'
 import { API_BASE_URL } from '@/lib/api-base-url'
 
 export interface ApiFetchOptions {
@@ -13,13 +12,29 @@ export interface ApiFetchOptions {
   /** Attach the current access token as `Authorization: Bearer <token>`. Defaults to true. */
   authenticated?: boolean
   signal?: AbortSignal
-  /**
-   * Internal — set automatically when `apiFetch` replays a request after a
-   * refresh. Prevents a second 401 from triggering another refresh attempt
-   * (which would otherwise recurse indefinitely if the new token is also
-   * rejected).
-   */
-  _isRetryAfterRefresh?: boolean
+}
+
+/** The slice of `useAuthStore` state this client needs. */
+interface Session {
+  accessToken: string | null
+  refreshToken: string | null
+  /** Rotates the token pair; rejects (having signed out locally) if the session is dead. */
+  refresh: () => Promise<void>
+}
+
+let getSession: () => Session | null = () => null
+
+/**
+ * Called once by `stores/auth-store.ts` to hand this client its tokens, so
+ * the dependency only runs store → client and never back.
+ */
+export function connectSession(get: () => Session) {
+  getSession = get
+}
+
+/** The current refresh token, for the auth endpoints that take it in the body. */
+export function currentRefreshToken() {
+  return getSession()?.refreshToken ?? null
 }
 
 /**
@@ -74,7 +89,7 @@ async function performFetch<T>(
   const requestHeaders: Record<string, string> = { ...headers }
 
   if (authenticated) {
-    const accessToken = useAuthStore.getState().accessToken
+    const accessToken = getSession()?.accessToken
     if (accessToken) {
       requestHeaders.Authorization = `Bearer ${accessToken}`
     }
@@ -114,31 +129,6 @@ async function performFetch<T>(
 }
 
 /**
- * Shared in-flight refresh promise. When several requests 401 at once (e.g.
- * a page firing multiple queries right as the access token expires), they
- * all await this *same* promise instead of each kicking off their own
- * `POST /auth/refresh` — only the first caller actually triggers a refresh.
- * Resets to `null` once the refresh settles (success or failure) so the next
- * 401, later, starts a fresh one.
- */
-let refreshInFlight: Promise<boolean> | null = null
-
-function refreshAccessToken(): Promise<boolean> {
-  if (!refreshInFlight) {
-    refreshInFlight = useAuthStore
-      .getState()
-      .refresh()
-      .then(() => true)
-      .catch(() => false)
-      .finally(() => {
-        refreshInFlight = null
-      })
-  }
-
-  return refreshInFlight
-}
-
-/**
  * Thin fetch wrapper for the FastAPI backend.
  *
  * Handles base-URL joining, JSON (de)serialization, multipart passthrough
@@ -146,11 +136,9 @@ function refreshAccessToken(): Promise<boolean> {
  * non-2xx responses to a typed `ApiError` (see `lib/api-error.ts`).
  *
  * On a 401 from an authenticated request, retries **once**: it refreshes the
- * access token (via the stampede-guarded `refreshAccessToken` above) and
- * replays the original request with the new token. If the refresh itself
- * fails — the refresh token is expired/invalid too — the session is dead, so
- * the user is signed out locally (without another network round trip; see
- * `useAuthStore.signOut`'s `notifyBackend` option) and the original 401 is
+ * token pair (see `useAuthStore.refresh`, which is stampede-guarded and
+ * signs out locally if the session is dead) and replays the original
+ * request with the new token. If the refresh fails, the original 401 is
  * rethrown for the caller to handle.
  */
 export async function apiFetch<T>(
@@ -160,24 +148,23 @@ export async function apiFetch<T>(
   try {
     return await performFetch<T>(path, options)
   } catch (error) {
+    const session = getSession()
     const canRetry =
       error instanceof ApiError &&
       error.isUnauthorized &&
       options.authenticated !== false &&
-      !options._isRetryAfterRefresh &&
-      useAuthStore.getState().refreshToken !== null
+      session?.refreshToken
 
     if (!canRetry) {
       throw error
     }
 
-    const refreshed = await refreshAccessToken()
-
-    if (!refreshed) {
-      await useAuthStore.getState().signOut({ notifyBackend: false })
+    try {
+      await session.refresh()
+    } catch {
       throw error
     }
 
-    return performFetch<T>(path, { ...options, _isRetryAfterRefresh: true })
+    return performFetch<T>(path, options)
   }
 }

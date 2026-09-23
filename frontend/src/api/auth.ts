@@ -1,4 +1,4 @@
-import { apiFetch } from '@/lib/api-client'
+import { apiFetch, currentRefreshToken } from '@/lib/api-client'
 import type {
   AuthChangePasswordPayload,
   AuthConfirmPayload,
@@ -41,9 +41,6 @@ export function signIn(payload: AuthSignInPayload) {
  * `POST /auth/refresh`. Public (no bearer needed — the refresh token itself
  * is the credential). Prefer `useAuthStore().refresh()` over calling this
  * directly, since the store also persists the rotated tokens.
- *
- * Not verified end-to-end against a live Supabase project as of writing —
- * see `lib/api-client.ts` for details.
  */
 export function refreshSession(payload: AuthRefreshPayload) {
   return apiFetch<AuthSignInResponse>('/auth/refresh', {
@@ -57,10 +54,6 @@ export function refreshSession(payload: AuthRefreshPayload) {
  * `POST /auth/confirm`. Public. Used by the `/auth/callback` route to
  * exchange a `token_hash` (from the query-string form of a confirmation
  * link) for a session, once Supabase's email template points there directly.
- *
- * Not verified end-to-end against a live Supabase project as of writing —
- * the email template change is a manual dashboard step that hasn't happened
- * yet. See `lib/api-client.ts` for the same caveat on `/auth/refresh`.
  */
 export function confirm(payload: AuthConfirmPayload) {
   return apiFetch<AuthSignInResponse>('/auth/confirm', {
@@ -70,18 +63,21 @@ export function confirm(payload: AuthConfirmPayload) {
   })
 }
 
-/** `PATCH /auth/email`. Bearer required. */
-export function updateEmail(payload: AuthUpdateEmailPayload) {
+/** `PATCH /auth/email`. Bearer required; the refresh token is read from the session. */
+export function updateEmail({ new_email }: Omit<AuthUpdateEmailPayload, 'refresh_token'>) {
   return apiFetch<DetailResponse>('/auth/email', {
     method: 'PATCH',
-    body: payload,
+    body: { new_email, refresh_token: currentRefreshToken() },
   })
 }
 
-/** `PATCH /auth/password`. Bearer required. */
-export function changePassword(payload: AuthChangePasswordPayload) {
+/** `PATCH /auth/password`. Bearer required; the refresh token is read from the session. */
+export function changePassword({
+  current_password,
+  new_password,
+}: Omit<AuthChangePasswordPayload, 'refresh_token'>) {
   return apiFetch<DetailResponse>('/auth/password', {
     method: 'PATCH',
-    body: payload,
+    body: { current_password, new_password, refresh_token: currentRefreshToken() },
   })
 }

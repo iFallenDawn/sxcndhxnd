@@ -1,19 +1,16 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { apiFetch } from '@/lib/api-client'
+import { apiFetch, connectSession } from '@/lib/api-client'
 import * as authApi from '@/api/auth'
 import type { AuthSignInPayload, UsersBaseSchema } from '@/types/api'
 
-interface SignOutOptions {
-  /**
-   * Whether to best-effort notify the backend via `POST /auth/sign-out`
-   * before clearing local state. Set to `false` when signing out because a
-   * refresh already failed (the refresh token is known-dead, and calling
-   * the backend would itself 401 and re-enter the refresh path — see
-   * `lib/api-client.ts`). Defaults to `true`.
-   */
-  notifyBackend?: boolean
-}
+/**
+ * Shared in-flight refresh. When several requests 401 at once (e.g. a page
+ * firing multiple queries right as the access token expires), they all
+ * await this *same* promise instead of each spending the single-use refresh
+ * token on their own `POST /auth/refresh`. Resets once it settles.
+ */
+let refreshInFlight: Promise<void> | null = null
 
 interface AuthState {
   accessToken: string | null
@@ -39,13 +36,13 @@ interface AuthState {
    * since an expired/invalid token would otherwise strand the user signed in
    * on the client.
    */
-  signOut: (options?: SignOutOptions) => Promise<void>
+  signOut: () => Promise<void>
   /**
    * Exchanges the stored refresh token for a new access/refresh token pair
    * via `POST /auth/refresh` and persists both (Supabase rotates refresh
-   * tokens on every use, so the old one is single-use). Throws if there is
-   * no refresh token or the exchange fails — callers (see `apiFetch`) treat
-   * that as "the session is dead" and sign out.
+   * tokens on every use, so the old one is single-use). If there is no
+   * refresh token or the exchange fails, the session is dead: local state is
+   * cleared and the promise rejects. Called by `apiFetch` on a 401.
    */
   refresh: () => Promise<void>
   setUser: (user: UsersBaseSchema) => void
@@ -74,11 +71,10 @@ export const useAuthStore = create<AuthState>()(
         set({ accessToken: session.access_token, refreshToken: session.refresh_token, user })
       },
 
-      signOut: async (options) => {
-        const { notifyBackend = true } = options ?? {}
+      signOut: async () => {
         const { refreshToken } = get()
 
-        if (notifyBackend && refreshToken) {
+        if (refreshToken) {
           try {
             await apiFetch('/auth/sign-out', {
               method: 'POST',
@@ -93,20 +89,27 @@ export const useAuthStore = create<AuthState>()(
         set({ accessToken: null, refreshToken: null, user: null })
       },
 
-      refresh: async () => {
-        const { refreshToken } = get()
-        if (!refreshToken) {
-          throw new Error('No refresh token available')
-        }
-
-        const session = await authApi.refreshSession({ refresh_token: refreshToken })
-
-        // Supabase rotates refresh tokens on every use — always persist the
-        // newly returned one, never reuse the one we sent.
-        set({
-          accessToken: session.access_token,
-          refreshToken: session.refresh_token,
+      refresh: () => {
+        refreshInFlight ??= (async () => {
+          const { refreshToken } = get()
+          try {
+            if (!refreshToken) {
+              throw new Error('No refresh token available')
+            }
+            const session = await authApi.refreshSession({ refresh_token: refreshToken })
+            // Supabase rotates refresh tokens on every use — always persist
+            // the newly returned one, never reuse the one we sent.
+            set({ accessToken: session.access_token, refreshToken: session.refresh_token })
+          } catch (error) {
+            // The session is dead. Sign out locally only: telling the backend
+            // would need the very token that just failed.
+            set({ accessToken: null, refreshToken: null, user: null })
+            throw error
+          }
+        })().finally(() => {
+          refreshInFlight = null
         })
+        return refreshInFlight
       },
 
       setUser: (user) => set({ user }),
@@ -126,3 +129,5 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 )
+
+connectSession(useAuthStore.getState)

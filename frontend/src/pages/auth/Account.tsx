@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser, useUpdateCurrentUser } from '@/hooks/use-users'
 import { changePassword, updateEmail } from '@/api/auth'
-import { useAuthStore } from '@/stores/auth-store'
 import {
   changeEmailSchema,
   changePasswordSchema,
@@ -136,8 +135,6 @@ function ProfileSection() {
 }
 
 function ChangeEmailSection() {
-  const refreshToken = useAuthStore((state) => state.refreshToken)
-
   const {
     register,
     handleSubmit,
@@ -148,13 +145,7 @@ function ChangeEmailSection() {
     defaultValues: { new_email: '' },
   })
 
-  const mutation = useMutation({
-    mutationFn: (values: ChangeEmailFormValues) => {
-      if (!refreshToken) throw new Error('No active session')
-      return updateEmail({ new_email: values.new_email, refresh_token: refreshToken })
-    },
-    onSuccess: () => reset(),
-  })
+  const mutation = useMutation({ mutationFn: updateEmail, onSuccess: () => reset() })
 
   const errorMessage = mutation.isError
     ? friendlyAuthErrorMessage(mutation.error, 'Could not update your email.')
@@ -195,8 +186,6 @@ function ChangeEmailSection() {
 }
 
 function ChangePasswordSection() {
-  const refreshToken = useAuthStore((state) => state.refreshToken)
-
   const {
     register,
     handleSubmit,
@@ -207,17 +196,7 @@ function ChangePasswordSection() {
     defaultValues: { current_password: '', new_password: '', confirm_password: '' },
   })
 
-  const mutation = useMutation({
-    mutationFn: (values: ChangePasswordFormValues) => {
-      if (!refreshToken) throw new Error('No active session')
-      return changePassword({
-        current_password: values.current_password,
-        new_password: values.new_password,
-        refresh_token: refreshToken,
-      })
-    },
-    onSuccess: () => reset(),
-  })
+  const mutation = useMutation({ mutationFn: changePassword, onSuccess: () => reset() })
 
   const errorMessage = mutation.isError
     ? friendlyAuthErrorMessage(mutation.error, 'Could not change your password.')
