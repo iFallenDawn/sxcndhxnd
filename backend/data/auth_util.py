@@ -8,6 +8,17 @@ from supabase_auth.errors import AuthApiError, AuthError
 
 supabase = db()
 
+def _session_response(response, error_message: str) -> dict:
+    """Token payload from a Supabase auth response, or 401 if it has no session."""
+    if response.session is None or response.user is None:
+        raise UnauthorizedError(error_message)
+
+    return {
+        "access_token": response.session.access_token,
+        "refresh_token": response.session.refresh_token,
+        "user_id": response.user.id,
+    }
+
 async def sign_in(email: EmailStr, password: SecretStr) -> dict:
     client = scoped_client()
     
@@ -21,34 +32,17 @@ async def sign_in(email: EmailStr, password: SecretStr) -> dict:
     except AuthError:
         raise UnauthorizedError("Invalid email or password")
 
-    if response.session is None or response.user is None:
-        raise UnauthorizedError("Invalid email or password")
-
-    return {
-        "access_token": response.session.access_token,
-        "refresh_token": response.session.refresh_token,
-        "user_id": response.user.id,
-    }
-        
+    return _session_response(response, "Invalid email or password")
 
 async def refresh_session(refresh_token: str) -> dict:
     client = scoped_client()
 
     try:
         response = client.auth.refresh_session(refresh_token)
-    except AuthApiError:
-        raise UnauthorizedError("Invalid or expired refresh token")
     except AuthError:
         raise UnauthorizedError("Invalid or expired refresh token")
 
-    if response.session is None or response.user is None:
-        raise UnauthorizedError("Invalid or expired refresh token")
-
-    return {
-        "access_token": response.session.access_token,
-        "refresh_token": response.session.refresh_token,
-        "user_id": response.user.id,
-    }
+    return _session_response(response, "Invalid or expired refresh token")
 
 async def confirm(payload: AuthConfirm) -> dict:
     client = scoped_client()
@@ -58,19 +52,10 @@ async def confirm(payload: AuthConfirm) -> dict:
             "token_hash": payload.token_hash,
             "type": payload.type,
         })
-    except AuthApiError:
-        raise UnauthorizedError("Invalid or expired confirmation link")
     except AuthError:
         raise UnauthorizedError("Invalid or expired confirmation link")
 
-    if response.session is None or response.user is None:
-        raise UnauthorizedError("Invalid or expired confirmation link")
-
-    return {
-        "access_token": response.session.access_token,
-        "refresh_token": response.session.refresh_token,
-        "user_id": response.user.id,
-    }
+    return _session_response(response, "Invalid or expired confirmation link")
 
 async def create_user_from_auth(
     payload: AuthRegister
