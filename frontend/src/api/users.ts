@@ -1,5 +1,5 @@
 import { apiFetch } from '@/lib/api-client'
-import type { UsersBaseSchema, UsersPublicProfile, UsersUpdate } from '@/types/api'
+import type { UsersBaseSchema, UsersUpdate } from '@/types/api'
 
 /** `GET /users/me`. Bearer required. */
 export function getCurrentUser() {
@@ -12,9 +12,4 @@ export function updateCurrentUser(payload: UsersUpdate) {
     method: 'PATCH',
     body: payload,
   })
-}
-
-/** `GET /users/{id}`. Bearer required (any authenticated user). */
-export function getPublicUser(userId: string) {
-  return apiFetch<UsersPublicProfile>(`/users/${userId}`)
 }

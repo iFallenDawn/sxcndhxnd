@@ -121,14 +121,6 @@ export interface UsersBaseSchema {
   updated_at: string
 }
 
-/** Mirrors `entities.models.UsersPublicProfile`. Response of `GET /users/{id}`. */
-export interface UsersPublicProfile {
-  id: string
-  first_name: string
-  last_name: string
-  instagram: string
-}
-
 /** Mirrors `entities.models.UsersUpdate`. Sent to `PATCH /users/me`. */
 export interface UsersUpdate {
   first_name?: string | null

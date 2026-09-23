@@ -18,7 +18,6 @@ export const queryKeys = {
   users: {
     all: () => ['users'] as const,
     me: () => [...queryKeys.users.all(), 'me'] as const,
-    public: (userId: string) => [...queryKeys.users.all(), 'public', userId] as const,
   },
   auth: {
     /** Result of probing an admin-only route (see `api/admin.ts::probeIsAdmin`). */
