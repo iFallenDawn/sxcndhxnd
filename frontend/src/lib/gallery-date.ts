@@ -18,50 +18,37 @@
  * This is a stopgap. The real fix is an explicit `year` or `completed_at`
  * column on the gallery/product tables, set at upload time by whoever is
  * archiving the piece — flagged in issue #11 and in this PR's report. When
- * that column exists, replace the body of `deriveGalleryYear` /
- * `deriveGalleryTimestamp` with a direct read of it; every call site in this
- * app (see `src/lib/gallery-items.ts`) goes through these two functions, so
- * nothing else needs to change.
+ * that column exists, replace the body of `deriveGalleryDate` with a direct
+ * read of it; every call site in this app (see `src/lib/gallery-items.ts`)
+ * goes through that function, so nothing else needs to change.
  * ---------------------------------------------------------------------------
  */
 
-// Matches an 8-digit YYYYMMDD run anywhere in the string (optionally followed
-// by `_HHMMSS` or similar, which we ignore). Requires a 20xx year to avoid
-// false positives on unrelated numeric IDs in the filename.
-const FILENAME_DATE_RE = /(20\d{2})(\d{2})(\d{2})(?:[_-]?\d{1,6})?/
+// Matches an 8-digit YYYYMMDD run anywhere in the string. Requires a 20xx
+// year to avoid false positives on unrelated numeric IDs in the filename.
+const FILENAME_DATE_RE = /(20\d{2})(\d{2})(\d{2})/
 
-function parseFilenameDate(source: string): { year: number; isoDate: string } | null {
+/**
+ * When a gallery photo was made, as a UTC millisecond timestamp (the sort key
+ * within a year group), plus the UTC calendar year it's grouped under. The
+ * year is read off the timestamp so the two can never disagree.
+ */
+export function deriveGalleryDate(imageUrl: string, createdAt: string): { year: number; timestamp: number } {
+  const timestamp = parseFilenameDate(imageUrl) ?? parseCreatedAt(createdAt)
+  return { year: new Date(timestamp).getUTCFullYear(), timestamp }
+}
+
+function parseFilenameDate(source: string): number | null {
   const match = source.match(FILENAME_DATE_RE)
   if (!match) return null
 
-  const [, yearStr, monthStr, dayStr] = match
-  const year = Number(yearStr)
-  const month = Number(monthStr)
-  const day = Number(dayStr)
+  const [, year, month, day] = match.map(Number)
   if (month < 1 || month > 12 || day < 1 || day > 31) return null
 
-  return { year, isoDate: `${yearStr}-${monthStr}-${dayStr}` }
+  return Date.UTC(year, month - 1, day)
 }
 
-/** The calendar year a gallery photo should be grouped under. */
-export function deriveGalleryYear(imageUrl: string, createdAt: string): number {
-  const fromFilename = parseFilenameDate(imageUrl)
-  if (fromFilename) return fromFilename.year
-
-  const fallback = new Date(createdAt)
-  if (!Number.isNaN(fallback.getTime())) return fallback.getFullYear()
-
-  return new Date().getFullYear()
-}
-
-/** A sortable millisecond timestamp for ordering photos within a year group. */
-export function deriveGalleryTimestamp(imageUrl: string, createdAt: string): number {
-  const fromFilename = parseFilenameDate(imageUrl)
-  if (fromFilename) {
-    const parsed = Date.parse(`${fromFilename.isoDate}T00:00:00Z`)
-    if (!Number.isNaN(parsed)) return parsed
-  }
-
-  const fallback = Date.parse(createdAt)
-  return Number.isNaN(fallback) ? 0 : fallback
+function parseCreatedAt(createdAt: string): number {
+  const parsed = Date.parse(createdAt)
+  return Number.isNaN(parsed) ? Date.now() : parsed
 }

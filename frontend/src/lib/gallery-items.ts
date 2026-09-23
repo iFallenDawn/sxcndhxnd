@@ -1,4 +1,4 @@
-import { deriveGalleryTimestamp, deriveGalleryYear } from '@/lib/gallery-date'
+import { deriveGalleryDate } from '@/lib/gallery-date'
 import type { GalleryResponse } from '@/types/api'
 
 /** One photo in the unified archive stream, regardless of whether it came from `gallery_images` or a product's `image_urls`. */
@@ -6,7 +6,7 @@ export interface GalleryItem {
   id: string
   imageUrl: string
   year: number
-  /** Sort key within a year (see `deriveGalleryTimestamp`). */
+  /** Sort key within a year (see `deriveGalleryDate`). */
   timestamp: number
 }
 
@@ -24,16 +24,14 @@ export function buildGalleryItems(data: GalleryResponse): GalleryItem[] {
   const fromGalleryImages: GalleryItem[] = data.gallery_images.map((image) => ({
     id: `gallery-${image.id}`,
     imageUrl: image.image_url,
-    year: deriveGalleryYear(image.image_url, image.created_at),
-    timestamp: deriveGalleryTimestamp(image.image_url, image.created_at),
+    ...deriveGalleryDate(image.image_url, image.created_at),
   }))
 
   const fromProducts: GalleryItem[] = data.products.flatMap((product) =>
     product.image_urls.map((imageUrl, index) => ({
       id: `product-${product.id}-${index}`,
       imageUrl,
-      year: deriveGalleryYear(imageUrl, product.created_at),
-      timestamp: deriveGalleryTimestamp(imageUrl, product.created_at),
+      ...deriveGalleryDate(imageUrl, product.created_at),
     })),
   )
 
