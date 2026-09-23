@@ -98,7 +98,9 @@ const STATUS_BUCKET: Record<ProductStatus, ProductBucket> = {
 }
 
 export function getProductBucket(status: ProductStatus): ProductBucket {
-  return STATUS_BUCKET[status]
+  // The DB column is unconstrained `text`, so a hand-edited row can still
+  // carry an unknown status; keep it at the back of the store, not the front.
+  return STATUS_BUCKET[status] ?? 'archive'
 }
 
 export function bucketRank(status: ProductStatus): number {
