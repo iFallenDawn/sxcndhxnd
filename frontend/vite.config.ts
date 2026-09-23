@@ -7,11 +7,14 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // Pinned rather than left to Vite's default 5173: the backend's CORS
-    // allowlist names this origin explicitly, so a silent port fallback
-    // would break API calls. strictPort surfaces a clash instead.
     port: 3000,
     strictPort: true,
+    // Keeps dev same-origin like production (see `lib/api-base-url.ts`):
+    // API calls go to `/api` on this server and are forwarded to the local
+    // FastAPI backend (`fastapi dev main.py`).
+    proxy: {
+      '/api': 'http://localhost:8000',
+    },
   },
   resolve: {
     alias: {

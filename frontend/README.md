@@ -26,21 +26,14 @@ npm install
 npm run dev
 ```
 
-Serves the app at http://localhost:3000 (pinned in `vite.config.ts`; the backend's CORS allowlist expects this origin).
+Serves the app at http://localhost:3000.
 
 ### Pointing at a local backend
 
-Copy `.env.example` to `.env` and set `VITE_API_BASE_URL` to wherever the
-FastAPI backend is running locally (see `../backend/README.md` — typically
-`fastapi dev main.py` serving on `http://localhost:8000`):
-
-```bash
-cp .env.example .env
-```
-
-```
-VITE_API_BASE_URL=http://localhost:8000
-```
+Requests go to `/api` on the dev server, which proxies them to the FastAPI
+backend on `http://localhost:8000` (see `server.proxy` in `vite.config.ts`).
+Start the backend with `fastapi dev main.py` from `../backend` (see
+`../backend/README.md`). No `.env` is needed.
 
 ## Build
 
