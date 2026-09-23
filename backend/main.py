@@ -29,3 +29,5 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) # typ
 
 register_exception_handlers(app)
 app.include_router(api_router)
+
+app.frontend("/", directory="dist")
