@@ -154,14 +154,17 @@ async def change_password(
     
     email = user_response.user.email
     
-    # double check the user can sign in with their old password
+    # double check the user can sign in with their old password. A wrong
+    # password is a 403, not a 401: the bearer token is fine, and clients
+    # treat a 401 as "access token expired" (refresh and retry), which would
+    # burn the refresh token and re-check the password for nothing.
     try:
         client.auth.sign_in_with_password({
             "email": email,
             "password": current_password.get_secret_value(),
         })
     except AuthError:
-        raise UnauthorizedError("Current password is incorrect")
+        raise ForbiddenError("Current password is incorrect")
     
     # change the password
     try:
