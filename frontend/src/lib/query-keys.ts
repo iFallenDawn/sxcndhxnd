@@ -14,8 +14,6 @@ export const queryKeys = {
   gallery: {
     all: () => ['gallery'] as const,
     list: () => [...queryKeys.gallery.all(), 'list'] as const,
-    detail: (galleryImageId: string) =>
-      [...queryKeys.gallery.all(), 'detail', galleryImageId] as const,
   },
   users: {
     all: () => ['users'] as const,
