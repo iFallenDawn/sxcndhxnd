@@ -108,17 +108,18 @@ export function bucketRank(status: ProductStatus): number {
 // ---------------------------------------------------------------------------
 // Price formatting
 // ---------------------------------------------------------------------------
-// `price` arrives as a string (Python Decimal serialized over JSON). Format
-// it purely with string manipulation — never `Number(price)` — so we never
-// round-trip through a float and risk precision loss.
+// `price` arrives as a string (Python Decimal serialized over JSON). Never
+// `Number(price)` it — that round-trips through a float and risks precision
+// loss. `Intl.NumberFormat` formats a numeric string exactly, and `trunc`
+// drops extra decimals rather than rounding them up.
+const priceFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  roundingMode: 'trunc',
+})
+
 export function formatPrice(price: string): string {
-  const negative = price.trim().startsWith('-')
-  const unsigned = negative ? price.trim().slice(1) : price.trim()
-  const [wholeRaw, fractionRaw = ''] = unsigned.split('.')
-  const whole = wholeRaw.replace(/\D/g, '') || '0'
-  const fraction = (fractionRaw.replace(/\D/g, '') + '00').slice(0, 2)
-  const withThousands = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return `${negative ? '-' : ''}$${withThousands}.${fraction}`
+  return priceFormat.format(price as Intl.StringNumericLiteral)
 }
 
 /**
