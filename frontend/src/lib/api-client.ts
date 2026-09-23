@@ -37,62 +37,70 @@ export function currentRefreshToken() {
   return getSession()?.refreshToken ?? null
 }
 
+/** `Authorization: Bearer <token>` for the current session, or nothing when signed out. */
+export function authHeader(): Record<string, string> {
+  const accessToken = getSession()?.accessToken
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {}
+}
+
 /**
- * Parses a backend error response into an `ApiError`.
+ * Turns a raw response into the parsed JSON body (or `undefined` when
+ * empty), throwing an `ApiError` for any non-2xx status.
  *
  * Every exception handler in `backend/core/exception_handlers.py` responds
  * with `{ detail: string }` (validation errors additionally include
- * `errors`), so we always try that shape first and fall back to the raw text
- * if the body isn't JSON.
+ * `errors`), so an error body is read as that shape, falling back to the raw
+ * text if it isn't JSON.
  */
-async function toApiError(response: Response): Promise<ApiError> {
-  let detail: string | null = null
-  let errors: unknown[] | null = null
-
-  try {
-    const data: unknown = await response.clone().json()
-    if (data && typeof data === 'object') {
-      const record = data as Record<string, unknown>
-      if (typeof record.detail === 'string') {
-        detail = record.detail
-      }
-      if (Array.isArray(record.errors)) {
-        errors = record.errors
-      }
-    }
-  } catch {
-    try {
-      const text = await response.text()
-      detail = text || null
-    } catch {
-      detail = null
-    }
+export function parseResponse<T>(status: number, text: string): T {
+  if (status >= 200 && status < 300) {
+    return (text ? JSON.parse(text) : undefined) as T
   }
 
-  return new ApiError(response.status, detail, errors)
+  let data: { detail?: unknown; errors?: unknown } | null
+  try {
+    data = JSON.parse(text)
+  } catch {
+    throw new ApiError(status, text || null)
+  }
+  throw new ApiError(
+    status,
+    typeof data?.detail === 'string' ? data.detail : null,
+    Array.isArray(data?.errors) ? data.errors : null,
+  )
 }
 
-/** Single attempt at the request — no 401-retry logic. See `apiFetch` below. */
-async function performFetch<T>(
-  path: string,
-  options: ApiFetchOptions,
-): Promise<T> {
-  const {
-    method = 'GET',
-    body,
-    formData,
-    headers = {},
-    authenticated = true,
-    signal,
-  } = options
-
-  const requestHeaders: Record<string, string> = { ...headers }
-
-  if (authenticated) {
-    const accessToken = getSession()?.accessToken
-    if (accessToken) {
-      requestHeaders.Authorization = `Bearer ${accessToken}`
+/**
+ * Runs an authenticated request, retrying it **once** on a 401: the token
+ * pair is refreshed first (see `useAuthStore.refresh`, which is
+ * stampede-guarded and signs out locally if the session is dead). If the
+ * refresh fails, the original 401 is rethrown for the caller to handle.
+ */
+export async function withSessionRefresh<T>(request: () => Promise<T>): Promise<T> {
+  try {
+    return await request()
+  } catch (error) {
+    const session = getSession()
+    if (!(error instanceof ApiError && error.isUnauthorized && session?.refreshToken)) {
+      throw error
     }
+
+    try {
+      await session.refresh()
+    } catch {
+      throw error
+    }
+
+    return request()
+  }
+}
+
+async function performFetch<T>(path: string, options: ApiFetchOptions): Promise<T> {
+  const { method = 'GET', body, formData, headers = {}, authenticated = true, signal } = options
+
+  const requestHeaders: Record<string, string> = {
+    ...headers,
+    ...(authenticated ? authHeader() : {}),
   }
 
   let requestBody: BodyInit | undefined
@@ -112,59 +120,18 @@ async function performFetch<T>(
     signal,
   })
 
-  if (!response.ok) {
-    throw await toApiError(response)
-  }
-
-  if (response.status === 204) {
-    return undefined as T
-  }
-
-  const text = await response.text()
-  if (!text) {
-    return undefined as T
-  }
-
-  return JSON.parse(text) as T
+  return parseResponse<T>(response.status, await response.text())
 }
 
 /**
  * Thin fetch wrapper for the FastAPI backend.
  *
- * Handles base-URL joining, JSON (de)serialization, multipart passthrough
- * for uploads, bearer-token attachment from the auth store, and mapping
- * non-2xx responses to a typed `ApiError` (see `lib/api-error.ts`).
- *
- * On a 401 from an authenticated request, retries **once**: it refreshes the
- * token pair (see `useAuthStore.refresh`, which is stampede-guarded and
- * signs out locally if the session is dead) and replays the original
- * request with the new token. If the refresh fails, the original 401 is
- * rethrown for the caller to handle.
+ * Handles base-URL joining, JSON (de)serialization, multipart passthrough,
+ * bearer-token attachment, mapping non-2xx responses to a typed `ApiError`
+ * (see `lib/api-error.ts`), and — for authenticated requests — one
+ * refresh-and-retry on a 401 (see `withSessionRefresh`).
  */
-export async function apiFetch<T>(
-  path: string,
-  options: ApiFetchOptions = {},
-): Promise<T> {
-  try {
-    return await performFetch<T>(path, options)
-  } catch (error) {
-    const session = getSession()
-    const canRetry =
-      error instanceof ApiError &&
-      error.isUnauthorized &&
-      options.authenticated !== false &&
-      session?.refreshToken
-
-    if (!canRetry) {
-      throw error
-    }
-
-    try {
-      await session.refresh()
-    } catch {
-      throw error
-    }
-
-    return performFetch<T>(path, options)
-  }
+export function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+  const request = () => performFetch<T>(path, options)
+  return options.authenticated === false ? request() : withSessionRefresh(request)
 }

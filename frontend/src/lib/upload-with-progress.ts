@@ -1,5 +1,5 @@
 import { ApiError } from '@/lib/api-error'
-import { useAuthStore } from '@/stores/auth-store'
+import { authHeader, parseResponse, withSessionRefresh } from '@/lib/api-client'
 import { API_BASE_URL } from '@/lib/api-base-url'
 
 /**
@@ -9,12 +9,19 @@ import { API_BASE_URL } from '@/lib/api-base-url'
  * hundred gallery photos shows visible per-file progress instead of a single
  * opaque spinner.
  *
- * Intentionally does not carry `apiFetch`'s 401-refresh-and-retry logic —
- * these uploads are short admin sessions; a stale token here surfaces as a
- * plain "session expired" error the caller can show and let the admin
- * retry after signing back in.
+ * Shares `apiFetch`'s auth header, error parsing and 401 refresh-and-retry,
+ * so a batch that outlives the access token keeps going.
  */
 export function uploadWithProgress<T>(
+  path: string,
+  formData: FormData,
+  onProgress?: (percent: number) => void,
+  signal?: AbortSignal,
+): Promise<T> {
+  return withSessionRefresh(() => send<T>(path, formData, onProgress, signal))
+}
+
+function send<T>(
   path: string,
   formData: FormData,
   onProgress?: (percent: number) => void,
@@ -24,9 +31,8 @@ export function uploadWithProgress<T>(
     const xhr = new XMLHttpRequest()
     xhr.open('POST', `${API_BASE_URL}${path}`)
 
-    const accessToken = useAuthStore.getState().accessToken
-    if (accessToken) {
-      xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
+    for (const [name, value] of Object.entries(authHeader())) {
+      xhr.setRequestHeader(name, value)
     }
 
     if (signal) {
@@ -34,7 +40,7 @@ export function uploadWithProgress<T>(
         reject(new DOMException('Aborted', 'AbortError'))
         return
       }
-      signal.addEventListener('abort', () => xhr.abort())
+      signal.addEventListener('abort', () => xhr.abort(), { once: true })
     }
 
     xhr.upload.onprogress = (event) => {
@@ -50,33 +56,11 @@ export function uploadWithProgress<T>(
       )
 
     xhr.onload = () => {
-      const text = xhr.responseText
-      if (xhr.status >= 200 && xhr.status < 300) {
-        if (!text) {
-          resolve(undefined as T)
-          return
-        }
-        try {
-          resolve(JSON.parse(text) as T)
-        } catch {
-          resolve(undefined as T)
-        }
-        return
-      }
-
-      let detail: string | null = null
-      let errors: unknown[] | null = null
       try {
-        const data: unknown = JSON.parse(text)
-        if (data && typeof data === 'object') {
-          const record = data as Record<string, unknown>
-          if (typeof record.detail === 'string') detail = record.detail
-          if (Array.isArray(record.errors)) errors = record.errors
-        }
-      } catch {
-        detail = text || null
+        resolve(parseResponse<T>(xhr.status, xhr.responseText))
+      } catch (error) {
+        reject(error)
       }
-      reject(new ApiError(xhr.status, detail, errors))
     }
 
     xhr.send(formData)

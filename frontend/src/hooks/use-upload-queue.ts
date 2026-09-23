@@ -18,6 +18,16 @@ export interface QueuedUpload<TResult> {
   result: TResult | null
 }
 
+function uploadErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    // A 401 only reaches here once the automatic token refresh has failed.
+    if (error.isUnauthorized) return 'Your session expired — sign in again, then retry.'
+    if (error.isForbidden) return "You don't have permission to upload this."
+    return error.detail ?? 'Upload failed.'
+  }
+  return error instanceof Error ? error.message : 'Upload failed.'
+}
+
 let nextId = 0
 function newId() {
   nextId += 1
@@ -76,15 +86,7 @@ export function useUploadQueue<TResult>(
           patch(id, { status: 'error', error: 'Cancelled.' })
           return
         }
-        const message =
-          error instanceof ApiError
-            ? error.isForbidden
-              ? "You don't have permission to upload this — sign-in may have expired."
-              : (error.detail ?? 'Upload failed.')
-            : error instanceof Error
-              ? error.message
-              : 'Upload failed.'
-        patch(id, { status: 'error', error: message })
+        patch(id, { status: 'error', error: uploadErrorMessage(error) })
       } finally {
         controllers.current.delete(id)
       }
