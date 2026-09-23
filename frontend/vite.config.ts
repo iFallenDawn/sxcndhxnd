@@ -21,4 +21,7 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  build: {
+    outDir: '../backend/dist', // Replace with your desired folder
+  },
 })
