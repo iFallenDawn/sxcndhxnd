@@ -51,12 +51,12 @@ export const PRODUCT_STATUS_LABEL: Record<ProductStatus, string> = {
 // The client simplified the DB's finer-grained `status` values into three
 // user-facing buckets, verbatim: "Sold and display should just all
 // automatically lump into the archive." So `available` and `reserved` stay
-// distinct, and everything else (`sold`, `display`, `archive`, or any future
-// unrecognized value) collapses into `archive`.
-export type ProductBucket = 'available' | 'reserved' | 'archive'
+// distinct, and `sold`, `display` and `archive` collapse into `archive`.
 
 /** Bucket display order — earlier buckets lead, later ones trail/de-emphasize. */
-export const BUCKET_ORDER: ProductBucket[] = ['available', 'reserved', 'archive']
+export const BUCKET_ORDER = ['available', 'reserved', 'archive'] as const
+
+export type ProductBucket = (typeof BUCKET_ORDER)[number]
 
 export const BUCKET_LABEL: Record<ProductBucket, string> = {
   available: 'Available',
@@ -74,8 +74,8 @@ export const BUCKET_LABEL: Record<ProductBucket, string> = {
  * - `ON_SURFACE` sits on the page background. There, a white `bg-background`
  *   chip is invisible, so `reserved` carries a visible border instead.
  *
- * Kept here rather than duplicated per-component — the storefront card and the
- * admin dashboard previously each had their own copy, and they drifted.
+ * Kept here rather than duplicated per-component — the storefront card, the
+ * product page and the admin dashboard each used to carry a copy, and they drifted.
  */
 export const BUCKET_BADGE_ON_IMAGE: Record<ProductBucket, string> = {
   available: 'border-transparent bg-foreground text-background',
@@ -89,16 +89,16 @@ export const BUCKET_BADGE_ON_SURFACE: Record<ProductBucket, string> = {
   archive: 'border-transparent bg-muted text-muted-foreground',
 }
 
+const STATUS_BUCKET: Record<ProductStatus, ProductBucket> = {
+  available: 'available',
+  reserved: 'reserved',
+  sold: 'archive',
+  display: 'archive',
+  archive: 'archive',
+}
+
 export function getProductBucket(status: ProductStatus): ProductBucket {
-  switch (status) {
-    case 'available':
-      return 'available'
-    case 'reserved':
-      return 'reserved'
-    default:
-      // 'sold' | 'display' | 'archive' | anything unrecognized
-      return 'archive'
-  }
+  return STATUS_BUCKET[status]
 }
 
 export function bucketRank(status: ProductStatus): number {

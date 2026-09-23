@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useProduct } from '@/hooks/use-products'
 import { ApiError } from '@/lib/api-error'
 import {
+  BUCKET_BADGE_ON_SURFACE,
   BUCKET_LABEL,
   formatPrice,
   getProductBucket,
@@ -15,18 +16,6 @@ import {
   type ProductBucket,
 } from '@/lib/products'
 import type { ProductsBaseSchema } from '@/types/api'
-
-/**
- * Status-badge tones next to the title — same opaque, tone-differentiated
- * language as `ProductCard`'s badge (this one sits on the plain page
- * background, not on a photo, but keeping the same classes keeps the two
- * pages visually continuous).
- */
-const BUCKET_BADGE_CLASS: Record<ProductBucket, string> = {
-  available: 'border-transparent bg-foreground text-background',
-  reserved: 'border-transparent bg-background text-foreground border-border',
-  archive: 'border-transparent bg-muted text-muted-foreground',
-}
 
 function ProductDetailSkeleton() {
   return (
@@ -89,7 +78,7 @@ function ProductCta({ bucket }: ProductCtaProps) {
 
   if (bucket === 'reserved') {
     return (
-      <Badge className={BUCKET_BADGE_CLASS.reserved}>{BUCKET_LABEL.reserved} — spoken for</Badge>
+      <Badge className={BUCKET_BADGE_ON_SURFACE.reserved}>{BUCKET_LABEL.reserved} — spoken for</Badge>
     )
   }
 
@@ -127,7 +116,7 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="heading-display text-3xl sm:text-4xl">{product.title}</h1>
-            <Badge className={BUCKET_BADGE_CLASS[bucket]}>{BUCKET_LABEL[bucket]}</Badge>
+            <Badge className={BUCKET_BADGE_ON_SURFACE[bucket]}>{BUCKET_LABEL[bucket]}</Badge>
           </div>
 
           {metaBits.length > 0 ? (

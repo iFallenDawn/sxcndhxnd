@@ -15,7 +15,15 @@ import { ProductFormDialog } from '@/components/dashboard/ProductFormDialog'
 import { DeleteProductDialog } from '@/components/dashboard/DeleteProductDialog'
 import { useProducts } from '@/hooks/use-products'
 import { ApiError } from '@/lib/api-error'
-import { formatPrice, getProductBucket, BUCKET_LABEL, BUCKET_BADGE_ON_SURFACE, type ProductBucket } from '@/lib/products'
+import {
+  formatPrice,
+  getProductBucket,
+  BUCKET_LABEL,
+  BUCKET_ORDER,
+  BUCKET_BADGE_ON_SURFACE,
+  PRODUCT_STATUS_LABEL,
+  type ProductBucket,
+} from '@/lib/products'
 import { ImagePlaceholder } from '@/components/home/ImagePlaceholder'
 import type { ProductsBaseSchema } from '@/types/api'
 
@@ -29,7 +37,6 @@ function ProductRow({
   onEdit: () => void
   onDelete: () => void
 }) {
-  const bucket = getProductBucket(product.status)
   const [firstImage] = product.image_urls
 
   return (
@@ -45,7 +52,10 @@ function ProductRow({
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="truncate font-medium text-foreground">{product.title}</span>
-          <Badge className={BUCKET_BADGE_ON_SURFACE[bucket]}>{BUCKET_LABEL[bucket]}</Badge>
+          {/* Raw status, so the admin can tell sold from display; toned by its store bucket. */}
+          <Badge className={BUCKET_BADGE_ON_SURFACE[getProductBucket(product.status)]}>
+            {PRODUCT_STATUS_LABEL[product.status]}
+          </Badge>
         </div>
         <span className="font-mono text-sm text-muted-foreground">{formatPrice(product.price)}</span>
       </div>
@@ -101,9 +111,11 @@ export function ProductsPanel() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="available">Available</SelectItem>
-              <SelectItem value="reserved">Reserved</SelectItem>
-              <SelectItem value="archive">Archive</SelectItem>
+              {BUCKET_ORDER.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {BUCKET_LABEL[option]}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
