@@ -25,13 +25,13 @@ function isConfirmType(value: string | null): value is AuthConfirmPayload['type'
  * `/auth/callback` — the single landing spot for both shapes a Supabase
  * confirmation/magic-link email can currently produce:
  *
- *  1. **Implicit flow** (today's default): Supabase's own `/auth/v1/verify`
+ *  1. **Implicit flow** (legacy `{{ .ConfirmationURL }}` links): Supabase's own `/auth/v1/verify`
  *     redirects here with the session already minted, as a `#access_token=…`
  *     URL *fragment*. We read it, hand the tokens to the auth store, and —
  *     critically — strip the fragment with `history.replaceState` before
  *     anything else can observe it or it can land in history. See issue #18.
  *  2. **Token-hash flow** (after the email template is changed to point
- *     `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup`
+ *     `{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup`
  *     here instead): a `?token_hash=&type=` *query string*, which we
  *     exchange for a session via `POST /auth/confirm`.
  *
