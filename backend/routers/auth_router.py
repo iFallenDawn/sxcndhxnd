@@ -20,7 +20,8 @@ async def refresh_session(payload: AuthRefresh):
     return await auth_util.refresh_session(payload.refresh_token)
 
 @router.post("/confirm")
-async def confirm(payload: AuthConfirm):
+@limiter.limit("10/minute")
+async def confirm(request: Request, payload: AuthConfirm):
     return await auth_util.confirm(payload)
 
 @router.post("/register")
