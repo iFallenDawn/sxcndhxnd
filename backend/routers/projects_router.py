@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import UUID4
 from data import projects_util
-from entities.models import ProjectsBaseSchema, ProjectsInsert, ProjectsUpdate
+from entities.models import ProjectsBaseSchema, ProjectsInsert, ProjectsUpdate, ProductsBaseSchema
 from core.auth import require_admin, get_access_token
 
 router = APIRouter(
@@ -40,3 +40,7 @@ async def delete_project(
     _: UUID4 = Depends(require_admin),
 ) -> ProjectsBaseSchema:
     return await projects_util.delete_project(project_id, access_token)
+
+@router.get("/{project_id}/products")
+async def get_products_by_project_id(project_id: UUID4) -> list[ProductsBaseSchema]:
+    return await projects_util.get_products_by_project_id(project_id)

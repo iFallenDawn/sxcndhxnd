@@ -1,4 +1,4 @@
-from entities.models import ProjectsBaseSchema, ProjectsInsert, ProjectsUpdate
+from entities.models import ProjectsBaseSchema, ProjectsInsert, ProjectsUpdate, ProductsBaseSchema
 from supabasedb.supabase import db, scoped_client
 from core.exceptions import NotFoundError
 from pydantic import UUID4
@@ -56,3 +56,16 @@ async def delete_project(project_id: UUID4, access_token: str) -> ProjectsBaseSc
         raise NotFoundError('Project', project_id)
 
     return ProjectsBaseSchema.model_validate(response.data[0])
+
+async def get_products_by_project_id(project_id: UUID4) -> list[ProductsBaseSchema]:
+    # 404 on an unknown project instead of returning an empty list
+    await get_project_by_id(project_id)
+
+    query = (
+        supabase.table('products')
+            .select('*')
+            .eq('project_id', str(project_id))
+            .order('created_at', desc=True)
+    )
+    response = query.execute()
+    return [ProductsBaseSchema.model_validate(row) for row in response.data]
