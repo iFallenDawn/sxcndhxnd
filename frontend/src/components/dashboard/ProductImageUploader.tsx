@@ -1,38 +1,48 @@
-import { useCallback, type Dispatch, type SetStateAction } from 'react'
+import { type Dispatch, type SetStateAction } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ImageFilePicker } from '@/components/dashboard/ImageFilePicker'
 import { ImageUploadQueueList } from '@/components/dashboard/ImageUploadQueueList'
-import { useUploadQueue } from '@/hooks/use-upload-queue'
-import { uploadProductImageWithProgress } from '@/api/products'
+import type { QueuedUpload } from '@/hooks/use-upload-queue'
+import type { ProductImageUploadResponse } from '@/types/api'
 
 interface ProductImageUploaderProps {
   /** Already-uploaded image URLs, in display order. First image is the cover shown on the store. */
   imageUrls: string[]
   onChange: Dispatch<SetStateAction<string[]>>
+  /**
+   * Files staged for upload but not yet sent anywhere — the queue itself
+   * lives in `ProductForm` (see that file for why) so its `runAll` can be
+   * awaited from the submit handler. This component only stages files
+   * (`onFiles`/`enqueue`) and displays their progress once the form actually
+   * starts uploading them.
+   */
+  queuedItems: QueuedUpload<ProductImageUploadResponse>[]
+  onFiles: (files: File[]) => void
+  onRetry: (id: string) => void
+  onDismiss: (id: string) => void
 }
 
 /**
- * Multi-image uploader for a product: pick files (or drop them), each one
- * is resized in the browser (see `lib/image-resize.ts`) then uploaded with
- * visible progress, and successful uploads are appended to `imageUrls`.
- * Existing images can be reordered (first = cover on the storefront) or
- * removed.
+ * Multi-image uploader for a product.
+ *
+ * Picking (or dropping) files only stages them locally — nothing is sent to
+ * the Supabase bucket yet, so cancelling the form leaves nothing behind.
+ * `ProductForm`'s submit handler resizes and uploads every staged file (via
+ * the queue's `runAll`) right before actually creating/updating the
+ * product, then appends the resulting URLs here. Existing (already-uploaded)
+ * images can be reordered — first = cover on the storefront — or removed;
+ * staged-but-not-yet-uploaded files can only be removed, matching the order
+ * they'll be appended in once uploaded.
  */
-export function ProductImageUploader({ imageUrls, onChange }: ProductImageUploaderProps) {
-  const uploadFn = useCallback(
-    async (file: File, onProgress: (percent: number) => void, signal: AbortSignal) => {
-      const result = await uploadProductImageWithProgress(file, onProgress, signal)
-      // Updater form: uploads in a batch finish asynchronously, so appending
-      // to a closed-over `imageUrls` could drop a sibling upload's URL.
-      onChange((prev) => [...prev, result.image_url])
-      return result
-    },
-    [onChange],
-  )
-
-  const { items, enqueue, retry, dismiss } = useUploadQueue(uploadFn)
-
+export function ProductImageUploader({
+  imageUrls,
+  onChange,
+  queuedItems,
+  onFiles,
+  onRetry,
+  onDismiss,
+}: ProductImageUploaderProps) {
   const moveImage = (index: number, direction: -1 | 1) => {
     const target = index + direction
     if (target < 0 || target >= imageUrls.length) return
@@ -99,14 +109,14 @@ export function ProductImageUploader({ imageUrls, onChange }: ProductImageUpload
         </ul>
       ) : null}
 
-      <ImageUploadQueueList items={items} onRetry={retry} onDismiss={dismiss} />
+      <ImageUploadQueueList items={queuedItems} onRetry={onRetry} onDismiss={onDismiss} />
 
       <div>
-        <ImageFilePicker variant="outline" size="sm" onFiles={enqueue}>
+        <ImageFilePicker variant="outline" size="sm" onFiles={onFiles}>
           Add photos
         </ImageFilePicker>
         <p className="mt-1.5 text-xs text-muted-foreground">
-          Photos are automatically shrunk before upload — this can take a moment on slow connections.
+          Photos upload when you save — nothing is sent until then.
         </p>
       </div>
     </div>

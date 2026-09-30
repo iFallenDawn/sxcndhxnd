@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { PlusIcon } from 'lucide-react'
@@ -14,30 +14,67 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ProductImageUploader } from '@/components/dashboard/ProductImageUploader'
+import { uploadProductImageWithProgress } from '@/api/products'
+import { useUploadQueue } from '@/hooks/use-upload-queue'
 import { productFormSchema, type ProductFormValues } from '@/lib/product-validation'
 import { PRODUCT_STATUS_LABEL } from '@/lib/products'
 import { useProjects, useCreateProject } from '@/hooks/use-projects'
 import { ApiError } from '@/lib/api-error'
-import { PRODUCT_STATUSES, type ProductsBaseSchema, type ProductsInsert } from '@/types/api'
+import {
+  PRODUCT_STATUSES,
+  type ProductImageUploadResponse,
+  type ProductsBaseSchema,
+  type ProductsInsert,
+} from '@/types/api'
 
 interface ProductFormProps {
   product?: ProductsBaseSchema
   onSubmit: (payload: ProductsInsert) => Promise<void>
   onCancel: () => void
   submitLabel: string
+  /**
+   * Fires whenever the form is actually uploading photos or saving, so the
+   * dialog wrapping this form can refuse to close mid-submit — closing then
+   * wouldn't just lose typed input, it could leave a photo that finished
+   * uploading a moment ago orphaned in the bucket with no product to attach
+   * it to.
+   */
+  onBusyChange?: (busy: boolean) => void
 }
 
 /**
- * Shared create/edit form. `image_urls` is tracked separately from
- * react-hook-form since it's populated by the async upload queue rather
- * than typed input — see `ProductImageUploader`.
+ * Shared create/edit form.
+ *
+ * `image_urls` holds only already-uploaded URLs (existing photos in edit
+ * mode, plus anything a previous submit attempt on this form already got
+ * through). Newly picked files are staged in `queuedItems` — an
+ * `autoStart: false` upload queue — and are **not** sent to the backend
+ * until `submit` actually runs `runAll()`, right before creating/updating
+ * the product. Picking a photo and then cancelling out of this form
+ * therefore never touches the Supabase bucket: previously, picking eagerly
+ * uploaded the file, so cancelling left it orphaned in storage forever with
+ * no product row pointing at it.
  */
-export function ProductForm({ product, onSubmit, onCancel, submitLabel }: ProductFormProps) {
+export function ProductForm({ product, onSubmit, onCancel, submitLabel, onBusyChange }: ProductFormProps) {
   const [imageUrls, setImageUrls] = useState<string[]>(product?.image_urls ?? [])
   const [formError, setFormError] = useState<string | null>(null)
   const [creatingProject, setCreatingProject] = useState(false)
   const [newProjectTitle, setNewProjectTitle] = useState('')
   const [projectError, setProjectError] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
+
+  const uploadFn = useCallback(
+    (file: File, onProgress: (percent: number) => void, signal: AbortSignal) =>
+      uploadProductImageWithProgress(file, onProgress, signal),
+    [],
+  )
+  const {
+    items: queuedItems,
+    enqueue,
+    requeue,
+    dismiss,
+    runAll,
+  } = useUploadQueue<ProductImageUploadResponse>(uploadFn, { autoStart: false })
 
   const { data: projects } = useProjects()
   const createProject = useCreateProject()
@@ -88,12 +125,39 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel }: Produc
     }
   }
 
+  // `isSubmitting` covers the whole `submit` body below, uploads included
+  // (they run before `onSubmit` inside the same async handler).
+  useEffect(() => {
+    onBusyChange?.(isSubmitting)
+  }, [isSubmitting, onBusyChange])
+
   const submit = async (values: ProductFormValues) => {
     setFormError(null)
-    if (imageUrls.length === 0) {
+    if (imageUrls.length === 0 && queuedItems.length === 0) {
       setFormError('Add at least one photo before saving.')
       return
     }
+
+    let finalImageUrls = imageUrls
+    if (queuedItems.length > 0) {
+      setUploading(true)
+      try {
+        const uploaded = await runAll()
+        finalImageUrls = [...imageUrls, ...uploaded.map((result) => result.image_url)]
+        // Uploaded photos are now real, saved URLs — fold them into
+        // `imageUrls` so a retry after a failed *save* (below) doesn't
+        // re-upload them.
+        setImageUrls(finalImageUrls)
+      } catch {
+        setFormError(
+          'One of the photos failed to upload — fix it above (or remove it) and save again.',
+        )
+        return
+      } finally {
+        setUploading(false)
+      }
+    }
+
     try {
       await onSubmit({
         title: values.title,
@@ -103,7 +167,7 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel }: Produc
         size: values.size || null,
         status: values.status,
         project_id: values.in_project ? values.project_id : null,
-        image_urls: imageUrls,
+        image_urls: finalImageUrls,
       })
     } catch {
       setFormError('Could not save this product. Check your connection and try again.')
@@ -114,7 +178,14 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel }: Produc
     <form onSubmit={handleSubmit(submit)} noValidate className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <span className="text-sm font-medium text-foreground">Photos</span>
-        <ProductImageUploader imageUrls={imageUrls} onChange={setImageUrls} />
+        <ProductImageUploader
+          imageUrls={imageUrls}
+          onChange={setImageUrls}
+          queuedItems={queuedItems}
+          onFiles={enqueue}
+          onRetry={requeue}
+          onDismiss={dismiss}
+        />
       </div>
 
       <FormField
@@ -285,7 +356,7 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel }: Produc
           Cancel
         </Button>
         <Button type="submit" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving…' : submitLabel}
+          {isSubmitting ? (uploading ? 'Uploading photos…' : 'Saving…') : submitLabel}
         </Button>
       </div>
     </form>
