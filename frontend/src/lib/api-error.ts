@@ -42,4 +42,46 @@ export class ApiError extends Error {
   get isForbidden() {
     return this.status === 403
   }
+
+  /**
+   * True when slowapi's rate limiter rejected the request
+   * (`core/rate_limit.py`, e.g. `@limiter.limit("5/minute")` on
+   * `POST /products/{id}/reserve`).
+   *
+   * Note that these responses do **not** carry a `detail` — slowapi's
+   * `_rate_limit_exceeded_handler` answers with `{ "error": "Rate limit
+   * exceeded: ..." }` — so `detail` is null here and callers must supply
+   * their own human-readable message rather than falling back to `message`.
+   */
+  get isRateLimited() {
+    return this.status === 429
+  }
+}
+
+/**
+ * Human-readable message for a failed reservation attempt.
+ *
+ * The two cases worth wording carefully, because both are normal rather than
+ * exceptional in this flow:
+ * - **409** — the atomic `available → reserved` guard in
+ *   `products_util.reserve_product` lost the race, i.e. somebody else got
+ *   this exact piece first. Every piece is one-of-one, so there is no "try a
+ *   smaller quantity" consolation to offer.
+ * - **429** — the endpoint is capped at 5/minute per IP, which a bag of six
+ *   will hit legitimately. Say so, and say the rest of the bag was kept.
+ */
+export function reservationErrorMessage(error: unknown): string {
+  if (!(error instanceof ApiError)) {
+    return 'Something went wrong. Check your connection and try again.'
+  }
+  if (error.isConflict) {
+    return 'Someone else reserved this one first — every piece is one of one, so it’s gone.'
+  }
+  if (error.isRateLimited) {
+    return 'Too many reservations too quickly. Wait a minute, then try the rest of your bag.'
+  }
+  if (error.isNotFound) {
+    return 'This piece is no longer listed.'
+  }
+  return error.detail ?? 'Could not reserve this piece. Please try again.'
 }

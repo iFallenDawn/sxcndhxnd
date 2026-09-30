@@ -88,6 +88,38 @@ export interface ProductImageUploadResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Reservations
+// ---------------------------------------------------------------------------
+
+/**
+ * Mirrors `entities.models.ReserveProductRequest`. Sent to
+ * `POST /products/{id}/reserve`.
+ *
+ * `instagram` is how Nico reaches the customer — the whole flow hands off to
+ * an Instagram DM, there is no payment. Auth on that endpoint is *optional*
+ * (`get_optional_user_id`), so a guest can reserve by supplying a handle;
+ * a signed-in customer gets theirs prefilled from `UsersBaseSchema.instagram`.
+ */
+export interface ReserveProductRequest {
+  instagram: string
+}
+
+/** Mirrors `entities.models.ReservationsBaseSchema`. */
+export interface ReservationsBaseSchema {
+  id: string
+  product_id: string
+  instagram: string
+  created_at: string
+  /** Null for guest reservations — the endpoint does not require an account. */
+  user_id: string | null
+}
+
+/** Mirrors `entities.models.ReservationsUpdate`. Sent to `PATCH /reservations/{id}`. */
+export interface ReservationsUpdate {
+  instagram?: string | null
+}
+
+// ---------------------------------------------------------------------------
 // Gallery
 // ---------------------------------------------------------------------------
 

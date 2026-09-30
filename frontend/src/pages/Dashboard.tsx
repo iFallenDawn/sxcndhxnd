@@ -2,20 +2,26 @@ import { useState } from 'react'
 import { PageMeta } from '@/components/seo/PageMeta'
 import { ProductsPanel } from '@/components/dashboard/ProductsPanel'
 import { GalleryPanel } from '@/components/dashboard/GalleryPanel'
+import { ReservationsPanel } from '@/components/dashboard/ReservationsPanel'
 import { cn } from '@/lib/utils'
 
-type DashboardTab = 'products' | 'gallery'
+type DashboardTab = 'products' | 'gallery' | 'reservations'
 
 const TABS: { id: DashboardTab; label: string; description: string }[] = [
   { id: 'products', label: 'Products', description: 'Add, edit, and archive what’s in the store.' },
   { id: 'gallery', label: 'Gallery', description: 'Dump commission photos here — bulk upload works.' },
+  {
+    id: 'reservations',
+    label: 'Reservations',
+    description: 'Who’s asked to hold what, and the Instagram handle to DM them on.',
+  },
 ]
 
 /**
  * `/dashboard` — behind `RequireAdmin` in `router.tsx`. Nico's own words on
  * what he needs: "the technical stuff will go over my head... I'm more of a
- * visual guy." So this stays two flat panels (no nested nav, no jargon) with
- * big obvious buttons and plain-language confirmations for anything
+ * visual guy." So this stays a few flat panels (no nested nav, no jargon)
+ * with big obvious buttons and plain-language confirmations for anything
  * destructive.
  */
 export function Dashboard() {
@@ -23,7 +29,7 @@ export function Dashboard() {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-12">
-      <PageMeta title="Dashboard" description="Manage products and the gallery." />
+      <PageMeta title="Dashboard" description="Manage products, the gallery, and reservations." />
 
       <div className="flex flex-col gap-1">
         <p className="eyebrow text-muted-foreground">Dashboard</p>
@@ -50,7 +56,13 @@ export function Dashboard() {
 
       <p className="text-sm text-muted-foreground">{TABS.find((t) => t.id === tab)?.description}</p>
 
-      {tab === 'products' ? <ProductsPanel /> : <GalleryPanel />}
+      {tab === 'products' ? (
+        <ProductsPanel />
+      ) : tab === 'gallery' ? (
+        <GalleryPanel />
+      ) : (
+        <ReservationsPanel />
+      )}
     </div>
   )
 }

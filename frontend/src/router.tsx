@@ -47,10 +47,12 @@ export const router = createBrowserRouter([
       },
       { path: 'gallery', element: <Gallery /> },
       { path: 'projects', element: <Placeholder name="Projects" /> },
-      {
-        path: 'commissions/request',
-        element: <Placeholder name="Commission Request" />,
-      },
+      // commissions paused — restore this route to bring the commission
+      // request funnel back online (see also Navbar.tsx, Hero.tsx, Home.tsx).
+      // {
+      //   path: 'commissions/request',
+      //   element: <Placeholder name="Commission Request" />,
+      // },
       { path: 'contact', element: <Placeholder name="Contact" /> },
       { path: 'sign-in', element: <SignIn /> },
       { path: 'register', element: <Register /> },

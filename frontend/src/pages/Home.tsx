@@ -3,7 +3,10 @@ import { RouteHasHero } from '@/lib/hero-context'
 import { Hero } from '@/components/home/Hero'
 import { Philosophy } from '@/components/home/Philosophy'
 import { Collections } from '@/components/home/Collections'
-import { CommissionCta } from '@/components/home/CommissionCta'
+// commissions paused — restore this import and the <CommissionCta /> usage
+// below to put the commission funnel back on the home page. The component
+// itself is untouched in components/home/CommissionCta.tsx.
+// import { CommissionCta } from '@/components/home/CommissionCta'
 import { About } from '@/components/home/About'
 
 /**
@@ -24,7 +27,8 @@ export function Home() {
       <Hero />
       <Philosophy />
       <Collections />
-      <CommissionCta />
+      {/* commissions paused — restore alongside the import above. */}
+      {/* <CommissionCta /> */}
       <About />
     </>
   )

@@ -9,6 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { ReservationBagSheet } from '@/components/reservations/ReservationBagSheet'
 import { cn } from '@/lib/utils'
 import { useHasHero } from '@/lib/hero-context'
 import { useAuthStore } from '@/stores/auth-store'
@@ -19,7 +20,10 @@ const PRIMARY_LINKS = [
   { to: '/store', label: 'Store' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/projects', label: 'Projects' },
-  { to: '/commissions/request', label: 'Commissions' },
+  // commissions paused — restore this entry to put Commissions back in the
+  // nav. `NavLinks` below renders this same array for both the desktop nav
+  // and the mobile menu sheet, so one line covers both.
+  // { to: '/commissions/request', label: 'Commissions' },
   { to: '/contact', label: 'Contact' },
 ]
 
@@ -266,38 +270,53 @@ export function Navbar() {
           <NavLinks />
         </nav>
 
-        <div className={cn('hidden md:flex', overHero && cn(OVER_HERO_CHIP.dark, 'py-1 pr-1 pl-3'))}>
-          <AuthLinks overHero={overHero} />
-        </div>
+        <div className="flex items-center gap-2">
+          {/* The reservation bag renders nothing while it's empty, so this
+              slot usually collapses. Over the hero it gets the same opaque
+              light chip the Register button uses — the default button
+              variant's `hover:bg-primary/80` is semi-transparent, which the
+              photo would show through. */}
+          <ReservationBagSheet
+            triggerClassName={
+              overHero
+                ? 'bg-foreground text-background hover:bg-primary hover:text-background'
+                : undefined
+            }
+          />
 
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant={overHero ? 'default' : 'ghost'}
-              size="icon"
-              className={cn(
-                'md:hidden',
-                overHero
-                  ? 'bg-foreground text-background hover:bg-primary hover:text-background'
-                  : 'text-current hover:text-current',
-              )}
-              aria-label="Open menu"
-            >
-              <Menu />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="flex flex-col">
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-4 px-4">
-              <NavLinks onNavigate={() => setIsMenuOpen(false)} />
-            </nav>
-            <div className="mt-auto border-t border-border px-4 py-4">
-              <AuthLinks layout="stack" onNavigate={() => setIsMenuOpen(false)} />
-            </div>
-          </SheetContent>
-        </Sheet>
+          <div className={cn('hidden md:flex', overHero && cn(OVER_HERO_CHIP.dark, 'py-1 pr-1 pl-3'))}>
+            <AuthLinks overHero={overHero} />
+          </div>
+
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant={overHero ? 'default' : 'ghost'}
+                size="icon"
+                className={cn(
+                  'md:hidden',
+                  overHero
+                    ? 'bg-foreground text-background hover:bg-primary hover:text-background'
+                    : 'text-current hover:text-current',
+                )}
+                aria-label="Open menu"
+              >
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="flex flex-col">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 px-4">
+                <NavLinks onNavigate={() => setIsMenuOpen(false)} />
+              </nav>
+              <div className="mt-auto border-t border-border px-4 py-4">
+                <AuthLinks layout="stack" onNavigate={() => setIsMenuOpen(false)} />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   )
