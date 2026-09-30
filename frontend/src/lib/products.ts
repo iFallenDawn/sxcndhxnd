@@ -5,8 +5,8 @@ import type { ProductStatus, ProductsBaseSchema } from '@/types/api'
 // ---------------------------------------------------------------------------
 // `ProductsBaseSchema` has no field that cleanly means "this is commission
 // work" vs. "this is a pre-made capsule good." The candidate fields are
-// `category`, `commission_id`, `drop_item`, `drop_title`, `status`, `size`,
-// `price` — none of them are documented as a listing-type discriminator.
+// `category`, `commission_id`, `project_id`, `status`, `size`, `price` — none
+// of them are documented as a listing-type discriminator.
 //
 // This implementation treats `commission_id` as the discriminator: a
 // product with a non-null, non-empty `commission_id` is commission work made

@@ -39,37 +39,44 @@ export interface SingleEntry {
   product: ProductsBaseSchema
 }
 
-export interface DropEntry {
-  kind: 'drop'
+export interface ProjectEntry {
+  kind: 'project'
+  id: string
   title: string
   products: ProductsBaseSchema[]
 }
 
-export type DisplayEntry = SingleEntry | DropEntry
+export type DisplayEntry = SingleEntry | ProjectEntry
 
 /**
  * Groups a sorted product list into display entries: products sharing a
- * `drop_title` (with `drop_item` set) collapse into one `DropEntry`, placed
- * where its first member sorts — since the sort is bucket-first, that is its
- * best availability bucket, so a drop with any available item still leads
- * even if some of its sizes/pieces have sold out. Everything else stays a
- * standalone entry.
+ * `project_id` collapse into one `ProjectEntry`, placed where its first
+ * member sorts — since the sort is bucket-first, that is its best
+ * availability bucket, so a project with any available item still leads even
+ * if some of its sizes/pieces have sold out. A product with no project, or
+ * whose project isn't in `projectTitles` (e.g. still loading), stays
+ * standalone.
  */
-export function groupForDisplay(products: ProductsBaseSchema[], sort: SortOption): DisplayEntry[] {
+export function groupForDisplay(
+  products: ProductsBaseSchema[],
+  sort: SortOption,
+  projectTitles: Map<string, string>,
+): DisplayEntry[] {
   const entries: DisplayEntry[] = []
-  const drops = new Map<string, DropEntry>()
+  const projects = new Map<string, ProjectEntry>()
 
   for (const product of sortProducts(products, sort)) {
-    if (!product.drop_item || !product.drop_title) {
+    const title = product.project_id ? projectTitles.get(product.project_id) : undefined
+    if (!product.project_id || !title) {
       entries.push({ kind: 'single', product })
       continue
     }
-    const drop = drops.get(product.drop_title)
-    if (drop) {
-      drop.products.push(product)
+    const project = projects.get(product.project_id)
+    if (project) {
+      project.products.push(product)
     } else {
-      const entry: DropEntry = { kind: 'drop', title: product.drop_title, products: [product] }
-      drops.set(product.drop_title, entry)
+      const entry: ProjectEntry = { kind: 'project', id: product.project_id, title, products: [product] }
+      projects.set(product.project_id, entry)
       entries.push(entry)
     }
   }

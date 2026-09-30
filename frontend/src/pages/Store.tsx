@@ -4,6 +4,7 @@ import { StoreFilters } from '@/components/store/StoreFilters'
 import { ProductEntryGrid } from '@/components/store/ProductEntryGrid'
 import { ProductCardSkeleton } from '@/components/store/ProductCard'
 import { useProducts } from '@/hooks/use-products'
+import { useProjects } from '@/hooks/use-projects'
 import { ApiError } from '@/lib/api-error'
 import { isCommissionProduct, getProductBucket, type ProductBucket } from '@/lib/products'
 import { groupForDisplay, type DisplayEntry, type SortOption } from '@/lib/store-grouping'
@@ -51,7 +52,9 @@ function StoreSection({ id, title, description, entries }: StoreSectionProps) {
 }
 
 export function Store() {
-  const { data: products, isLoading, isError, error } = useProducts()
+  const { data: products, isLoading: productsLoading, isError, error } = useProducts()
+  const { data: projects, isLoading: projectsLoading } = useProjects()
+  const isLoading = productsLoading || projectsLoading
 
   const [category, setCategory] = useState<string | null>(null)
   const [bucket, setBucket] = useState<ProductBucket | null>(null)
@@ -66,6 +69,11 @@ export function Store() {
     return Array.from(unique).sort((a, b) => a.localeCompare(b))
   }, [products])
 
+  const projectTitles = useMemo(
+    () => new Map((projects ?? []).map((project) => [project.id, project.title])),
+    [projects],
+  )
+
   const { commissions, capsules } = useMemo(() => {
     const filtered = (products ?? []).filter((product) => {
       if (category !== null && product.category !== category) return false
@@ -73,10 +81,18 @@ export function Store() {
       return true
     })
     return {
-      commissions: groupForDisplay(filtered.filter((product) => isCommissionProduct(product)), sort),
-      capsules: groupForDisplay(filtered.filter((product) => !isCommissionProduct(product)), sort),
+      commissions: groupForDisplay(
+        filtered.filter((product) => isCommissionProduct(product)),
+        sort,
+        projectTitles,
+      ),
+      capsules: groupForDisplay(
+        filtered.filter((product) => !isCommissionProduct(product)),
+        sort,
+        projectTitles,
+      ),
     }
-  }, [products, category, bucket, sort])
+  }, [products, category, bucket, sort, projectTitles])
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-16">
