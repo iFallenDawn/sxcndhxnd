@@ -77,8 +77,6 @@ class ProductsBaseSchema(CustomModel):
 	created_at: datetime.datetime
 	created_by: UUID4 | None = Field(default=None)
 	description: str
-	drop_item: bool | None = Field(default=None)
-	drop_title: str | None = Field(default=None)
 	image_urls: list[str]
 	paid: bool | None = Field(default=None)
 	price: Decimal
@@ -88,6 +86,7 @@ class ProductsBaseSchema(CustomModel):
 	updated_at: datetime.datetime
 	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
+	project_id: UUID4 | None = Field(default=None)
 
 
 class UsersBaseSchema(CustomModel):
@@ -166,13 +165,12 @@ class ProductsInsert(CustomModelInsert):
 	# commission_id: nullable
 	# created_at: has default value
 	# created_by: nullable
-	# drop_item: nullable
-	# drop_title: nullable
 	# paid: nullable
 	# size: nullable
 	# updated_at: has default value
 	# updated_by: nullable
 	# user_id: nullable
+	# project_id: nullable
 	
 	# Required fields
 	description: str
@@ -185,14 +183,13 @@ class ProductsInsert(CustomModelInsert):
 	commission_id: str | None = Field(default=None)
 	created_at: datetime.datetime | None = Field(default=None)
 	created_by: UUID4 | None = Field(default=None)
-	drop_item: bool | None = Field(default=None)
-	drop_title: str | None = Field(default=None)
 	paid: bool | None = Field(default=None)
 	size: str | None = Field(default=None)
 	status: ProductStatus | None = Field(default=None)
 	updated_at: datetime.datetime | None = Field(default=None)
 	updated_by: UUID4 | None = Field(default=None)
 	user_id: str | None = Field(default=None)
+	project_id: UUID4 | None = Field(default=None)
 
 
 class UsersInsert(CustomModelInsert):
@@ -268,18 +265,15 @@ class ProductsUpdate(CustomModelUpdate):
 	# Field properties:
 	# category: nullable
 	# commission_id: nullable
-	# drop_item: nullable
-	# drop_title: nullable
 	# paid: nullable
 	# size: nullable
 	# user_id: nullable
+	# project_id: nullable
 	
 	# Optional fields
 	category: str | None = Field(default=None)
 	commission_id: str | None = Field(default=None)
 	description: str | None = Field(default=None)
-	drop_item: bool | None = Field(default=None)
-	drop_title: str | None = Field(default=None)
 	image_urls: list[str] | None = Field(default=None)
 	paid: bool | None = Field(default=None)
 	price: Decimal | None = Field(default=None)
@@ -287,6 +281,7 @@ class ProductsUpdate(CustomModelUpdate):
 	status: ProductStatus | None = Field(default=None)
 	title: str | None = Field(default=None)
 	user_id: str | None = Field(default=None)
+	project_id: UUID4 | None = Field(default=None)
 
 
 class UsersRolesUpdate(CustomModelUpdate):
@@ -432,3 +427,21 @@ class ReservationsInsert(CustomModelInsert):
 class ReservationsUpdate(CustomModelUpdate):
     instagram: str | None = Field(default=None)
     
+class ProjectsBaseSchema(CustomModel):
+    id: UUID4
+    title: str
+    description: str
+    date: datetime.datetime
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+    
+class ProjectsInsert(CustomModelInsert):
+    id: UUID4 = Field(default_factory=uuid4)
+    title: str
+    description: str
+    date: datetime.datetime
+    
+class ProjectsUpdate(CustomModelUpdate):
+    title: str | None = Field(default=None)
+    description: str | None = Field(default=None)
+    date: datetime.datetime | None = Field(default=None)

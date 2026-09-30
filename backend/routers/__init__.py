@@ -6,6 +6,7 @@ from routers.products_router import router as product_router
 from routers.admin_router import router as admin_router
 from routers.gallery_router import router as gallery_router
 from routers.reservations_router import router as reservations_router
+from routers.projects_router import router as projects_router
 
 router = APIRouter(prefix="/api")
 
@@ -15,3 +16,4 @@ router.include_router(users_router)
 router.include_router(product_router)
 router.include_router(gallery_router)
 router.include_router(reservations_router)
+router.include_router(projects_router)
