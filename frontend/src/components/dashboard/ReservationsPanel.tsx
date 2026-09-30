@@ -1,4 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { toast } from 'sonner'
 import { SearchIcon } from 'lucide-react'
 import { SiInstagram } from '@icons-pack/react-simple-icons'
@@ -15,6 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { ConfirmDeleteDialog } from '@/components/dashboard/ConfirmDeleteDialog'
+import { FormField } from '@/components/auth/FormField'
 import { ImagePlaceholder } from '@/components/home/ImagePlaceholder'
 import { useProducts } from '@/hooks/use-products'
 import {
@@ -22,7 +26,7 @@ import {
   useReservations,
   useUpdateReservation,
 } from '@/hooks/use-reservations'
-import { ApiError } from '@/lib/api-error'
+import { apiErrorMessage } from '@/lib/api-error'
 import { INSTAGRAM_PROFILE_BASE } from '@/lib/constants'
 import {
   BUCKET_BADGE_ON_SURFACE,
@@ -56,6 +60,17 @@ function formatReservedAt(createdAt: string): string {
   return Number.isNaN(parsed) ? '—' : dateFormat.format(parsed)
 }
 
+/** Same transform as `checkoutSchema` in `ReservationBagSheet.tsx`: leading `@` optional, stripped either way. */
+const editHandleSchema = z.object({
+  instagram: z
+    .string()
+    .trim()
+    .min(1, 'A handle is needed — it’s how you reach them.')
+    .transform((value) => value.replace(/^@/, '')),
+})
+
+type EditHandleFormValues = z.input<typeof editHandleSchema>
+
 /** Edits the one field the backend lets an admin change (`ReservationsUpdate`). */
 function EditHandleDialog({
   row,
@@ -65,38 +80,43 @@ function EditHandleDialog({
   onOpenChange: (open: boolean) => void
 }) {
   const updateReservation = useUpdateReservation()
-  const [handle, setHandle] = useState('')
-  const [error, setError] = useState<string | null>(null)
 
-  // Reset the field each time a different reservation is opened.
-  const [lastId, setLastId] = useState<string | null>(null)
-  if (row && row.reservation.id !== lastId) {
-    setLastId(row.reservation.id)
-    setHandle(row.reservation.instagram)
-    setError(null)
-  }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<EditHandleFormValues>({
+    resolver: zodResolver(editHandleSchema),
+    defaultValues: { instagram: '' },
+  })
 
-  const save = async () => {
+  // Reset to the *current* reservation's handle every time the dialog opens
+  // (not just when the reservation id changes — it stays mounted across
+  // open/close, so without the `row` gate a cancelled edit's draft would
+  // reappear if the same reservation were reopened). Also clears any error
+  // from a previous attempt — `updateReservation.reset()` is the mutation's
+  // own reset, not component state, so it's fine to call unconditionally
+  // here.
+  useEffect(() => {
+    if (row) reset({ instagram: row.reservation.instagram })
+    updateReservation.reset()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `updateReservation` is a fresh object every render (useMutation); depending on it would reset on every keystroke-triggered rerender instead of only when the dialog's target row changes.
+  }, [row, reset])
+
+  const onSubmit = async (values: EditHandleFormValues) => {
     if (!row) return
-    const trimmed = handle.trim().replace(/^@/, '')
-    if (trimmed === '') {
-      setError('A handle is needed — it’s how you reach them.')
-      return
-    }
-    setError(null)
+    const parsed = editHandleSchema.parse(values)
     try {
       await updateReservation.mutateAsync({
         id: row.reservation.id,
-        payload: { instagram: trimmed },
+        payload: { instagram: parsed.instagram },
       })
       toast.success('Handle updated.')
       onOpenChange(false)
-    } catch (saveError) {
-      setError(
-        saveError instanceof ApiError
-          ? (saveError.detail ?? 'Could not save that handle.')
-          : 'Could not save that handle. Check your connection and try again.',
-      )
+    } catch {
+      // Swallowed: `updateReservation.isError`/`.error` below renders it.
+      // The catch exists only so the rejection doesn't propagate further.
     }
   }
 
@@ -112,29 +132,25 @@ function EditHandleDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-1.5">
-          <label
+        <form
+          id="edit-handle-form"
+          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+          noValidate
+        >
+          <FormField
+            label="Instagram handle"
             htmlFor="reservation-handle"
-            className="text-sm font-medium text-foreground"
-          >
-            Instagram handle
-          </label>
-          <Input
-            id="reservation-handle"
-            value={handle}
-            onChange={(event) => setHandle(event.target.value)}
             placeholder="theirhandle"
-            aria-invalid={Boolean(error)}
+            hint="The @ is optional — it gets stripped."
+            error={errors.instagram?.message}
             className="h-10"
+            {...register('instagram')}
           />
-          <p className="text-xs text-muted-foreground">
-            The @ is optional — it gets stripped.
-          </p>
-        </div>
+        </form>
 
-        {error ? (
+        {updateReservation.isError ? (
           <p role="alert" className="text-sm text-destructive">
-            {error}
+            {apiErrorMessage(updateReservation.error, 'Could not save that handle.')}
           </p>
         ) : null}
 
@@ -146,7 +162,11 @@ function EditHandleDialog({
           >
             Cancel
           </Button>
-          <Button onClick={save} disabled={updateReservation.isPending}>
+          <Button
+            type="submit"
+            form="edit-handle-form"
+            disabled={updateReservation.isPending}
+          >
             {updateReservation.isPending ? 'Saving…' : 'Save'}
           </Button>
         </DialogFooter>
@@ -203,7 +223,7 @@ function ReservationRowItem({
           </div>
 
           <a
-            href={`${INSTAGRAM_PROFILE_BASE}${handle}`}
+            href={`${INSTAGRAM_PROFILE_BASE}${encodeURIComponent(handle)}`}
             target="_blank"
             rel="noreferrer noopener"
             className="flex w-fit items-center gap-1.5 text-sm text-foreground underline-offset-4 hover:underline"
@@ -254,7 +274,11 @@ export function ReservationsPanel() {
     isError: reservationsError,
     error,
   } = useReservations()
-  const { data: products, isLoading: productsLoading } = useProducts()
+  const {
+    data: products,
+    isLoading: productsLoading,
+    isError: productsError,
+  } = useProducts()
   const [search, setSearch] = useState('')
   const [editing, setEditing] = useState<ReservationRow | null>(null)
   const [cancelling, setCancelling] = useState<ReservationRow | null>(null)
@@ -291,6 +315,10 @@ export function ReservationsPanel() {
   }, [rows, search])
 
   const isLoading = reservationsLoading || productsLoading
+  // A failed products fetch would otherwise resolve every `byId` lookup
+  // above to nothing, which reads as "every product was deleted" instead of
+  // "the products list failed to load" — surface it as its own error state.
+  const isError = reservationsError || productsError
 
   return (
     <div className="flex flex-col gap-4">
@@ -314,11 +342,11 @@ export function ReservationsPanel() {
             </li>
           ))}
         </ul>
-      ) : reservationsError ? (
+      ) : isError ? (
         <p className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-8 text-center text-sm text-destructive">
-          {error instanceof ApiError
-            ? error.message
-            : 'Could not load reservations.'}
+          {reservationsError
+            ? apiErrorMessage(error, 'Could not load reservations.')
+            : 'Could not load products, so reservations can’t be matched to pieces. Try again.'}
         </p>
       ) : filtered.length === 0 ? (
         <p className="rounded-md border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground">

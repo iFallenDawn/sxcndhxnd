@@ -209,7 +209,7 @@ function BagSheetBody({
   setStep: (step: Step) => void
   onClose: () => void
 }) {
-  const { items, missingIds, isLoading } = useBagProducts()
+  const { items, missingIds, isLoading, isError } = useBagProducts()
   const bagCount = useReservationBagStore((state) => state.productIds.length)
   const remove = useReservationBagStore((state) => state.remove)
   const user = useAuthStore((state) => state.user)
@@ -375,6 +375,14 @@ function BagSheetBody({
         {isLoading ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             Loading your bag…
+          </p>
+        ) : isError ? (
+          // Distinct from the empty-bag state below: a failed fetch resolves
+          // every id to "missing" the same way an actually-empty bag would,
+          // so without this branch a products outage looked like the bag had
+          // been wiped rather than that it couldn't be loaded.
+          <p className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-10 text-center text-sm text-destructive">
+            Couldn’t load your bag. Check your connection and try again.
           </p>
         ) : items.length === 0 && missingIds.length === 0 ? (
           <p className="rounded-md border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground">

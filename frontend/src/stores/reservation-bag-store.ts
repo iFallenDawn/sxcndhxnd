@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { createHydrationHandler } from '@/lib/persist-hydration'
 
 /**
  * The local reservation bag (issue #10).
@@ -34,6 +35,13 @@ interface ReservationBagState {
   hasHydrated: boolean
   add: (productId: string) => void
   remove: (productId: string) => void
+  /**
+   * Removes several ids in one write. Used at the end of a checkout instead
+   * of calling `remove` once per item mid-loop, which would mutate the store
+   * (and re-render every subscriber — the navbar badge, the drawer list) once
+   * per reservation attempt instead of once for the whole checkout.
+   */
+  removeMany: (productIds: string[]) => void
   /** Drops everything — used after a checkout in which every item succeeded. */
   clear: () => void
   has: (productId: string) => boolean
@@ -62,6 +70,12 @@ export const useReservationBagStore = create<ReservationBagState>()(
           productIds: state.productIds.filter((id) => id !== productId),
         })),
 
+      removeMany: (productIds) =>
+        set((state) => {
+          const toRemove = new Set(productIds)
+          return { productIds: state.productIds.filter((id) => !toRemove.has(id)) }
+        }),
+
       clear: () => set({ productIds: [] }),
 
       has: (productId) => get().productIds.includes(productId),
@@ -71,9 +85,7 @@ export const useReservationBagStore = create<ReservationBagState>()(
     {
       name: 'sxcndhxnd-reservation-bag',
       partialize: (state) => ({ productIds: state.productIds }),
-      onRehydrateStorage: () => (state) => {
-        state?._setHasHydrated(true)
-      },
+      onRehydrateStorage: createHydrationHandler<ReservationBagState>('sxcndhxnd-reservation-bag'),
     },
   ),
 )

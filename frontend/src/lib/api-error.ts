@@ -70,6 +70,19 @@ export class ApiError extends Error {
  * - **429** — the endpoint is capped at 5/minute per IP, which a bag of six
  *   will hit legitimately. Say so, and say the rest of the bag was kept.
  */
+/**
+ * Generic `ApiError` → human message, for call sites that don't need
+ * per-status wording (contrast `reservationErrorMessage` above, which does,
+ * for the reserve-a-product flow specifically): prefer the backend's
+ * `detail`, otherwise fall back to the caller's default.
+ */
+export function apiErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof ApiError) {
+    return error.detail ?? fallback
+  }
+  return `${fallback} Check your connection and try again.`
+}
+
 export function reservationErrorMessage(error: unknown): string {
   if (!(error instanceof ApiError)) {
     return 'Something went wrong. Check your connection and try again.'

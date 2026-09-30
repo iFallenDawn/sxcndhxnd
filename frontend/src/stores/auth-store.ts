@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { apiFetch, connectSession } from '@/lib/api-client'
+import { createHydrationHandler } from '@/lib/persist-hydration'
 import * as authApi from '@/api/auth'
+import { useReservationBagStore } from '@/stores/reservation-bag-store'
 import type { AuthSignInPayload, UsersBaseSchema } from '@/types/api'
 
 /**
@@ -87,6 +89,12 @@ export const useAuthStore = create<AuthState>()(
         }
 
         set({ accessToken: null, refreshToken: null, user: null })
+        // The reservation bag is per-account intent (an item's reserver is
+        // stamped with the checkout-time handle), not a generic client-side
+        // preference, and it persists independently of auth state in its own
+        // localStorage key. Left uncleared, the next person to sign in on
+        // this device would inherit the previous customer's bag.
+        useReservationBagStore.getState().clear()
       },
 
       refresh: () => {
@@ -102,8 +110,10 @@ export const useAuthStore = create<AuthState>()(
             set({ accessToken: session.access_token, refreshToken: session.refresh_token })
           } catch (error) {
             // The session is dead. Sign out locally only: telling the backend
-            // would need the very token that just failed.
+            // would need the very token that just failed. Same bag-leak
+            // reasoning as signOut() above applies here too.
             set({ accessToken: null, refreshToken: null, user: null })
+            useReservationBagStore.getState().clear()
             throw error
           }
         })().finally(() => {
@@ -123,9 +133,7 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         user: state.user,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?._setHasHydrated(true)
-      },
+      onRehydrateStorage: createHydrationHandler<AuthState>('sxcndhxnd-auth'),
     },
   ),
 )

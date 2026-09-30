@@ -13,7 +13,7 @@ import { ApiError, reservationErrorMessage } from '@/lib/api-error'
 import { queryKeys } from '@/lib/query-keys'
 import { useAuthStore } from '@/stores/auth-store'
 import { useReservationBagStore } from '@/stores/reservation-bag-store'
-import type { ProductsBaseSchema, ReservationsUpdate } from '@/types/api'
+import type { ProductsBaseSchema, ReservationsBaseSchema, ReservationsUpdate } from '@/types/api'
 
 /** `GET /reservations/`. Admin only — only runs once the admin probe passes. */
 export function useReservations() {
@@ -37,7 +37,13 @@ export function useMyReservations() {
   })
 }
 
-/** `PATCH /reservations/{id}`. Admin only. */
+/**
+ * `PATCH /reservations/{id}`. Admin only.
+ *
+ * Patches the cached reservations lists in place with the row the backend
+ * returned, rather than invalidating and refetching them — editing a handle
+ * doesn't change anything else a refetch could catch.
+ */
 export function useUpdateReservation() {
   const queryClient = useQueryClient()
 
@@ -49,10 +55,11 @@ export function useUpdateReservation() {
       id: string
       payload: ReservationsUpdate
     }) => updateReservation(id, payload),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.reservations.all(),
-      })
+    onSuccess: (updated) => {
+      const patch = (list: ReservationsBaseSchema[] | undefined) =>
+        list?.map((reservation) => (reservation.id === updated.id ? updated : reservation))
+      queryClient.setQueryData(queryKeys.reservations.list(), patch)
+      queryClient.setQueryData(queryKeys.reservations.mine(), patch)
     },
   })
 }
@@ -61,20 +68,32 @@ export function useUpdateReservation() {
  * `DELETE /reservations/{id}`. Admin only.
  *
  * The backend puts the product back on sale as part of the same call
- * (`reservations_util.delete_reservation` sets `status: 'available'`), so the
- * products queries are invalidated here too — otherwise the store and the
- * dashboard's Products tab would keep showing the piece as reserved.
+ * (`reservations_util.delete_reservation` sets `status: 'available'`). Both
+ * effects are patched into the cache directly from the response — dropping
+ * the reservation row, flipping the matching product's status — instead of
+ * invalidating the full reservations and products lists for a one-row
+ * change.
  */
 export function useDeleteReservation() {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (reservationId: string) => deleteReservation(reservationId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: queryKeys.reservations.all(),
-      })
-      void queryClient.invalidateQueries({ queryKey: queryKeys.products.all() })
+    onSuccess: (deleted) => {
+      const dropReservation = (list: ReservationsBaseSchema[] | undefined) =>
+        list?.filter((reservation) => reservation.id !== deleted.id)
+      queryClient.setQueryData(queryKeys.reservations.list(), dropReservation)
+      queryClient.setQueryData(queryKeys.reservations.mine(), dropReservation)
+
+      const markAvailable = (product: ProductsBaseSchema): ProductsBaseSchema =>
+        product.id === deleted.product_id ? { ...product, status: 'available' } : product
+      queryClient.setQueryData(queryKeys.products.list(), (list: ProductsBaseSchema[] | undefined) =>
+        list?.map(markAvailable),
+      )
+      queryClient.setQueryData(
+        queryKeys.products.detail(deleted.product_id),
+        (product: ProductsBaseSchema | undefined) => (product ? markAvailable(product) : product),
+      )
     },
   })
 }
@@ -138,7 +157,7 @@ export interface ReservationAttempt {
  */
 export function useReserveBag() {
   const queryClient = useQueryClient()
-  const removeFromBag = useReservationBagStore((state) => state.remove)
+  const removeMany = useReservationBagStore((state) => state.removeMany)
 
   return useMutation({
     mutationFn: async ({
@@ -149,6 +168,12 @@ export function useReserveBag() {
       instagram: string
     }): Promise<ReservationAttempt[]> => {
       const attempts: ReservationAttempt[] = []
+      // Collected and applied to the bag store in one write after the loop,
+      // rather than per-item as each request settles — the latter re-renders
+      // every subscriber (navbar badge, drawer list) once per attempt and
+      // can visibly shrink the "reservable" list while the checkout it
+      // belongs to is still in flight.
+      const toRemove: string[] = []
 
       for (const product of products) {
         try {
@@ -158,7 +183,7 @@ export function useReserveBag() {
             title: product.title,
             outcome: 'reserved',
           })
-          removeFromBag(product.id)
+          toRemove.push(product.id)
         } catch (error) {
           const taken = error instanceof ApiError && error.isConflict
           attempts.push({
@@ -167,9 +192,11 @@ export function useReserveBag() {
             outcome: taken ? 'taken' : 'failed',
             message: reservationErrorMessage(error),
           })
-          if (taken) removeFromBag(product.id)
+          if (taken) toRemove.push(product.id)
         }
       }
+
+      if (toRemove.length > 0) removeMany(toRemove)
 
       return attempts
     },

@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { COMMISSIONS_ENABLED } from '@/lib/constants'
 import { Reveal } from './reveal'
 
 /**
@@ -79,19 +80,20 @@ export function Hero() {
             <Button asChild size="lg" className="border-foreground bg-background text-foreground hover:bg-muted">
               <Link to="/store">Shop the store</Link>
             </Button>
-            {/* commissions paused — restore this CTA (and the
-                `commissions/request` route) to reopen the funnel. The
-                remaining "Shop the store" button keeps its own opaque light
-                chip, so it stays legible on the photo on its own; the
-                wrapper is still `flex-wrap` so it can't overflow at phone
-                width. */}
-            {/* <Button
-              asChild
-              size="lg"
-              className="border-background bg-foreground text-background hover:bg-primary hover:text-background"
-            >
-              <Link to="/commissions/request">Start a commission</Link>
-            </Button> */}
+            {/* Commissions paused (see COMMISSIONS_ENABLED in
+                lib/constants.ts). The remaining "Shop the store" button
+                keeps its own opaque light chip, so it stays legible on the
+                photo on its own; the wrapper is still `flex-wrap` so it
+                can't overflow at phone width. */}
+            {COMMISSIONS_ENABLED ? (
+              <Button
+                asChild
+                size="lg"
+                className="border-background bg-foreground text-background hover:bg-primary hover:text-background"
+              >
+                <Link to="/commissions/request">Start a commission</Link>
+              </Button>
+            ) : null}
           </div>
         </Reveal>
       </div>

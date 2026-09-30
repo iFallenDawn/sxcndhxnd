@@ -22,3 +22,16 @@ export const INSTAGRAM_HANDLE = 'sxcndhxnd'
 
 /** Prefix for a customer's own profile, e.g. `${INSTAGRAM_PROFILE_BASE}${handle}`. */
 export const INSTAGRAM_PROFILE_BASE = 'https://www.instagram.com/'
+
+/**
+ * Single switch for the commission *request funnel* (client asked to pause
+ * it while reservations take over — the Store's existing Commissions
+ * section, keyed on `commission_id`, is unaffected and always renders).
+ *
+ * Every consumer — `router.tsx`'s `commissions/request` route, the Navbar
+ * link, the Hero CTA, and `Home.tsx`'s `<CommissionCta />` — reads this one
+ * flag instead of each being independently commented out. Flip it back to
+ * `true` to restore the whole funnel at once; there is nothing else to find
+ * and uncomment.
+ */
+export const COMMISSIONS_ENABLED = false

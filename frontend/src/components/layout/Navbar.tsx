@@ -14,16 +14,17 @@ import { cn } from '@/lib/utils'
 import { useHasHero } from '@/lib/hero-context'
 import { useAuthStore } from '@/stores/auth-store'
 import { useIsAdmin } from '@/hooks/use-is-admin'
+import { COMMISSIONS_ENABLED } from '@/lib/constants'
 
+// `NavLinks` below renders this same array for both the desktop nav and the
+// mobile menu sheet, so gating the Commissions entry on COMMISSIONS_ENABLED
+// here covers both at once.
 const PRIMARY_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/store', label: 'Store' },
   { to: '/gallery', label: 'Gallery' },
   { to: '/projects', label: 'Projects' },
-  // commissions paused — restore this entry to put Commissions back in the
-  // nav. `NavLinks` below renders this same array for both the desktop nav
-  // and the mobile menu sheet, so one line covers both.
-  // { to: '/commissions/request', label: 'Commissions' },
+  ...(COMMISSIONS_ENABLED ? [{ to: '/commissions/request', label: 'Commissions' }] : []),
   { to: '/contact', label: 'Contact' },
 ]
 

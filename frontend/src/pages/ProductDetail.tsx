@@ -75,9 +75,7 @@ interface ProductCtaProps {
  * this page has nowhere sensible to collect.
  */
 function ProductCta({ productId, status, bucket }: ProductCtaProps) {
-  const inBag = useReservationBagStore((state) =>
-    state.productIds.includes(productId),
-  )
+  const inBag = useReservationBagStore((state) => state.has(productId))
   const add = useReservationBagStore((state) => state.add)
 
   if (bucket === 'available') {
