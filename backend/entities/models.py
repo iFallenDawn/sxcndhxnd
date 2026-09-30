@@ -428,14 +428,14 @@ class ReservationsUpdate(CustomModelUpdate):
     instagram: str | None = Field(default=None)
     
 class ProjectsBaseSchema(CustomModel):
-    id: UUID4 = Field(default_factory=uuid4)
+    id: UUID4
     title: str
     description: str
     date: datetime.datetime
     created_at: datetime.datetime
     updated_at: datetime.datetime
     
-class ProjectsInsert(CustomModel):
+class ProjectsInsert(CustomModelInsert):
     id: UUID4 = Field(default_factory=uuid4)
     title: str
     description: str

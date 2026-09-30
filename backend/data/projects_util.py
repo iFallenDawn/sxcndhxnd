@@ -57,9 +57,14 @@ async def delete_project(project_id: UUID4, access_token: str) -> ProjectsBaseSc
 
     return ProjectsBaseSchema.model_validate(response.data[0])
 
+async def check_project_exists(project_id: UUID4) -> bool:
+    query = supabase.table('projects').select('id').eq('id', str(project_id)).limit(1)
+    response = query.execute()
+    return len(response.data) > 0
+
 async def get_products_by_project_id(project_id: UUID4) -> list[ProductsBaseSchema]:
-    # 404 on an unknown project instead of returning an empty list
-    await get_project_by_id(project_id)
+    if not await check_project_exists(project_id):
+        raise NotFoundError('Project', project_id)
 
     query = (
         supabase.table('products')
