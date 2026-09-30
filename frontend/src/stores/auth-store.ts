@@ -4,7 +4,7 @@ import { apiFetch, connectSession } from '@/lib/api-client'
 import { createHydrationHandler } from '@/lib/persist-hydration'
 import * as authApi from '@/api/auth'
 import { useReservationBagStore } from '@/stores/reservation-bag-store'
-import type { AuthSignInPayload, UsersBaseSchema } from '@/types/api'
+import type { AuthSignInPayload, UsersMeSchema } from '@/types/api'
 
 /**
  * Shared in-flight refresh. When several requests 401 at once (e.g. a page
@@ -17,7 +17,7 @@ let refreshInFlight: Promise<void> | null = null
 interface AuthState {
   accessToken: string | null
   refreshToken: string | null
-  user: UsersBaseSchema | null
+  user: UsersMeSchema | null
   /** True once the persisted store has been read back from storage on load. */
   hasHydrated: boolean
   /** True only when both the tokens and `user` are present — see `setSession`. */
@@ -47,7 +47,7 @@ interface AuthState {
    * cleared and the promise rejects. Called by `apiFetch` on a 401.
    */
   refresh: () => Promise<void>
-  setUser: (user: UsersBaseSchema) => void
+  setUser: (user: UsersMeSchema) => void
   /** Internal: called by the `persist` middleware once storage has been read. */
   _setHasHydrated: (value: boolean) => void
 }
@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
 
       setSession: async (session) => {
         // Fetch the user with the new token *before* committing anything.
-        const user = await apiFetch<UsersBaseSchema>('/users/me', {
+        const user = await apiFetch<UsersMeSchema>('/users/me', {
           authenticated: false,
           headers: { Authorization: `Bearer ${session.access_token}` },
         })
@@ -139,3 +139,23 @@ export const useAuthStore = create<AuthState>()(
 )
 
 connectSession(useAuthStore.getState)
+
+/**
+ * Cross-tab sync for the persisted session.
+ *
+ * Supabase rotates the refresh token on every use (see `refresh` above), so
+ * without this, a second tab left open with the pre-rotation token pair
+ * would try to use it after another tab already burned it, get a genuine
+ * 401, fail its own refresh (the token was already rotated), and sign
+ * itself out locally — surfacing as e.g. an admin dashboard that
+ * "randomly" disappears in one tab right after signing in or refreshing in
+ * another. `storage` only fires in *other* tabs/windows, never the one that
+ * made the write, so this can't loop against this tab's own updates.
+ */
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'sxcndhxnd-auth') {
+      void useAuthStore.persist.rehydrate()
+    }
+  })
+}

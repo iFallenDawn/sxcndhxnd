@@ -142,7 +142,7 @@ export interface GalleryResponse {
 // Users
 // ---------------------------------------------------------------------------
 
-/** Mirrors `entities.models.UsersBaseSchema`. Response of `GET /users/me`. */
+/** Mirrors `entities.models.UsersBaseSchema`. Response of `PATCH /users/me` and `GET /admin/users/{id}`. */
 export interface UsersBaseSchema {
   id: string
   created_at: string
@@ -151,6 +151,15 @@ export interface UsersBaseSchema {
   instagram: string
   last_name: string
   updated_at: string
+}
+
+/**
+ * Mirrors `entities.models.UsersMeSchema`. Response of `GET /users/me` —
+ * `role` is `'admin'` for an admin account, otherwise `null`. This is the
+ * source of truth for admin status; see `hooks/use-is-admin.ts`.
+ */
+export interface UsersMeSchema extends UsersBaseSchema {
+  role: string | null
 }
 
 /** Mirrors `entities.models.UsersUpdate`. Sent to `PATCH /users/me`. */
