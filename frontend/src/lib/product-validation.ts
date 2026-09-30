@@ -12,15 +12,20 @@ const priceSchema = z
   .min(1, 'Price is required')
   .regex(/^\d+(\.\d{1,2})?$/, 'Enter a price like 120 or 120.00')
 
-export const productFormSchema = z.object({
-  title: z.string().trim().min(1, 'Title is required'),
-  description: z.string().trim().min(1, 'Description is required'),
-  price: priceSchema,
-  category: z.string().trim(),
-  size: z.string().trim(),
-  status: z.enum(PRODUCT_STATUSES),
-  drop_item: z.boolean(),
-  drop_title: z.string().trim(),
-})
+export const productFormSchema = z
+  .object({
+    title: z.string().trim().min(1, 'Title is required'),
+    description: z.string().trim().min(1, 'Description is required'),
+    price: priceSchema,
+    category: z.string().trim(),
+    size: z.string().trim(),
+    status: z.enum(PRODUCT_STATUSES),
+    in_project: z.boolean(),
+    project_id: z.string().trim(),
+  })
+  .refine((values) => !values.in_project || values.project_id !== '', {
+    message: 'Choose a project or create a new one',
+    path: ['project_id'],
+  })
 
 export type ProductFormValues = z.infer<typeof productFormSchema>
