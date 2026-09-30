@@ -26,12 +26,24 @@ export function useProjectProducts(projectId: string | undefined) {
   })
 }
 
-/** `POST /projects/`. Admin only. */
+/**
+ * `POST /projects/`. Admin only.
+ *
+ * Appends the new project straight into the `projects.list()` cache rather
+ * than only invalidating it: `ProductForm`'s inline "New project" flow picks
+ * the new project immediately after creating it, and the resulting refetch
+ * is async, so relying on invalidation alone left a window where the Select
+ * had no matching option yet and looked like the pick hadn't taken.
+ */
 export function useCreateProject() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload: ProjectsInsert) => createProject(payload),
-    onSuccess: () => {
+    onSuccess: (project) => {
+      queryClient.setQueryData(
+        queryKeys.projects.list(),
+        (list: ProjectsBaseSchema[] | undefined) => (list ? [...list, project] : [project]),
+      )
       void queryClient.invalidateQueries({ queryKey: queryKeys.projects.list() })
     },
   })

@@ -4,7 +4,7 @@ import { StoreFilters } from '@/components/store/StoreFilters'
 import { ProductEntryGrid } from '@/components/store/ProductEntryGrid'
 import { ProductCardSkeleton } from '@/components/store/ProductCard'
 import { useProducts } from '@/hooks/use-products'
-import { useProjects } from '@/hooks/use-projects'
+import { useProjects, projectTitleMap } from '@/hooks/use-projects'
 import { ApiError } from '@/lib/api-error'
 import { isCommissionProduct, getProductBucket, type ProductBucket } from '@/lib/products'
 import { groupForDisplay, type DisplayEntry, type SortOption } from '@/lib/store-grouping'
@@ -69,10 +69,7 @@ export function Store() {
     return Array.from(unique).sort((a, b) => a.localeCompare(b))
   }, [products])
 
-  const projectTitles = useMemo(
-    () => new Map((projects ?? []).map((project) => [project.id, project.title])),
-    [projects],
-  )
+  const projectTitles = useMemo(() => projectTitleMap(projects), [projects])
 
   const { commissions, capsules } = useMemo(() => {
     const filtered = (products ?? []).filter((product) => {
