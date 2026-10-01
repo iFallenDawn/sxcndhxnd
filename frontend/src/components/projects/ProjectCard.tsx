@@ -3,7 +3,10 @@ import { ImagePlaceholder } from '@/components/home/ImagePlaceholder'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { ProjectsBaseSchema } from '@/types/api'
 
-const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' })
+// `timeZone: 'UTC'` matters: `project.date` is stored as UTC midnight for a
+// date-only pick (see `ProjectForm`), so formatting in the viewer's local
+// zone would render it a day early for anyone west of UTC.
+const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' })
 
 interface ProjectCardProps {
   project: ProjectsBaseSchema

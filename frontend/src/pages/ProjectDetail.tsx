@@ -7,7 +7,11 @@ import { useProject, useProjectProducts } from '@/hooks/use-projects'
 import { ApiError } from '@/lib/api-error'
 import type { ProjectsBaseSchema } from '@/types/api'
 
-const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' })
+// `timeZone: 'UTC'` matters: `project.date` is stored as UTC midnight for a
+// date the admin picked with no time component (see `ProjectForm`), so
+// formatting in the viewer's local zone would render it a day early for
+// anyone west of UTC.
+const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' })
 
 function ProjectDetailSkeleton() {
   return (
