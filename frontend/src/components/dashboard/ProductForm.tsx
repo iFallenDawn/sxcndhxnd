@@ -73,6 +73,7 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel, onBusyCh
     enqueue,
     requeue,
     dismiss,
+    clearDone,
     runAll,
   } = useUploadQueue<ProductImageUploadResponse>(uploadFn, { autoStart: false })
 
@@ -146,8 +147,12 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel, onBusyCh
         finalImageUrls = [...imageUrls, ...uploaded.map((result) => result.image_url)]
         // Uploaded photos are now real, saved URLs — fold them into
         // `imageUrls` so a retry after a failed *save* (below) doesn't
-        // re-upload them.
+        // re-upload them. Also drop the now-`'done'` queue items: `runAll`
+        // treats a `'done'` item as already-successful and returns its
+        // result again rather than re-uploading, so without this a retry
+        // would re-append the same URLs onto `imageUrls` a second time.
         setImageUrls(finalImageUrls)
+        clearDone()
       } catch {
         setFormError(
           'One of the photos failed to upload — fix it above (or remove it) and save again.',
