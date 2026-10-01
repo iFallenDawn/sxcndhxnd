@@ -3,6 +3,7 @@ import {
   createProject,
   deleteProject,
   getAllProjects,
+  getProjectById,
   getProjectProducts,
   updateProject,
 } from '@/api/projects'
@@ -14,6 +15,15 @@ export function useProjects() {
   return useQuery({
     queryKey: queryKeys.projects.list(),
     queryFn: getAllProjects,
+  })
+}
+
+/** `GET /projects/{id}`. Public. */
+export function useProject(projectId: string | undefined) {
+  return useQuery({
+    queryKey: queryKeys.projects.detail(projectId ?? ''),
+    queryFn: () => getProjectById(projectId as string),
+    enabled: projectId !== undefined,
   })
 }
 
