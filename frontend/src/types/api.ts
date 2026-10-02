@@ -114,6 +114,7 @@ export interface ProjectsUpdate {
   title?: string | null
   description?: string | null
   date?: string | null
+}
 // Reservations
 // ---------------------------------------------------------------------------
 
