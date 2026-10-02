@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { COMMISSIONS_ENABLED } from '@/lib/constants'
 import { Reveal } from './reveal'
 
 /**
@@ -87,13 +88,20 @@ export function Hero() {
             >
               <Link to="/store">Shop the store</Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full border-background bg-foreground/85 text-background hover:bg-primary hover:text-background"
-            >
-              <Link to="/commissions/request">Start a commission</Link>
-            </Button>
+            {/* Commissions paused (see COMMISSIONS_ENABLED in
+                lib/constants.ts). The remaining "Shop the store" button
+                keeps its own opaque light chip, so it stays legible on the
+                photo on its own; the wrapper is still `flex-wrap` so it
+                can't overflow at phone width. */}
+            {COMMISSIONS_ENABLED ? (
+              <Button
+                asChild
+                size="lg"
+                className="border-background bg-foreground text-background hover:bg-primary hover:text-background"
+              >
+                <Link to="/commissions/request">Start a commission</Link>
+              </Button>
+            ) : null}
           </div>
         </Reveal>
       </div>

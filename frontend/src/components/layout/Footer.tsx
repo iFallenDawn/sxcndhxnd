@@ -1,6 +1,5 @@
 import { SiInstagram } from '@icons-pack/react-simple-icons'
-
-const INSTAGRAM_URL = 'https://instagram.com/sxcndhxnd'
+import { INSTAGRAM_URL } from '@/lib/constants'
 
 /**
  * Simple copyright + socials row, carried over from v1's footer (which was
