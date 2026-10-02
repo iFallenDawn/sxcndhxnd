@@ -5,8 +5,8 @@ import type { ProductStatus, ProductsBaseSchema } from '@/types/api'
 // ---------------------------------------------------------------------------
 // `ProductsBaseSchema` has no field that cleanly means "this is commission
 // work" vs. "this is a pre-made capsule good." The candidate fields are
-// `category`, `commission_id`, `drop_item`, `drop_title`, `status`, `size`,
-// `price` — none of them are documented as a listing-type discriminator.
+// `category`, `commission_id`, `project_id`, `status`, `size`, `price` — none
+// of them are documented as a listing-type discriminator.
 //
 // This implementation treats `commission_id` as the discriminator: a
 // product with a non-null, non-empty `commission_id` is commission work made
@@ -35,6 +35,19 @@ import type { ProductStatus, ProductsBaseSchema } from '@/types/api'
 export function isCommissionProduct(product: Pick<ProductsBaseSchema, 'commission_id'>): boolean {
   return product.commission_id != null && product.commission_id.trim() !== ''
 }
+
+// ---------------------------------------------------------------------------
+// Sizes
+// ---------------------------------------------------------------------------
+// The DB column (`products.size`) is unconstrained, nullable `text`, same
+// deal as `category` — nothing stops a legacy row from carrying something
+// outside this set (older products used free text here). The admin form only
+// offers these four going forward; `ProductForm` separately keeps a legacy
+// value selectable (rather than silently blanking it) if one is present.
+export const PRODUCT_SIZE_OPTIONS = ['S', 'M', 'L'] as const
+
+/** Sentinel for the no-size option — `products.size` is `null`/`''`, not a real `SelectItem` value. */
+export const PRODUCT_SIZE_NA = 'N/A'
 
 // ---------------------------------------------------------------------------
 // Statuses and buckets
