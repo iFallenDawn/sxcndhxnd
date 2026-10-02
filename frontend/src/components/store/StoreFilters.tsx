@@ -11,12 +11,19 @@ import { SORT_LABEL, type SortOption } from '@/lib/store-grouping'
 
 const SORT_OPTIONS: SortOption[] = ['featured', 'price-asc', 'price-desc']
 
+// Radix `SelectItem` can't take an empty-string value, so "no size filter"
+// needs a sentinel rather than mapping directly to `size === null`.
+const ALL_SIZES = 'all'
+
 interface StoreFiltersProps {
   categories: string[]
   category: string | null
   onCategoryChange: (category: string | null) => void
   bucket: ProductBucket | null
   onBucketChange: (bucket: ProductBucket | null) => void
+  sizes: string[]
+  size: string | null
+  onSizeChange: (size: string | null) => void
   sort: SortOption
   onSortChange: (sort: SortOption) => void
 }
@@ -32,6 +39,9 @@ export function StoreFilters({
   onCategoryChange,
   bucket,
   onBucketChange,
+  sizes,
+  size,
+  onSizeChange,
   sort,
   onSortChange,
 }: StoreFiltersProps) {
@@ -68,18 +78,39 @@ export function StoreFilters({
           ))}
         </div>
 
-        <Select value={sort} onValueChange={(value) => onSortChange(value as SortOption)}>
-          <SelectTrigger size="sm" className="w-fit">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {SORT_OPTIONS.map((option) => (
-              <SelectItem key={option} value={option}>
-                {SORT_LABEL[option]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex flex-wrap items-center gap-2">
+          {sizes.length > 0 ? (
+            <Select
+              value={size ?? ALL_SIZES}
+              onValueChange={(value) => onSizeChange(value === ALL_SIZES ? null : value)}
+            >
+              <SelectTrigger size="sm" className="w-fit">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL_SIZES}>All sizes</SelectItem>
+                {sizes.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : null}
+
+          <Select value={sort} onValueChange={(value) => onSortChange(value as SortOption)}>
+            <SelectTrigger size="sm" className="w-fit">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {SORT_LABEL[option]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   )
