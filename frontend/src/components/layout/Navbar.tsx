@@ -238,33 +238,39 @@ export function Navbar() {
           <NavLinks />
         </nav>
 
-        <div className="hidden md:flex">
-          <AuthLinks />
-        </div>
+        <div className="flex items-center gap-2">
+          {/* The reservation bag renders nothing while it's empty, so this
+              slot usually collapses. */}
+          <ReservationBagSheet />
 
-        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full text-current hover:text-current md:hidden"
-              aria-label="Open menu"
-            >
-              <Menu />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="flex flex-col">
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-4 px-4">
-              <NavLinks onNavigate={() => setIsMenuOpen(false)} />
-            </nav>
-            <div className="mt-auto border-t border-border px-4 py-4">
-              <AuthLinks layout="stack" onNavigate={() => setIsMenuOpen(false)} />
-            </div>
-          </SheetContent>
-        </Sheet>
+          <div className="hidden md:flex">
+            <AuthLinks />
+          </div>
+
+          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full text-current hover:text-current md:hidden"
+                aria-label="Open menu"
+              >
+                <Menu />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="flex flex-col">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 px-4">
+                <NavLinks onNavigate={() => setIsMenuOpen(false)} />
+              </nav>
+              <div className="mt-auto border-t border-border px-4 py-4">
+                <AuthLinks layout="stack" onNavigate={() => setIsMenuOpen(false)} />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   )
