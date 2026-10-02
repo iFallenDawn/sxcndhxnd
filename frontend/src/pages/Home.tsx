@@ -5,7 +5,6 @@ import { Philosophy } from '@/components/home/Philosophy'
 import { Collections } from '@/components/home/Collections'
 import { CommissionCta } from '@/components/home/CommissionCta'
 import { About } from '@/components/home/About'
-import { COMMISSIONS_ENABLED } from '@/lib/constants'
 
 /**
  * The real home page (issue #7), replacing the `Placeholder` that stood in
@@ -25,8 +24,7 @@ export function Home() {
       <Hero />
       <Philosophy />
       <Collections />
-      {/* Commissions paused — see COMMISSIONS_ENABLED in lib/constants.ts. */}
-      {COMMISSIONS_ENABLED ? <CommissionCta /> : null}
+      <CommissionCta />
       <About />
     </>
   )

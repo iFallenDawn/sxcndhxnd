@@ -1,7 +1,5 @@
 import { Link, useParams } from 'react-router'
 import { Fragment } from 'react'
-import { CheckIcon } from 'lucide-react'
-import { toast } from 'sonner'
 import { PageMeta } from '@/components/seo/PageMeta'
 import { ProductGallery } from '@/components/store/ProductGallery'
 import { Badge } from '@/components/ui/badge'
@@ -17,8 +15,7 @@ import {
   isCommissionProduct,
   type ProductBucket,
 } from '@/lib/products'
-import { useReservationBagStore } from '@/stores/reservation-bag-store'
-import type { ProductStatus, ProductsBaseSchema } from '@/types/api'
+import type { ProductsBaseSchema } from '@/types/api'
 
 function ProductDetailSkeleton() {
   return (
@@ -56,87 +53,36 @@ function ProductNotFound({ message }: ProductNotFoundProps) {
 }
 
 interface ProductCtaProps {
-  productId: string
-  status: ProductStatus
   bucket: ProductBucket
 }
 
 /**
- * Status-driven CTA (issue #10).
- *
- * Adding to the bag is enabled **only** for `available`. Every other status
- * gets an explanation on its own opaque chip rather than a disabled button:
- * "why can't I have this?" is the question, and a greyed-out button doesn't
- * answer it.
- *
- * The button itself doesn't call the API — it drops the product id into the
- * local bag (`stores/reservation-bag-store.ts`) and the drawer's checkout
- * does the reserving, because a reservation needs an Instagram handle that
- * this page has nowhere sensible to collect.
+ * Status-driven CTA. Reservation itself is issue #10 and is **blocked** —
+ * there is no customer-facing reserve endpoint yet (`PATCH /products/{id}`
+ * is admin-only) — so this only ever renders the correct *state*, never a
+ * working submit. Do not wire this up before #10 ships a real endpoint.
  */
-function ProductCta({ productId, status, bucket }: ProductCtaProps) {
-  const inBag = useReservationBagStore((state) => state.has(productId))
-  const add = useReservationBagStore((state) => state.add)
-
+function ProductCta({ bucket }: ProductCtaProps) {
   if (bucket === 'available') {
     return (
       <div className="flex flex-col gap-1.5">
-        <Button
-          type="button"
-          className="w-fit"
-          disabled={inBag}
-          aria-disabled={inBag}
-          onClick={() => {
-            add(productId)
-            toast.success('Added to your reservations.')
-          }}
-        >
-          {inBag ? (
-            <>
-              <CheckIcon data-icon="inline-start" aria-hidden="true" />
-              In your reservations
-            </>
-          ) : (
-            'Reserve this piece'
-          )}
+        {/* TODO(#10): wire this to the customer reservation endpoint once it
+            exists. Intentionally disabled — there is nothing to submit to. */}
+        <Button type="button" disabled aria-disabled="true" className="w-fit">
+          Reserve this piece
         </Button>
-        <p className="text-xs text-muted-foreground">
-          {inBag
-            ? 'Open the bag in the top bar to confirm it.'
-            : 'No payment — reserving holds it, then Nico DMs you on Instagram.'}
-        </p>
+        <p className="text-xs text-muted-foreground">Reservations are opening soon.</p>
       </div>
     )
   }
 
-  // Opaque, tone-differentiated chips per CLAUDE.md, plus the reason in plain
-  // words. `reserved` is distinct from the archive statuses because it's the
-  // one a customer might come back for.
   if (bucket === 'reserved') {
     return (
-      <div className="flex flex-col gap-1.5">
-        <Badge className={BUCKET_BADGE_ON_SURFACE.reserved}>
-          {BUCKET_LABEL.reserved} — spoken for
-        </Badge>
-        <p className="text-xs text-muted-foreground">
-          Someone already reserved this one, and it’s one of one.
-        </p>
-      </div>
+      <Badge className={BUCKET_BADGE_ON_SURFACE.reserved}>{BUCKET_LABEL.reserved} — spoken for</Badge>
     )
   }
 
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Badge className={BUCKET_BADGE_ON_SURFACE.archive}>
-        {status === 'sold' ? 'Sold' : BUCKET_LABEL.archive}
-      </Badge>
-      <p className="text-xs text-muted-foreground">
-        {status === 'sold'
-          ? 'This one has found its owner — it isn’t available to reserve.'
-          : 'This piece isn’t up for reservation.'}
-      </p>
-    </div>
-  )
+  return <p className="text-sm text-muted-foreground">No longer available.</p>
 }
 
 interface ProductDetailViewProps {
@@ -169,12 +115,8 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
 
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="heading-display text-3xl sm:text-4xl">
-              {product.title}
-            </h1>
-            <Badge className={BUCKET_BADGE_ON_SURFACE[bucket]}>
-              {BUCKET_LABEL[bucket]}
-            </Badge>
+            <h1 className="heading-display text-3xl sm:text-4xl">{product.title}</h1>
+            <Badge className={BUCKET_BADGE_ON_SURFACE[bucket]}>{BUCKET_LABEL[bucket]}</Badge>
           </div>
 
           {metaBits.length > 0 ? (
@@ -188,20 +130,14 @@ function ProductDetailView({ product }: ProductDetailViewProps) {
             </p>
           ) : null}
 
-          <p className="font-mono text-lg text-foreground">
-            {formatPrice(product.price)}
-          </p>
+          <p className="font-mono text-lg text-foreground">{formatPrice(product.price)}</p>
         </div>
 
         <p className="max-w-prose text-sm whitespace-pre-line text-muted-foreground">
           {product.description}
         </p>
 
-        <ProductCta
-          productId={product.id}
-          status={product.status}
-          bucket={bucket}
-        />
+        <ProductCta bucket={bucket} />
       </div>
     </div>
   )
@@ -223,9 +159,7 @@ export function ProductDetail() {
       <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
         <PageMeta title="Something went wrong" />
         <p className="max-w-sm text-sm text-destructive">
-          {error instanceof ApiError
-            ? error.message
-            : 'Something went wrong loading this piece.'}
+          {error instanceof ApiError ? error.message : 'Something went wrong loading this piece.'}
         </p>
         <Button asChild size="sm" variant="outline">
           <Link to="/store">Back to store</Link>

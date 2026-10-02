@@ -392,13 +392,6 @@ class UsersPublicProfile(BaseModel):
     first_name: str
     last_name: str
     instagram: str
-
-class UsersMeSchema(UsersBaseSchema):
-    """`GET /users/me` / `PATCH /users/me` response — adds `role` so the
-    frontend can read admin status directly (see
-    `frontend/src/hooks/use-is-admin.ts`) instead of probing an admin-only
-    route and inferring it from the status code."""
-    role: str | None = None
     
 class GalleryImagesBaseSchema(CustomModel):
     id: UUID4

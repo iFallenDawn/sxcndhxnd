@@ -3,20 +3,14 @@ import { PageMeta } from '@/components/seo/PageMeta'
 import { ProductsPanel } from '@/components/dashboard/ProductsPanel'
 import { ProjectsPanel } from '@/components/dashboard/ProjectsPanel'
 import { GalleryPanel } from '@/components/dashboard/GalleryPanel'
-import { ReservationsPanel } from '@/components/dashboard/ReservationsPanel'
 import { cn } from '@/lib/utils'
 
-type DashboardTab = 'products' | 'projects' | 'gallery' | 'reservations'
+type DashboardTab = 'products' | 'projects' | 'gallery'
 
 const TABS: { id: DashboardTab; label: string; description: string }[] = [
   { id: 'products', label: 'Products', description: 'Add, edit, and archive what’s in the store.' },
   { id: 'projects', label: 'Projects', description: 'Rename, redate, or delete a promo/showcase.' },
   { id: 'gallery', label: 'Gallery', description: 'Dump commission photos here — bulk upload works.' },
-  {
-    id: 'reservations',
-    label: 'Reservations',
-    description: 'Who’s asked to hold what, and the Instagram handle to DM them on.',
-  },
 ]
 
 /**
@@ -31,7 +25,7 @@ export function Dashboard() {
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-6 sm:py-12">
-      <PageMeta title="Dashboard" description="Manage products, projects, the gallery, and reservations." />
+      <PageMeta title="Dashboard" description="Manage products, projects, and the gallery." />
 
       <div className="flex flex-col gap-1">
         <p className="eyebrow text-muted-foreground">Dashboard</p>
@@ -58,15 +52,7 @@ export function Dashboard() {
 
       <p className="text-sm text-muted-foreground">{TABS.find((t) => t.id === tab)?.description}</p>
 
-      {tab === 'products' ? (
-        <ProductsPanel />
-      ) : tab === 'projects' ? (
-        <ProjectsPanel />
-      ) : tab === 'gallery' ? (
-        <GalleryPanel />
-      ) : (
-        <ReservationsPanel />
-      )}
+      {tab === 'products' ? <ProductsPanel /> : tab === 'projects' ? <ProjectsPanel /> : <GalleryPanel />}
     </div>
   )
 }
