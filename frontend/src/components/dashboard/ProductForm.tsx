@@ -17,7 +17,7 @@ import { ProductImageUploader } from '@/components/dashboard/ProductImageUploade
 import { uploadProductImageWithProgress } from '@/api/products'
 import { useUploadQueue } from '@/hooks/use-upload-queue'
 import { productFormSchema, type ProductFormValues } from '@/lib/product-validation'
-import { PRODUCT_STATUS_LABEL } from '@/lib/products'
+import { PRODUCT_SIZE_NA, PRODUCT_SIZE_OPTIONS, PRODUCT_STATUS_LABEL } from '@/lib/products'
 import { useProjects, useCreateProject } from '@/hooks/use-projects'
 import { ApiError } from '@/lib/api-error'
 import {
@@ -103,6 +103,15 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel, onBusyCh
   const inProject = watch('in_project')
   const projectId = watch('project_id')
   const status = watch('status')
+  const size = watch('size')
+
+  // A legacy product can carry a size outside the fixed S/M/L set (free text
+  // predates this dropdown) — keep it selectable rather than letting the
+  // `Select` silently show blank and the admin accidentally clear it.
+  const sizeOptions: string[] =
+    size === '' || (PRODUCT_SIZE_OPTIONS as readonly string[]).includes(size)
+      ? [...PRODUCT_SIZE_OPTIONS]
+      : [...PRODUCT_SIZE_OPTIONS, size]
 
   const handleCreateProject = async () => {
     const title = newProjectTitle.trim()
@@ -222,13 +231,34 @@ export function ProductForm({ product, onSubmit, onCancel, submitLabel, onBusyCh
           error={errors.price?.message}
           {...register('price')}
         />
-        <FormField
-          label="Size"
-          htmlFor="product-size"
-          placeholder="e.g. M, One size"
-          error={errors.size?.message}
-          {...register('size')}
-        />
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="product-size" className="text-sm font-medium text-foreground">
+            Size
+          </label>
+          <Select
+            value={size === '' ? PRODUCT_SIZE_NA : size}
+            onValueChange={(value) =>
+              setValue('size', value === PRODUCT_SIZE_NA ? '' : value, { shouldValidate: true })
+            }
+          >
+            <SelectTrigger id="product-size" className="h-11 w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={PRODUCT_SIZE_NA}>N/A</SelectItem>
+              {sizeOptions.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.size ? (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.size.message}
+            </p>
+          ) : null}
+        </div>
       </div>
 
       <FormField

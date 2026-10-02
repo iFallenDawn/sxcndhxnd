@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { resizeImageForUpload } from '@/lib/image-resize'
 import { ApiError } from '@/lib/api-error'
 import { ALLOWED_IMAGE_TYPES } from '@/lib/constants'
@@ -7,6 +7,13 @@ export interface QueuedUpload<TResult> {
   id: string
   /** Kept so a failed upload can be retried without re-picking the file. */
   file: File
+  /**
+   * `URL.createObjectURL(file)` — a local, instant preview of the picked
+   * file before it's resized or uploaded anywhere. Revoked (see `dismiss`,
+   * `clearDone`, and the unmount effect below) once nothing needs it, since
+   * these URLs otherwise leak for the page's lifetime.
+   */
+  previewUrl: string
   fileName: string
   originalBytes: number
   resizedBytes: number | null
@@ -63,6 +70,20 @@ export function useUploadQueue<TResult>(
   const { autoStart = true } = options
   const [items, setItems] = useState<QueuedUpload<TResult>[]>([])
   const controllers = useRef(new Map<string, AbortController>())
+  // Every object URL ever created, so the unmount effect below can revoke
+  // whatever `dismiss`/`clearDone` didn't already clean up (e.g. the form
+  // was cancelled outright rather than removing items one by one).
+  const previewUrls = useRef(new Set<string>())
+
+  // Belt-and-suspenders: revoke anything still outstanding when this hook's
+  // owner unmounts, since object URLs otherwise live until the page unloads.
+  useEffect(() => {
+    const urls = previewUrls.current
+    return () => {
+      for (const url of urls) URL.revokeObjectURL(url)
+      urls.clear()
+    }
+  }, [])
 
   const patch = useCallback((id: string, partial: Partial<QueuedUpload<TResult>>) => {
     setItems((prev) => prev.map((item) => (item.id === id ? { ...item, ...partial } : item)))
@@ -110,19 +131,24 @@ export function useUploadQueue<TResult>(
 
   const enqueue = useCallback(
     (files: File[]) => {
-      const newItems: QueuedUpload<TResult>[] = files.map((file) => ({
-        id: newId(),
-        file,
-        fileName: file.name,
-        originalBytes: file.size,
-        resizedBytes: null,
-        originalDimensions: null,
-        resizedDimensions: null,
-        status: 'queued',
-        progress: 0,
-        error: null,
-        result: null,
-      }))
+      const newItems: QueuedUpload<TResult>[] = files.map((file) => {
+        const previewUrl = URL.createObjectURL(file)
+        previewUrls.current.add(previewUrl)
+        return {
+          id: newId(),
+          file,
+          previewUrl,
+          fileName: file.name,
+          originalBytes: file.size,
+          resizedBytes: null,
+          originalDimensions: null,
+          resizedDimensions: null,
+          status: 'queued',
+          progress: 0,
+          error: null,
+          result: null,
+        }
+      })
       setItems((prev) => [...prev, ...newItems])
 
       if (!autoStart) return
@@ -166,11 +192,25 @@ export function useUploadQueue<TResult>(
 
   const dismiss = useCallback((id: string) => {
     controllers.current.get(id)?.abort()
-    setItems((prev) => prev.filter((item) => item.id !== id))
+    setItems((prev) => {
+      const item = prev.find((it) => it.id === id)
+      if (item) {
+        URL.revokeObjectURL(item.previewUrl)
+        previewUrls.current.delete(item.previewUrl)
+      }
+      return prev.filter((it) => it.id !== id)
+    })
   }, [])
 
   const clearDone = useCallback(() => {
-    setItems((prev) => prev.filter((item) => item.status !== 'done'))
+    setItems((prev) => {
+      for (const item of prev) {
+        if (item.status !== 'done') continue
+        URL.revokeObjectURL(item.previewUrl)
+        previewUrls.current.delete(item.previewUrl)
+      }
+      return prev.filter((item) => item.status !== 'done')
+    })
   }, [])
 
   /**

@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog'
 import { ProjectForm } from '@/components/dashboard/ProjectForm'
+import { ProjectProductsList } from '@/components/dashboard/ProjectProductsList'
 import { useCreateProject, useUpdateProject } from '@/hooks/use-projects'
 import type { ProjectsBaseSchema, ProjectsInsert } from '@/types/api'
 
@@ -51,6 +52,17 @@ export function ProjectFormDialog({ state, onClose }: ProjectFormDialogProps) {
           onCancel={onClose}
           onSubmit={handleSubmit}
         />
+
+        {project ? (
+          <div className="flex flex-col gap-2 border-t border-border pt-5">
+            <span className="text-sm font-medium text-foreground">Products in this project</span>
+            <p className="text-xs text-muted-foreground">
+              Move a product to another project, or take it out of this one — changes save
+              immediately, separately from the form above.
+            </p>
+            <ProjectProductsList projectId={project.id} />
+          </div>
+        ) : null}
       </DialogContent>
     </Dialog>
   )

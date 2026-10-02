@@ -58,6 +58,7 @@ export function Store() {
 
   const [category, setCategory] = useState<string | null>(null)
   const [bucket, setBucket] = useState<ProductBucket | null>(null)
+  const [size, setSize] = useState<string | null>(null)
   const [sort, setSort] = useState<SortOption>('featured')
 
   const categories = useMemo(() => {
@@ -69,12 +70,22 @@ export function Store() {
     return Array.from(unique).sort((a, b) => a.localeCompare(b))
   }, [products])
 
+  const sizes = useMemo(() => {
+    if (!products) return []
+    const unique = new Set<string>()
+    for (const product of products) {
+      if (product.size) unique.add(product.size)
+    }
+    return Array.from(unique).sort((a, b) => a.localeCompare(b))
+  }, [products])
+
   const projectTitles = useMemo(() => projectTitleMap(projects), [projects])
 
   const { commissions, capsules } = useMemo(() => {
     const filtered = (products ?? []).filter((product) => {
       if (category !== null && product.category !== category) return false
       if (bucket !== null && getProductBucket(product.status) !== bucket) return false
+      if (size !== null && product.size !== size) return false
       return true
     })
     return {
@@ -89,7 +100,7 @@ export function Store() {
         projectTitles,
       ),
     }
-  }, [products, category, bucket, sort, projectTitles])
+  }, [products, category, bucket, size, sort, projectTitles])
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-16">
@@ -128,6 +139,9 @@ export function Store() {
             onCategoryChange={setCategory}
             bucket={bucket}
             onBucketChange={setBucket}
+            sizes={sizes}
+            size={size}
+            onSizeChange={setSize}
             sort={sort}
             onSortChange={setSort}
           />

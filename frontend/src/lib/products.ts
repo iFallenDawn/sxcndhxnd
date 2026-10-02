@@ -37,6 +37,19 @@ export function isCommissionProduct(product: Pick<ProductsBaseSchema, 'commissio
 }
 
 // ---------------------------------------------------------------------------
+// Sizes
+// ---------------------------------------------------------------------------
+// The DB column (`products.size`) is unconstrained, nullable `text`, same
+// deal as `category` — nothing stops a legacy row from carrying something
+// outside this set (older products used free text here). The admin form only
+// offers these four going forward; `ProductForm` separately keeps a legacy
+// value selectable (rather than silently blanking it) if one is present.
+export const PRODUCT_SIZE_OPTIONS = ['S', 'M', 'L'] as const
+
+/** Sentinel for the no-size option — `products.size` is `null`/`''`, not a real `SelectItem` value. */
+export const PRODUCT_SIZE_NA = 'N/A'
+
+// ---------------------------------------------------------------------------
 // Statuses and buckets
 // ---------------------------------------------------------------------------
 /** Raw DB status labels — the admin edits these directly. */
