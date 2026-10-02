@@ -72,20 +72,12 @@ export function Hero() {
 
         <Reveal delay={0.2}>
           <div className="flex flex-wrap gap-3">
-            {/* Tone-differentiated chips (light = primary, dark = secondary),
-                hovers included — never outline/ghost over the photo. Each
-                has a contrasting 1px edge so its shape survives a backdrop
-                of its own tone (the fill is what carries the text contrast,
-                not the edge). Deliberately not fully opaque (85%) per a
-                design call — CLAUDE.md's opaque-surface rule exists because
-                anything more transparent than this has previously gone
-                illegible against a light patch of a hero photo; don't push
-                these lower without checking against the actual photo in use. */}
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full border-foreground bg-background/85 text-foreground hover:bg-muted"
-            >
+            {/* Opaque, tone-differentiated chips (light = primary, dark =
+                secondary), hovers included — never outline/ghost over the
+                photo. Each has a contrasting 1px edge so its shape survives
+                a backdrop of its own tone (the fill is what carries the
+                text contrast, not the edge). */}
+            <Button asChild size="lg" className="border-foreground bg-background text-foreground hover:bg-muted">
               <Link to="/store">Shop the store</Link>
             </Button>
             {/* Commissions paused (see COMMISSIONS_ENABLED in

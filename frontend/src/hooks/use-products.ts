@@ -33,8 +33,6 @@ export function useCreateProduct() {
     mutationFn: (payload: ProductsInsert) => createProduct(payload),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.products.list() })
-      // A new product can be assigned straight into a project's product list.
-      void queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
     },
   })
 }
@@ -88,8 +86,6 @@ export function useUpdateProduct() {
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.products.list() })
-      // `project_id` may have changed, moving the product between projects.
-      void queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
     },
   })
 }
@@ -122,7 +118,6 @@ export function useDeleteProduct() {
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.products.list() })
-      void queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
     },
   })
 }

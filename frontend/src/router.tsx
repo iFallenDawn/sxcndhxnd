@@ -6,8 +6,6 @@ import { Home } from '@/pages/Home'
 import { Store } from '@/pages/Store'
 import { ProductDetail } from '@/pages/ProductDetail'
 import { Gallery } from '@/pages/Gallery'
-import { Projects } from '@/pages/Projects'
-import { ProjectDetail } from '@/pages/ProjectDetail'
 import { Dashboard } from '@/pages/Dashboard'
 import { Placeholder } from '@/pages/Placeholder'
 import { RequireAuth } from '@/components/guards/RequireAuth'
@@ -57,8 +55,7 @@ export const router = createBrowserRouter([
         element: <ProductDetail />,
       },
       { path: 'gallery', element: <Gallery /> },
-      { path: 'projects', element: <Projects /> },
-      { path: 'projects/:projectId', element: <ProjectDetail /> },
+      { path: 'projects', element: <Placeholder name="Projects" /> },
       ...commissionRoutes,
       { path: 'contact', element: <Placeholder name="Contact" /> },
       { path: 'sign-in', element: <SignIn /> },

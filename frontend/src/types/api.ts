@@ -34,6 +34,8 @@ export interface ProductsBaseSchema {
   created_at: string
   created_by: string | null
   description: string
+  drop_item: boolean | null
+  drop_title: string | null
   image_urls: string[]
   paid: boolean | null
   /** Decimal over the wire — keep as string, format at the edge. */
@@ -45,7 +47,6 @@ export interface ProductsBaseSchema {
   updated_at: string
   updated_by: string | null
   user_id: string | null
-  project_id: string | null
 }
 
 /** Mirrors `entities.models.ProductsInsert`. Sent to `POST /products/`. */
@@ -57,11 +58,12 @@ export interface ProductsInsert {
   title: string
   category?: string | null
   commission_id?: string | null
+  drop_item?: boolean | null
+  drop_title?: string | null
   paid?: boolean | null
   size?: string | null
   status?: ProductStatus | null
   user_id?: string | null
-  project_id?: string | null
 }
 
 /** Mirrors `entities.models.ProductsUpdate`. Sent to `PATCH /products/{id}`. */
@@ -69,6 +71,8 @@ export interface ProductsUpdate {
   category?: string | null
   commission_id?: string | null
   description?: string | null
+  drop_item?: boolean | null
+  drop_title?: string | null
   image_urls?: string[] | null
   paid?: boolean | null
   price?: string | null
@@ -76,7 +80,6 @@ export interface ProductsUpdate {
   status?: ProductStatus | null
   title?: string | null
   user_id?: string | null
-  project_id?: string | null
 }
 
 /** Response of `POST /products/upload-image`. */
@@ -85,36 +88,6 @@ export interface ProductImageUploadResponse {
 }
 
 // ---------------------------------------------------------------------------
-// Projects
-// ---------------------------------------------------------------------------
-
-/**
- * Mirrors `entities.models.ProjectsBaseSchema`. A project holds a group of
- * products (projects replace drops) — the link lives only on
- * `ProductsBaseSchema.project_id`; there is no product id list here.
- */
-export interface ProjectsBaseSchema {
-  id: string
-  title: string
-  description: string
-  date: string
-  created_at: string
-  updated_at: string
-}
-
-/** Mirrors `entities.models.ProjectsInsert`. Sent to `POST /projects/`. */
-export interface ProjectsInsert {
-  title: string
-  description: string
-  date: string
-}
-
-/** Mirrors `entities.models.ProjectsUpdate`. Sent to `PATCH /projects/{id}`. */
-export interface ProjectsUpdate {
-  title?: string | null
-  description?: string | null
-  date?: string | null
-}
 // Reservations
 // ---------------------------------------------------------------------------
 

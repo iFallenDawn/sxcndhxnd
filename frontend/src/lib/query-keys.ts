@@ -11,13 +11,6 @@ export const queryKeys = {
     list: () => [...queryKeys.products.all(), 'list'] as const,
     detail: (productId: string) => [...queryKeys.products.all(), 'detail', productId] as const,
   },
-  projects: {
-    all: () => ['projects'] as const,
-    list: () => [...queryKeys.projects.all(), 'list'] as const,
-    detail: (projectId: string) => [...queryKeys.projects.all(), 'detail', projectId] as const,
-    /** A project's products (`GET /projects/{id}/products`) — kept separate from `products.list()`. */
-    products: (projectId: string) => [...queryKeys.projects.all(), 'products', projectId] as const,
-  },
   reservations: {
     all: () => ['reservations'] as const,
     /** `GET /reservations/` — admin only. */

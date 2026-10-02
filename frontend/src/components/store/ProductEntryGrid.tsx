@@ -6,11 +6,11 @@ const GRID_CLASSNAME = 'grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-
 
 /**
  * Renders a list of `DisplayEntry` — standalone products interleaved with
- * project groups. Consecutive standalone products are batched into one
- * shared grid so they flow together normally; a project group instead
- * renders as its own labeled sub-grid so the pieces from one project stay
- * visually together, while both still take part in the overall
- * available-first ordering produced by `groupForDisplay`.
+ * `drop_title` groups. Consecutive standalone products are batched into one
+ * shared grid so they flow together normally; a drop group instead renders
+ * as its own labeled sub-grid so the pieces from one drop stay visually
+ * together, while both still take part in the overall available-first
+ * ordering produced by `groupForDisplay`.
  */
 export function ProductEntryGrid({ entries }: { entries: DisplayEntry[] }) {
   const blocks: { key: string; content: ReactNode }[] = []
@@ -32,13 +32,13 @@ export function ProductEntryGrid({ entries }: { entries: DisplayEntry[] }) {
   }
 
   for (const entry of entries) {
-    if (entry.kind === 'project') {
+    if (entry.kind === 'drop') {
       flushSingles()
       blocks.push({
-        key: `project-${entry.id}`,
+        key: `drop-${entry.title}`,
         content: (
           <div className="flex flex-col gap-3">
-            <p className="heading-display text-xs text-muted-foreground">Project — {entry.title}</p>
+            <p className="heading-display text-xs text-muted-foreground">Drop — {entry.title}</p>
             <div className={GRID_CLASSNAME}>
               {entry.products.map((product) => (
                 <ProductCard key={product.id} product={product} />

@@ -25,13 +25,6 @@ export function ImageUploadQueueList<T>({ items, onRetry, onDismiss }: ImageUplo
           key={item.id}
           className="flex items-center gap-3 rounded-md border border-border bg-card px-3 py-2 text-sm"
         >
-          <img
-            src={item.previewUrl}
-            alt=""
-            aria-hidden="true"
-            className="size-10 shrink-0 rounded-sm object-cover"
-          />
-
           <div
             className={cn(
               'flex size-6 shrink-0 items-center justify-center rounded-full',
