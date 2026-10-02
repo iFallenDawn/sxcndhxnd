@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { toast } from 'sonner'
 import {
   Dialog,
@@ -23,11 +22,6 @@ export function ProductFormDialog({ state, onClose }: ProductFormDialogProps) {
   const createProduct = useCreateProduct()
   const updateProduct = useUpdateProduct()
   const product = state.mode === 'edit' ? state.product : undefined
-  // While true, `ProductForm` is mid-upload or mid-save — refuse to close
-  // (Escape, the overlay, the corner X all route through `onOpenChange`).
-  // Closing then wouldn't just lose typed input: a photo that just finished
-  // uploading to the bucket would have no product row to attach to.
-  const [busy, setBusy] = useState(false)
 
   const handleSubmit = async (payload: ProductsInsert) => {
     if (product) {
@@ -41,7 +35,7 @@ export function ProductFormDialog({ state, onClose }: ProductFormDialogProps) {
   }
 
   return (
-    <Dialog open onOpenChange={(open) => !open && !busy && onClose()}>
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{product ? 'Edit product' : 'Add product'}</DialogTitle>
@@ -56,7 +50,6 @@ export function ProductFormDialog({ state, onClose }: ProductFormDialogProps) {
           submitLabel={product ? 'Save changes' : 'Add product'}
           onCancel={onClose}
           onSubmit={handleSubmit}
-          onBusyChange={setBusy}
         />
       </DialogContent>
     </Dialog>

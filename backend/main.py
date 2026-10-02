@@ -6,7 +6,6 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import router as api_router
-from routers.meta_router import router as meta_router
 from core.exception_handlers import register_exception_handlers
 from core.rate_limit import limiter
 from slowapi import _rate_limit_exceeded_handler
@@ -30,9 +29,5 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) # typ
 
 register_exception_handlers(app)
 app.include_router(api_router)
-# Ordinary path operations (like this one) are always checked before the
-# low-priority `app.frontend(...)` static mount below, regardless of
-# registration order — see `meta_router`'s docstring.
-app.include_router(meta_router)
 
 app.frontend("/", directory="dist")
