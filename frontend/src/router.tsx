@@ -17,6 +17,15 @@ import { SignIn } from '@/pages/auth/SignIn'
 import { Register } from '@/pages/auth/Register'
 import { Account } from '@/pages/auth/Account'
 import { AuthCallback } from '@/pages/auth/AuthCallback'
+import { COMMISSIONS_ENABLED } from '@/lib/constants'
+
+// Commissions paused (see COMMISSIONS_ENABLED in lib/constants.ts) — the
+// request route only exists while the flag is on, same as the dev-only
+// styleguide route below. Flipping the flag restores this route, the
+// Navbar link, the Hero CTA and the Home section together.
+const commissionRoutes: RouteObject[] = COMMISSIONS_ENABLED
+  ? [{ path: 'commissions/request', element: <Placeholder name="Commission Request" /> }]
+  : []
 
 // Dev-only route: guarded by `import.meta.env.DEV`, which Vite inlines as a
 // literal `false` in production builds. That lets the bundler dead-code
@@ -50,10 +59,7 @@ export const router = createBrowserRouter([
       { path: 'gallery', element: <Gallery /> },
       { path: 'projects', element: <Projects /> },
       { path: 'projects/:projectId', element: <ProjectDetail /> },
-      {
-        path: 'commissions/request',
-        element: <Placeholder name="Commission Request" />,
-      },
+      ...commissionRoutes,
       { path: 'contact', element: <Placeholder name="Contact" /> },
       { path: 'sign-in', element: <SignIn /> },
       { path: 'register', element: <Register /> },

@@ -17,6 +17,12 @@ export const queryKeys = {
     detail: (projectId: string) => [...queryKeys.projects.all(), 'detail', projectId] as const,
     /** A project's products (`GET /projects/{id}/products`) — kept separate from `products.list()`. */
     products: (projectId: string) => [...queryKeys.projects.all(), 'products', projectId] as const,
+  reservations: {
+    all: () => ['reservations'] as const,
+    /** `GET /reservations/` — admin only. */
+    list: () => [...queryKeys.reservations.all(), 'list'] as const,
+    /** `GET /reservations/me` — the signed-in customer's own reservations. */
+    mine: () => [...queryKeys.reservations.all(), 'mine'] as const,
   },
   gallery: {
     all: () => ['gallery'] as const,
@@ -25,9 +31,5 @@ export const queryKeys = {
   users: {
     all: () => ['users'] as const,
     me: () => [...queryKeys.users.all(), 'me'] as const,
-  },
-  auth: {
-    /** Result of probing an admin-only route (see `api/admin.ts::probeIsAdmin`). */
-    adminProbe: (userId: string | undefined) => ['auth', 'admin-probe', userId] as const,
   },
 }

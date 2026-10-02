@@ -114,6 +114,35 @@ export interface ProjectsUpdate {
   title?: string | null
   description?: string | null
   date?: string | null
+// Reservations
+// ---------------------------------------------------------------------------
+
+/**
+ * Mirrors `entities.models.ReserveProductRequest`. Sent to
+ * `POST /products/{id}/reserve`.
+ *
+ * `instagram` is how Nico reaches the customer — the whole flow hands off to
+ * an Instagram DM, there is no payment. Auth on that endpoint is *optional*
+ * (`get_optional_user_id`), so a guest can reserve by supplying a handle;
+ * a signed-in customer gets theirs prefilled from `UsersBaseSchema.instagram`.
+ */
+export interface ReserveProductRequest {
+  instagram: string
+}
+
+/** Mirrors `entities.models.ReservationsBaseSchema`. */
+export interface ReservationsBaseSchema {
+  id: string
+  product_id: string
+  instagram: string
+  created_at: string
+  /** Null for guest reservations — the endpoint does not require an account. */
+  user_id: string | null
+}
+
+/** Mirrors `entities.models.ReservationsUpdate`. Sent to `PATCH /reservations/{id}`. */
+export interface ReservationsUpdate {
+  instagram?: string | null
 }
 
 // ---------------------------------------------------------------------------
@@ -139,7 +168,7 @@ export interface GalleryResponse {
 // Users
 // ---------------------------------------------------------------------------
 
-/** Mirrors `entities.models.UsersBaseSchema`. Response of `GET /users/me`. */
+/** Mirrors `entities.models.UsersBaseSchema`. Response of `PATCH /users/me` and `GET /admin/users/{id}`. */
 export interface UsersBaseSchema {
   id: string
   created_at: string
@@ -148,6 +177,15 @@ export interface UsersBaseSchema {
   instagram: string
   last_name: string
   updated_at: string
+}
+
+/**
+ * Mirrors `entities.models.UsersMeSchema`. Response of `GET /users/me` —
+ * `role` is `'admin'` for an admin account, otherwise `null`. This is the
+ * source of truth for admin status; see `hooks/use-is-admin.ts`.
+ */
+export interface UsersMeSchema extends UsersBaseSchema {
+  role: string | null
 }
 
 /** Mirrors `entities.models.UsersUpdate`. Sent to `PATCH /users/me`. */
