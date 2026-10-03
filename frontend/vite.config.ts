@@ -7,13 +7,13 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    port: 3000,
+    port: 3001,
     strictPort: true,
     // Keeps dev same-origin like production (see `lib/api-base-url.ts`):
     // API calls go to `/api` on this server and are forwarded to the local
     // FastAPI backend (`fastapi dev main.py`).
     proxy: {
-      '/api': 'http://localhost:8000',
+      '/api': 'http://localhost:8001',
     },
   },
   resolve: {
